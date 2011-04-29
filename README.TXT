@@ -3,7 +3,7 @@ How to install this plugin in SketchUp:
 
 Download the ZIP file and unzip its contents into the SketchUp plugin directory
 (usually at C:\Program Files\Google\SketchUp\Plugins\ in Windows
-or /Library/Application Support/Google SketchUp/SketchUp/Plugins/ on the mac).
+or /Library/Application Support/Google SketchUp/SketchUp/Plugins/ on the Mac).
 
 Keep the folder structure as it is in the ZIP file. Make sure the file called
 as_loadrubyeditor.rb ends up in the SketchUp Plugins directory.
@@ -12,7 +12,7 @@ If you are updating, just overwrite the old version of this plugin.
 
 SketchUp file structure after installation:
 
-/SketchUp Direcory/
+/SketchUp Directory/
       /Plugins/
             as_loadrubyeditor.rb
             /as_plugins/
