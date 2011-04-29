@@ -1,0 +1,6 @@
+span.js-keyword {color: rgb(255,160,80);}
+span.js-atom {color: rgb(255,208,128);}
+span.js-variabledef {color: rgb(255,208,80);}
+span.js-localvariable {color: rgb(255,208,208);}
+span.js-comment {color: rgb(255,240,160);}
+span.js-string {color: rgb(255,176,240);}

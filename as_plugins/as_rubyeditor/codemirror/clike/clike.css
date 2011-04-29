@@ -1,0 +1,6 @@
+span.c-like-keyword {color: rgb(255,160,80);}
+span.c-like-number {color: rgb(255,176,240);}
+span.c-like-comment {color: rgb(255,240,160);}
+span.c-like-string {color: rgb(255,176,240);}
+span.c-like-preprocessor {color: rgb(255,208,80);}
+span.c-like-var {color: rgb(255,208,80);}
