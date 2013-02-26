@@ -18,6 +18,8 @@ $baseDir = File.dirname(__FILE__)
 
 # Working directory
 $workingDir = File.join( $baseDir , $snippetsDirName )
+# Uncomment this line to use the user profile directory
+$workingDir = ENV['USERPROFILE']
 # Uncomment this line if you just want to use the default/current/latest directory:
 # $workingDir = ''
 # Uncomment this line if you want to use a directory on Windows (modify to suit your needs):
