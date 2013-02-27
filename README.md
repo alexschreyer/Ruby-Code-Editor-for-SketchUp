@@ -1,7 +1,7 @@
 Ruby Code Editor for SketchUp
 =============================
 
-Copyright 2010-2011, Alexander C. Schreyer
+Copyright 2010-2013, Alexander C. Schreyer
 All rights reserved
 
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -16,9 +16,9 @@ Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
 
-Version:        2.0
+Version:        2.1
 
-Date :          4/12/2011
+Date :          2/26/2013
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This
                 editor was built based on Jim Folz's WebConsole but offers many
@@ -75,46 +75,14 @@ History:
                     - Moved menu item to "Windows" menu
                     - Added settings file for modifications
                     - Added code printing
-                    
-                    
-To-Do List:
-
-                - Highlighting for color light schemes
-                - Multiple files
-                - Autocomplete (soon!)
-                
-Isues: 
-
-                - Page zoom does not work well in reference browser - just use this as a backup if the font is unreadable
-                - Doesn't like to work when other code editors are running in SketchUp - Just restart SketchUp
-                - Coloring sometimes needs text change to update
+				2.1 (2/26/2013)
+					- Uses most recently used directory for file loading and saving
+					- Fixed the outdated URLs in the browser
+					- Update checking now uses www.sketchupplugins.com
+					                    
 
 How to install this plugin in SketchUp:
 =======================================
 
-Download the ZIP file and unzip its contents into the SketchUp plugin directory
-(usually at C:\Program Files\Google\SketchUp\Plugins\ in Windows
-or /Library/Application Support/Google SketchUp/SketchUp/Plugins/ on the Mac).
-
-Keep the folder structure as it is in the ZIP file. Make sure the file called
-as_loadrubyeditor.rb ends up in the SketchUp Plugins directory.
-Then re-start SketchUp and look for the new menu item in the Windows menu.
-If you are updating, just overwrite the old version of this plugin.
-
-SketchUp file structure after installation:
-
-/SketchUp Directory/
-      /Plugins/
-            as_loadrubyeditor.rb
-            /as_plugins/
-                   /as_rubyeditor/
-                        /codemirror/
-                        /img/
-                        /jquery-ui/
-                        /snippets/
-                        as_rubyeditor.rb
-                        as_rubyeditor_settings.rb
-                        ui.html
-                        ui.js
-                        ui_p.css
+See instructions on the plugin website.
             
