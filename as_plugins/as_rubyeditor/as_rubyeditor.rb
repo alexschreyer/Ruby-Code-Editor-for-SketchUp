@@ -74,6 +74,7 @@ History:        1.0 (2/3/2010):
 								    - Uses most recently used directory for file loading and saving
 										- Fixed the outdated URLs in the browser
 										- Update checking now uses www.sketchupplugins.com
+								 Changes:
 								    
                     
                     
