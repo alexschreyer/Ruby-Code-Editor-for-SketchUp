@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Content-Script-Type" content="text/javascript">
     <meta http-equiv="MSThemeCompatible" content="Yes">
+    <link rel=StyleSheet href="ui_main.css" type="text/css">
     <link class="switcher" rel=StyleSheet href="jquery-ui/ui-darkness/jquery-ui.css" type="text/css">
     <link rel=StyleSheet href="ui_p.css" type="text/css" media="print">
     <script type="text/javascript">
@@ -52,7 +53,7 @@
       <div id="tabs-1" style="margin:5px;padding:0;">
         <div class="wrapper">
           <div id="console_area">
-            <p id="nav_area" style="overflow:hidden;">
+            <p id="nav_area" style="overflow:hidden;" class="ui-widget-header">
               <a class="button" onClick="cb_new()" href="#" title="New document (Alt+N)" tabindex="2" accesskey="N"><span class="ui-icon ui-icon-document"></span></a>
               <a class="button" onClick="cb_open()" href="#" title="Open file for editing (Alt+O)" tabindex="3" accesskey="O"><span class="ui-icon ui-icon-folder-open"></span></a>
               <a class="button" onClick="cb_save()" href="#" title="Save editor content to file (Alt+S)" tabindex="4" accesskey="S"><span class="ui-icon ui-icon-disk"></span></a>
@@ -61,7 +62,7 @@
               <a class="button" onClick="cb('show_console')" href="#" title="Show Ruby console (Alt+R)" tabindex="7" accesskey="R"><span class="ui-icon ui-icon-wrench"></span></a>
               <a class="button" onClick="javascript:printMe('console');" href="#" title="Print code (Alt+P)" tabindex="8" accesskey="P"><span class="ui-icon ui-icon-print"></span></a>
               &nbsp;
-              <select id="snippets" tabindex="9" title="Insert snippets at cursor" style="vertical-align:top;">
+              <select id="snippets" tabindex="9" title="Insert snippets at cursor">
 <option value="" selected="selected" disabled="disabled">Insert at cursor:</option>
               <optgroup label="Ruby Snippets">
 <option value="(0..10).each { |i|
@@ -143,7 +144,7 @@ end">Create menu items</option>
               </optgroup>
               </select>
               &nbsp;
-              <select id="lang" tabindex="10" title="Code highlighter language" style="vertical-align:top;">
+              <select id="lang" tabindex="10" title="Code highlighter language">
                 <option value="" disabled="disabled">Language:</option>
                 <option value="none">None</option>
                 <option value="ruby" selected="selected">SU Ruby</option>
@@ -278,12 +279,13 @@ end">Create menu items</option>
         <p>This code editor allows creating and modifying Ruby scripts directly within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment.</p>
         <p>
          This editor was originally an extension of Jim Folz's excellent
-				 <a href="http://sketchuptips.blogspot.com/2007/08/plugin-webconsolerb.html" title="http://sketchuptips.blogspot.com/" target="_blank">Web Console</a> plugin.<br /><br />
+				 <a href="http://sketchuptips.blogspot.com/2007/08/plugin-webconsolerb.html" title="http://sketchuptips.blogspot.com/" target="_blank">Web Console</a> plugin.
          I modified it mainly for two reasons: When I code, I permanently need to look up documentation.
          To fix this, I added a bunch of reference webpages to a browser in a tab. The other reason
          was that I wanted it to behave a bit more like a real code editor, so I added a bit of <a href="http://jqueryui.com/" target="_blank">jQuery</a> magic
          to make it look good and have some additional features. The editor now also uses the <a href="http://codemirror.net" target="_blank">Codemirror 2.0</a> syntax highlighter to make the code more readable.
         </p>
+				<p>Contributors: Jim Folz, Dan Rathbun and others at SCF.</p>
         <p>
          <b>At this point, this editor has the following features:</b>
         </p>

@@ -70,24 +70,26 @@ History:        1.0 (2/3/2010):
                     - Moved menu item to "Windows" menu
                     - Added settings file for modifications
                     - Added code printing
-								 2.1 (2/26/2013)
-								    - Uses most recently used directory for file loading and saving
-										- Fixed the outdated URLs in the browser
-										- Update checking now uses www.sketchupplugins.com
-								 Changes:
-								    
-                    
-                    
+                 2.1 (2/26/2013)
+                    - Uses most recently used directory for file loading and saving
+                    - Fixed the outdated URLs in the browser
+                    - Update checking now uses www.sketchupplugins.com
+                 Changes:
+                    - Got rid of settings file
+                    - Results feedback now wrapped in Paragraph
+                    - Minor CSS changes
+
+
 To-Do List:     - Highlighting for color light schemes
                 - Multiple files
                 - Autocomplete (soon!)
-								- Move settings into SU default section
-                
+                - Move settings into SU default section
+
 Isues:          - Page zoom does not work well in reference browser - just use this as a backup if the font is unreadable
                 - Doesn't like to work when other code editors are running in SketchUp - Just restart SketchUp
                 - Coloring sometimes needs text change to update
-                
-                
+
+
 =================================================================
 
 This plugin was originally based on Jim Foz's Web Console:
@@ -131,16 +133,7 @@ THE SOFTWARE.
 require 'sketchup'
 
 
-# Check for platform first
-AS_SU_OS = (Object::RUBY_PLATFORM =~ /mswin/i) ? :windows :
-  ((Object::RUBY_PLATFORM =~ /darwin/i) ? :mac : :other)
-# Then get support file
-as_rce_settingsFile = File.dirname(__FILE__).split("/").join("\\") + "\\" + 'as_rubyeditor_settings.rb'
-if AS_SU_OS != 'windows'
-  as_rce_settingsFile = as_rce_settingsFile.split("\\").join("/")
-end
-load as_rce_settingsFile
-
+## Wrap into main module
 
 module AS_RubyEditor
 
@@ -151,32 +144,43 @@ module AS_RubyEditor
 
       # Initialize class and callbacks
       def initialize
-      
-      
-        # Some variables
+
+
+        ## Set some variables
+
+        # Plugin version
         @rceVersion = "2.1"
-        @initCode = $initCode
-        @snip_dir = Sketchup.read_default "as_RubyCodeEditor", "last_file", $workingDir
+        # Get platform info
+        @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? :windows :
+          ((Object::RUBY_PLATFORM =~ /darwin/i) ? :mac : :other)
+        # Get plugin's directory
+        @baseDir = File.dirname(__FILE__)
+        # Initial code snippet - keep all on one line!
+        @initCode = Sketchup.read_default "as_RubyCodeEditor", "init_code", 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
+        # Get working directory - set to user directory at first
+        @snip_dir = Sketchup.read_default "as_RubyCodeEditor", "last_file", ENV['USERPROFILE']
         @snip_dir = @snip_dir.split("/").join("\\") + "\\"
-        if AS_SU_OS != 'windows'
+        if @as_su_os != 'windows'
           @snip_dir = @snip_dir.split("\\").join("/") + "/"
         end
-        
-        
-        # Moved these to setup file
-        # @initCode = 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
-        # @snip_dir = File.join( File.dirname(__FILE__), $snippetsDirName)
 
-        super "Ruby Code Editor", false, "RubyCodeEditor", 800, 700, 100, 100, true
-        ui_loc = File.join( File.dirname(__FILE__), "ui.html")
+
+        ## Set up the WebDialog
+
+        super "Ruby Code Editor", false, "RubyCodeEditor", 720, 600, 100, 100, true
+        ui_loc = File.join(@baseDir , "ui.html")
         # Fix directory name on Win
         ui_loc.gsub!('//', "/")
+        # Set HTML UI file for WebDialog
         set_file(ui_loc)
+        navigation_buttons_enabled = false
+        min_width = 720
+        min_height = 600
 
+        ## Callback to execute Ruby code in SketchUp
 
-        # Callback to execute Ruby code in SketchUp
         add_action_callback("exec") do |dlg, params|
-          dlg.execute_script("$('#results').append('Running the code...<br>')")
+          dlg.execute_script("$('#results').append('<p>Running the code...</p>')")
           dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
           v = dlg.get_element_value('console').strip
           # puts v
@@ -207,18 +211,19 @@ module AS_RubyEditor
             r.gsub!(/'/, "&rsquo;")
             r.gsub!(/`/, "&lsquo;")
             r.gsub!(/</, "&lt;")
-            dlg.execute_script("$('#results').append('Done. Feedback from Ruby: <span class=\\'hl\\'>#{r}</span><br>')")
+            dlg.execute_script("$('#results').append('<p>Done. Feedback from Ruby: <span class=\\'hl\\'>#{r}</span></p>')")
             dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
           end
         end # callback
 
 
-        # Callback to clear editor
+        ## Callback to clear editor
+
         add_action_callback("new") do |dlg, params|
           # Use only single quotes here!
           script = 'editor.setValue(\''+@initCode+'\')'
           dlg.execute_script(script)
-          dlg.execute_script("$('#results').append('Cleared the editor<br>')")
+          dlg.execute_script("$('#results').append('<p>Cleared the editor</p>')")
           dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
           dlg.execute_script("$('#save_name').text('untitled.rb')")
           dlg.execute_script("$('#save_filename').val('untitled.rb')")
@@ -226,10 +231,11 @@ module AS_RubyEditor
         end # callback
 
 
-        # Callback to load a file into the editor
+        ## Callback to load a file into the editor
+
         add_action_callback("load") do |dlg, params|
           p @snip_dir
-          # Use snippet directory
+          # Use working directory
           file = UI.openpanel("Open File", @snip_dir, "*.*")
           return unless file
           # Set file directory as current
@@ -244,7 +250,7 @@ module AS_RubyEditor
           end
           f = File.new(file,"r")
           text = f.readlines.join
-          
+
           # Encode backward slashes and single quotes in Ruby
           text.gsub!('\\', "<84JSed>")
           text.gsub!('\'', "<25SKxw>")
@@ -261,19 +267,20 @@ module AS_RubyEditor
           dlg.execute_script("tmp = tmp.replace(/<25SKxw>/g,'\\'')")
           script = 'editor.setValue(tmp)'
           dlg.execute_script(script)
-          
+
           # Not needed now:
           # script = 'editor.setValue(\''+text+'\')'
           # dlg.execute_script(script)
-          dlg.execute_script("$('#results').append('File loaded: #{name}<br>')")
+          dlg.execute_script("$('#results').append('<p>File loaded: #{name}</p>')")
           dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
 
-					# Save the loaded file as most recent
+          # Save the loaded file as most recent
           Sketchup.write_default "as_RubyCodeEditor", "last_file", file
         end # callback
 
 
-        # Callback to save a file (and create a backup)
+        ## Callback to save a file (and create a backup)
+
         add_action_callback("save") do |dlg, params|
           filename = dlg.get_element_value("save_filename")
           file = UI.savepanel("Save File", @snip_dir, filename)
@@ -301,31 +308,34 @@ module AS_RubyEditor
           dlg.execute_script("$('#save_name').text('#{name}')")
           dlg.execute_script("$('#save_filename').val('#{name}')")
           dlg.execute_script("c = false;")
-          dlg.execute_script("$('#results').append('File saved: #{name}<br>')")
+          dlg.execute_script("$('#results').append('<p>File saved: #{name}</p>')")
           dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
 
-					# Save the saved file as most recent
+          # Save the saved file as most recent
           Sketchup.write_default "as_RubyCodeEditor", "last_file", file
         end # callback
 
 
-        # Callback to close the dialog
+        ## Callback to close the dialog
+
         add_action_callback("quit") { |dlg, params|
-          dlg.execute_script("$('#results').append('Closing editor...<br>')")
+          dlg.execute_script("$('#results').append('<p>Closing editor...</p>')")
           dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
           dlg.close
         }
 
 
-        # Callback to undo the last grouped code execution
+        ## Callback to undo the last grouped code execution
+
         add_action_callback("undo") do |dlg, params|
           Sketchup.undo
-          dlg.execute_script("$('#results').append('Last step undone<br>')")
+          dlg.execute_script("$('#results').append('<p>Last step undone</p>')")
           dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
         end # callback
-        
-        
-        # Callback to explore current selection
+
+
+        ## Callback to explore current selection
+
         add_action_callback("sel_explore") do |dlg, params|
           sel = Sketchup.active_model.selection
           mes = ""
@@ -346,9 +356,10 @@ module AS_RubyEditor
           }
           UI.messagebox mes , MB_MULTILINE, "Explore Current Selection"
         end # callback
-        
-        
-        # Callback to explore current selection's attributes
+
+
+        ## Callback to explore current selection's attributes
+
         add_action_callback("att_explore") do |dlg, params|
           sel = Sketchup.active_model.selection
           mes = ""
@@ -373,48 +384,51 @@ module AS_RubyEditor
           }
           UI.messagebox mes , MB_MULTILINE, "Explore Current Selection's Attributes"
         end # callback
-        
-        
-        # Callback to show Ruby console
+
+
+        ## Callback to show Ruby console
+
         add_action_callback("show_console") do |dlg, params|
           Sketchup.send_action "showRubyPanel:"
         end # callback
 
 
-        # Show the dialog and insert sample code
+        ## Show the dialog and insert sample code
+
         show do
           script = 'editor.setValue(\''+@initCode+'\')'
           execute_script(script)
           # execute_script("document.getElementById('console').value=''")
-        	# execute_script("editor.setValue('#{@initCode}')")
-        	# Set version number in dialog
-        	execute_script("rceVersion = #{@rceVersion}")
+          # execute_script("editor.setValue('#{@initCode}')")
+          # Set version number in dialog
+          execute_script("rceVersion = #{@rceVersion}")
         end # show dialog
 
 
      end # initialize
-     
-     
+
+
   end # class RubyEditor
 
 
 end # module AS_RubyEditor
 
 
-# Register plugin and create menu items / toolbars
+## Register plugin and create menu items / toolbars
 
 
 # Get file name of this file
 file = File.basename(__FILE__)
 
+# Add menu items
 unless file_loaded?(file)
-  # Add menu item
+  # Add main menu item
   UI.menu("Window").add_item("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new }
 
   # Add toolbar
   as_rce_tb = UI::Toolbar.new "Ruby Code Editor"
   as_rce_cmd = UI::Command.new("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new }
-  # Once instance only version:
+  # One instance only version:
   # as_rce_cmd = UI::Command.new("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new unless editordlg }
   as_rce_cmd.small_icon = "img/rce_1_16.png"
   as_rce_cmd.large_icon = "img/rce_1_24.png"

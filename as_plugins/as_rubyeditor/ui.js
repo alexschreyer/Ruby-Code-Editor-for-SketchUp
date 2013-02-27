@@ -26,7 +26,7 @@ function cb(name, args) {
 // New file callback
 function cb_new() {
   var a = confirm("Changes will be lost. Clear editor?");
-  if (a) window.location = "skp:new"; 
+  if (a) window.location = "skp:new";
   // Copy console content to editor
   // editor.setValue($('#console').val());
 }
@@ -93,12 +93,12 @@ $(document).ready(function(){
   //========== INITIALIZE ELEMENTS ON STARTUP ========================
 
   // Create page tabs using jQuery UI
-	$('#tabs').tabs();
-	
-	// Style all buttons using jQuery UI
-	$(".button").button();
-	
-	// Fix editor gap issue at top of IE editor
+  $('#tabs').tabs();
+
+  // Style all buttons using jQuery UI
+  $(".button").button();
+
+  // Fix editor gap issue at top of IE editor
   $(".CodeMirror div pre:first").css("position","absolute");
 
   // Initialize selections from cookies
@@ -107,17 +107,17 @@ $(document).ready(function(){
     $('.CodeMirror').css('font-size' , newsize+'pt');
     $('#fontsize').val(newsize);
   };
-  
+
   if ($.cookie('tabsize')!= null) {
     var newsize = $.cookie('tabsize');
     $('#tabsize').val(newsize);
   };
-  
+
   if ($.cookie('indentmode')!= null) {
     var newsize = $.cookie('indentmode');
     $('#indentmode').val(newsize);
   };
-  
+
   // TODO: This doesn't seem to work
   if ($.cookie('linenum')!= null) {
     if ($.cookie('linenum') == 'false') {
@@ -128,7 +128,7 @@ $(document).ready(function(){
       $('.CodeMirror-gutter').show();
     }
   };
-  
+
   if ($.cookie('savebackup')!= null) {
     $('#savebackup').val($.cookie('savebackup'));
     if ($.cookie('savebackup') == 'false')
@@ -136,7 +136,7 @@ $(document).ready(function(){
     else
       $('#savebackup').attr('checked',true)
   };
-  
+
   // TODO: Still some issues with this...
   if ($.cookie('doundo')!= null) {
     $('#doundo').val($.cookie('doundo'));
@@ -145,13 +145,13 @@ $(document).ready(function(){
     else
       $('#doundo').attr('checked',true)
   };
-  
+
   if ($.cookie('css')!= null) {
     newcss = $.cookie("css");
     $('link.switcher').attr('href',newcss);
     $("#stylesheet").val(newcss);
   };
-  
+
   // Initialize window element sizes on start
   newheight = $(window).height()-270;
   $('.CodeMirror').css('height',newheight);
@@ -172,34 +172,34 @@ $(document).ready(function(){
     $('#backbutton').css('display','none');
     $('#nextbutton').css('display','none');
   };
-  
+
   //========== INTERACTIVE ELEMENTS ========================
-  
+
   // Change iFrame url location dropdown
   $('#browselinks').change(function(objEvent){
     var loc = $('#browselinks').val();
     $('#ibrowser').attr("src",loc);
   });
 
-	// Change font size dropdown
+  // Change font size dropdown
   $('#fontsize').change(function(objEvent){
     var size = $('#fontsize').val();
     $('.CodeMirror').css('font-size',size+'pt');
     $.cookie('fontsize', size, { path: '/', expires: 365 });
   });
 
-	// Save tab size dropdown
+  // Save tab size dropdown
   $('#tabsize').change(function(objEvent){
     $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
     editor.setOption('indentUnit',$('#tabsize').val());
   });
-  
-	// Indent on enter dropdown
+
+  // Indent on enter dropdown
   $('#indentmode').change(function(objEvent){
     $.cookie('indentmode', $('#indentmode').val(), { path: '/', expires: 365 });
     editor.setOption('enterMode',$('#indentmode').val());
   });
-  
+
   // Show line numbers checkbox
   $('#linenum').click(function() {
     $.cookie('linenum', $('#linenum').is(':checked'), { path: '/', expires: 365 });
@@ -234,7 +234,7 @@ $(document).ready(function(){
     $("link.switcher").attr("href",css_url);
     $.cookie('css',css_url, { path: '/' , expires: 365 });
   });
-  
+
   // Change editor code languages dropdown
   $("#lang").change(function(objEvent) {
     editor.setOption('mode', $("#lang").val());
@@ -251,25 +251,26 @@ $(document).ready(function(){
   });
 
 
-  
+
   //========== UPDATE CHECKING ========================
-	// Now uses www.sketchupplugins.com data
-	
+  // Now uses www.sketchupplugins.com data
+
   $('#updatecheck').click(function(){
 
-		// # Use correct plugin ID below
-		var plugin_id = '22';
-		$.getJSON('http://sketchupplugins.com/get/single.php?callback=?',
-			{ id : plugin_id},
-			function(data) {
+    // # Use correct plugin ID below
+    var plugin_id = '22';
+    // Check via JSON
+    $.getJSON('http://sketchupplugins.com/get/single.php?callback=?',
+      { id : plugin_id},
+      function(data) {
         var msg = "Ruby Code Editor - Update Check\n\n";
-      	if (data.version[0] > rceVersion) {
+        if (data.version[0] > rceVersion) {
             msg += "New version available! (" + data.version[0] + ")";
-				} else {
+        } else {
             msg += "You have the latest version.";
-				}
-	      alert(msg);
-		});
+        }
+        alert(msg);
+    });
 
   });
 

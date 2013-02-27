@@ -1,18 +1,16 @@
-/* Alex' added styles */
+/* Alex' added color-based styles */
 
-body{margin:0;  padding:0;  font:normal 12px Verdana, Helvetica, sans-serif;  background-color:#eee;  overflow:hidden;  min-width:600px;}
-p{margin:10px 0;  padding:0;}
-h1{font-size:1.4em;  margin:10px 0;}
-select,input{vertical-align:middle;}
-#console{clear:both;  font-family:consolas,monospace;  font-size:10pt;  line-height:20px;  padding-left:4px;  background:url(../../img/background.gif) repeat;  resize:none;}
-#autoplete_txt {font-family:consolas,monospace;  font-size:10pt; width:200px;}
-#nav_area{height:30px;  margin:10px 0 5px;  padding:0;}
-#save_name{margin:0 0 5px;  padding:0;  font-weight:bold;  text-align:left;  color:#669;  background-color:inherit;  border:0;}
-#results{resize:none;background-color:#EEEEFF;}
-fieldset{margin-bottom:10px;}
-legend{font-weight:bold;}
-a.button {font-size:12px;}
-textarea {overflow:auto;}
+body{background-color:#eee;}
+h1{color:#F6982A;}
+#console{color:#fff;border:1px solid #999;background:url(../../img/background.gif) repeat;}
+#save_name{color:#669;}
+#results{background-color:#333;color:#fff;}
+#results .hl{color:rgb(255,255,0);background-color:#eef;}
+fieldset{border:1px solid #999;}
+legend{color:#000;}
+select,input{background-color:#fcfdfd;color:#000;}
+option{background-color:#fcfdfd;}
+#ibrowser{background-color:#ddd;}
 
 
 /*
