@@ -253,20 +253,24 @@ $(document).ready(function(){
 
   
   //========== UPDATE CHECKING ========================
+	// Now uses www.sketchupplugins.com data
 	
   $('#updatecheck').click(function(){
-    $.get("http://www.alexschreyer.net/projects/sketchup-ruby-code-editor", function(data){
-    var srch = new RegExp("<span id=\"version\">(.*?)</span>");
-    lastrceVersion = data.match(srch);
-    if (lastrceVersion == null) {
-      alert("Can't check for updates now. Please try again later.");
-    } else {
-      msg = "Ruby Code Editor\n\n"
-      msg += "Latest version: " + lastrceVersion[1] + "\n";
-      msg += "You are using: " + rceVersion;
-      alert(msg);
-    };
-    });
+
+		// # Use correct plugin ID below
+		var plugin_id = '22';
+		$.getJSON('http://sketchupplugins.com/get/single.php?callback=?',
+			{ id : plugin_id},
+			function(data) {
+        var msg = "Ruby Code Editor - Update Check\n\n";
+      	if (data.version[0] > rceVersion) {
+            msg += "New version available! (" + data.version[0] + ")";
+				} else {
+            msg += "You have the latest version.";
+				}
+	      alert(msg);
+		});
+
   });
 
   //========== TEXT INSERTION / AUTOCOMPLETE ========================
