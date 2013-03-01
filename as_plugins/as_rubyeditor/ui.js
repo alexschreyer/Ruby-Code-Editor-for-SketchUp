@@ -7,6 +7,8 @@
 //
 //=======================================
 
+
+
 // Initialize version number - updated from Ruby file
 var rceVersion = "unknown";
 
@@ -16,41 +18,54 @@ var c = false;
 // Initialize temporary variable
 var tmp = '';
 
+
+
 //========== SKETCHUP CALLBACKS ========================
+
+
 
 // Generic callback function
 function cb(name, args) {
   window.location='skp:'+name+'@'+args;
 }
 
+
+// Initialize callback
+function cb_initialize() {
+  window.location = "skp:new";
+}
+
+
 // New file callback
 function cb_new() {
-  var a = confirm("Changes will be lost. Clear editor?");
+  // Clear editor and load default snippet
+  var a = true
+  if (c) {
+    a = confirm("Changes will be lost. Clear editor?");
+  }
   if (a) window.location = "skp:new";
-  // Copy console content to editor
-  // editor.setValue($('#console').val());
 }
+
 
 // Open file callback
 function cb_open() {
-// Load a file into the editor
+  // Load a file into the editor
+  var a = true
   if (c) {
-    var a = confirm('Changes have not been saved. Load a file?')
-    if (a) window.location = 'skp:load';
+    a = confirm('Changes have not been saved. Load a file?')
   }
-  else window.location = 'skp:load';
-  // Copy console content to editor
-  // editor.setValue($('#console').val());
+  if (a) window.location = 'skp:load';
 }
+
 
 // Save file callback
 function cb_save() {
   // First save to textbox
   editor.save();
-  // if (c) window.location = "skp:save";
   // Set to true if backup option is checked
   window.location = "skp:save@"+$('#savebackup').is(':checked');
 }
+
 
 // Execute callback
 function cb_exec() {
@@ -63,21 +78,26 @@ function cb_exec() {
   $('#running').hide();
 }
 
+
 // TODO: Can this go?
+/*
 function inc_rows(id, v) {
   var c = document.getElementById(id)
     var rows = c.rows
     c.rows = c.rows + v
 }
+*/
+
 
 // Quit dialog callback
 function cb_quit() {
+  var a = true
   if (c) {
-    var a = confirm("Changes have not been saved. Quit this editor?")
-      if (a) window.location = "skp:quit";
+    a = confirm("Changes have not been saved. Quit this editor?")
   }
-  else window.location = "skp:quit";
+  if (a) window.location = "skp:quit";
 }
+
 
 // Close window function
 window.onbeforeunload = function(){
@@ -86,20 +106,95 @@ window.onbeforeunload = function(){
   // return 'Your changes may not have been saved. Do you really wish to close this editor window?';
 }
 
+
+// Add content to the results area and scroll upward
+function addResults(txt) {
+  $('#results').append('<p>'+txt+'</p>');
+  // Scroll to some very large number
+  $('#results').scrollTop(9999);
+}
+
+
+
 //========== jQuery FUNCTIONS - LOAD AT STARTUP ========================
+
+
 
 $(document).ready(function(){
 
+
+
   //========== INITIALIZE ELEMENTS ON STARTUP ========================
+
+
+
+  // Start the CodeMirror editor and attach it to text area
+  editor = CodeMirror.fromTextArea(document.getElementById("console"), {
+    mode: 'ruby',
+    theme: 'ambiance',
+    tabindex: 1,
+    smartIndent: false,
+    lineNumbers: true,
+    autofocus: 'true',
+    highlightSelectionMatches: true,
+    matchBrackets: true
+  });
+
+
+  // What to do when the editor's content changes
+  editor.on("change", function() {
+    c = true
+  });
+
+
+  // Initialize the editor
+  cb_initialize();
+  editor.focus();
+  c = false;
+
+
+  // Fix editor gap issue at top of IE editor
+  // $(".CodeMirror div pre:first").css("position","absolute");
+
+
+  // Straighten out window element sizes
+  function sizeWin() {
+    newheight = $(window).height()-270;
+    $('.CodeMirror').css('height',newheight);
+    newheight = $(window).height()-100;
+    $('.webbox').css('height',newheight);
+  }
+
 
   // Create page tabs using jQuery UI
   $('#tabs').tabs();
 
+
+  // Fix editor sizing when tabs are changed (line number problem)
+  $('#tabs').on("tabsactivate", function( event, ui ) {
+    editor.setSize(null,'100%');
+    sizeWin();
+  });
+
+
   // Style all buttons using jQuery UI
   $(".button").button();
 
-  // Fix editor gap issue at top of IE editor
-  $(".CodeMirror div pre:first").css("position","absolute");
+
+  // Initialize window element sizes on start
+  sizeWin();
+
+
+  // Resize elements on window resize
+  $(window).resize(function() {
+    sizeWin();
+  });
+
+
+
+  //========== INITIALIZE SETTINGS ON STARTUP ========================
+
+
 
   // Initialize selections from cookies
   if ($.cookie('fontsize')!= null) {
@@ -108,26 +203,31 @@ $(document).ready(function(){
     $('#fontsize').val(newsize);
   };
 
+
   if ($.cookie('tabsize')!= null) {
     var newsize = $.cookie('tabsize');
     $('#tabsize').val(newsize);
   };
+
 
   if ($.cookie('indentmode')!= null) {
     var newsize = $.cookie('indentmode');
     $('#indentmode').val(newsize);
   };
 
-  // TODO: This doesn't seem to work
+/*   REMOVE CAPABILITY
+
   if ($.cookie('linenum')!= null) {
     if ($.cookie('linenum') == 'false') {
       $('#linenum').attr('checked',false);
-      $('.CodeMirror-gutter').hide();
+      editor.setOption("lineNumbers", false);
    } else {
       $('#linenum').attr('checked',true);
-      $('.CodeMirror-gutter').show();
+      editor.setOption("lineNumbers", true);
     }
   };
+
+  */
 
   if ($.cookie('savebackup')!= null) {
     $('#savebackup').val($.cookie('savebackup'));
@@ -136,6 +236,7 @@ $(document).ready(function(){
     else
       $('#savebackup').attr('checked',true)
   };
+
 
   // TODO: Still some issues with this...
   if ($.cookie('doundo')!= null) {
@@ -146,69 +247,70 @@ $(document).ready(function(){
       $('#doundo').attr('checked',true)
   };
 
+
   if ($.cookie('css')!= null) {
     newcss = $.cookie("css");
     $('link.switcher').attr('href',newcss);
     $("#stylesheet").val(newcss);
   };
 
-  // Initialize window element sizes on start
-  newheight = $(window).height()-270;
-  $('.CodeMirror').css('height',newheight);
-  newheight = $(window).height()-100;
-  $('.webbox').css('height',newheight);
-
-  // Resize elements on window resize
-  $(window).resize(function() {
-    newheight = $(window).height()-270;
-    $('.CodeMirror').css('height',newheight);
-    newheight = $(window).height()-100;
-    $('.webbox').css('height',newheight);
-  });
 
   // Set back/forward buttons in browser different for Safari
+  // jQuery.browser deprecated - use .support instead.
+  /*
   var browser;
   if($.browser.safari) {
     $('#backbutton').css('display','none');
     $('#nextbutton').css('display','none');
   };
+  */
+
 
   //========== INTERACTIVE ELEMENTS ========================
 
+
+
   // Change iFrame url location dropdown
-  $('#browselinks').change(function(objEvent){
+  $('#browselinks').change(function(){
     var loc = $('#browselinks').val();
     $('#ibrowser').attr("src",loc);
   });
 
+
   // Change font size dropdown
-  $('#fontsize').change(function(objEvent){
+  $('#fontsize').change(function(){
     var size = $('#fontsize').val();
     $('.CodeMirror').css('font-size',size+'pt');
     $.cookie('fontsize', size, { path: '/', expires: 365 });
   });
 
+
   // Save tab size dropdown
-  $('#tabsize').change(function(objEvent){
+  $('#tabsize').change(function(){
     $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
     editor.setOption('indentUnit',$('#tabsize').val());
   });
 
+
   // Indent on enter dropdown
-  $('#indentmode').change(function(objEvent){
+  $('#indentmode').change(function(){
     $.cookie('indentmode', $('#indentmode').val(), { path: '/', expires: 365 });
     editor.setOption('enterMode',$('#indentmode').val());
   });
+
+/*   REMOVE CAPABILITY
 
   // Show line numbers checkbox
   $('#linenum').click(function() {
     $.cookie('linenum', $('#linenum').is(':checked'), { path: '/', expires: 365 });
     if ($('#linenum').is(':checked')) {
-      $('.CodeMirror-gutter').show();
+      editor.setOption("lineNumbers", true);
     } else {
-      $('.CodeMirror-gutter').hide();
+      editor.setOption("lineNumbers", false);
     };
   });
+
+*/
 
   // Save backup checkbox
   $('#savebackup').click(function() {
@@ -216,27 +318,31 @@ $(document).ready(function(){
     $('#savebackup').val($('#savebackup').is(':checked'));
   });
 
+
   // Do undo checkbox
   $('#doundo').click(function() {
     $.cookie('doundo', $('#doundo').is(':checked'), { path: '/', expires: 365 });
     $('#doundo').val($('#doundo').is(':checked'));
   });
 
+
   // Change iFrame zoom dropdown
-  $('#pzoom').change(function(objEvent){
+  $('#pzoom').change(function(){
     var newzoom = $('#pzoom').val()+'%';
     $('#ibrowser').css('zoom',newzoom);
   });
 
+
   // Change stylesheets dropdown
-  $("#stylesheet").change(function(objEvent) {
+  $("#stylesheet").change(function() {
     css_url = $("#stylesheet").val();
     $("link.switcher").attr("href",css_url);
     $.cookie('css',css_url, { path: '/' , expires: 365 });
   });
 
+
   // Change editor code languages dropdown
-  $("#lang").change(function(objEvent) {
+  $("#lang").change(function() {
     editor.setOption('mode', $("#lang").val());
     // Disable run buttons if it's not Ruby
     if ($("#lang").val() == "ruby") {
@@ -255,8 +361,8 @@ $(document).ready(function(){
   //========== UPDATE CHECKING ========================
   // Now uses www.sketchupplugins.com data
 
-  $('#updatecheck').click(function(){
 
+  $('#updatecheck').click(function(){
     // # Use correct plugin ID below
     var plugin_id = '22';
     // Check via JSON
@@ -271,22 +377,32 @@ $(document).ready(function(){
         }
         alert(msg);
     });
-
   });
+
+
 
   //========== TEXT INSERTION / AUTOCOMPLETE ========================
 
-  // Insert snippets at cursor
-  $('#snippets').change(function(objEvent){
+
+  // Insert snippets from dropdown at cursor
+  $('#snippets').change(function(){
     field = $('#snippets');
+    pos = editor.getCursor();
     editor.replaceSelection(field.val());
+    // Put cursor at beginning of snippet again
+    editor.setCursor(pos);
     // Reset dropdown to first option
     field.val($('option:first', field).val());
   });
 
-});
+
+
+}); // END jQuery.ready
+
+
 
 //========== Print code ========================
+
 
 function printMe(container) {
   var DocumentContainer = document.getElementById(container);

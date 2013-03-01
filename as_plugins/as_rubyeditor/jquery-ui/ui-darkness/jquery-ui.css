@@ -2,7 +2,6 @@
 
 body{background-color:#000;}
 h1{color:#F6982A;}
-#console{color:#fff;border:1px solid #999;background:url(../../img/background_dark.gif) repeat;}
 #save_name{color:#669;}
 #results{background-color:#333;color:#fff;}
 #results .hl{color:rgb(255,255,0)}

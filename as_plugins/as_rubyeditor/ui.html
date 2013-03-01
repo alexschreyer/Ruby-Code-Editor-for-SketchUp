@@ -1,41 +1,44 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Content-Script-Type" content="text/javascript">
-    <meta http-equiv="MSThemeCompatible" content="Yes">
+    <!-- Use compatibility mode to allow for newer features -->
+    <meta http-equiv="x-ua-compatible" content="IE=9">
+
+    <!-- Codemirror styles -->
+    <link rel=StyleSheet href="codemirror3/lib/codemirror.css" type="text/css">
+    <link rel=StyleSheet href="codemirror3/theme/ambiance.css" type="text/css">
+    <link rel=StyleSheet href="codemirror3/theme/eclipse.css" type="text/css">
+
+    <!-- Main and jQuery UI styles -->
     <link rel=StyleSheet href="ui_main.css" type="text/css">
     <link class="switcher" rel=StyleSheet href="jquery-ui/ui-darkness/jquery-ui.css" type="text/css">
     <link rel=StyleSheet href="ui_p.css" type="text/css" media="print">
+
+    <!-- Main and jQuery scripts -->
     <script type="text/javascript">
       // Try to catch all IE errors and prevent display
       window.onerror = function (e) { return true; };
       document.frames('ibrowser').document.onerror = function (e) { return true; };
     </script>
-    <script src="jquery-ui/js/jquery-1.5.1.min.js" language="javascript" type="text/javascript"></script>
-    <script src="jquery-ui/js/jquery-ui-1.8.11.custom.min.js" language="javascript" type="text/javascript"></script>
+    <script src="jquery-ui/js/jquery-1.9.1.min.js" language="javascript" type="text/javascript"></script>
+    <script src="jquery-ui/js/jquery-ui-1.10.1.custom.min.js" language="javascript" type="text/javascript"></script>
     <script src="jquery-ui/js/jquery.cookie.js" type="text/javascript" language="javascript"></script>
     <script src="ui.js" language="javascript" type="text/javascript"></script>
-    
-    <!-- Codemirror stuff -->
-    <script src="codemirror/codemirror.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/clike/clike.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/css/css.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/htmlmixed/htmlmixed.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/javascript/javascript.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/php/php.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/xml/xml.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/none/none.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror/ruby/ruby.js" language="javascript" type="text/javascript"></script>
-    <link rel=StyleSheet href="codemirror/codemirror.css" type="text/css">
-    <link rel=StyleSheet href="codemirror/clike/clike.css" type="text/css">
-    <link rel=StyleSheet href="codemirror/css/css.css" type="text/css">
-    <link rel=StyleSheet href="codemirror/javascript/javascript.css" type="text/css">
-    <link rel=StyleSheet href="codemirror/php/php.css" type="text/css">
-    <link rel=StyleSheet href="codemirror/xml/xml.css" type="text/css">
-    <link rel=StyleSheet href="codemirror/none/none.css" type="text/css">
-    <link rel=StyleSheet href="codemirror/ruby/ruby.css" type="text/css">
-    
+
+    <!-- Codemirror scripts -->
+    <script src="codemirror3/lib/codemirror.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/addon/edit/matchbrackets.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/clike/clike.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/css/css.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/htmlmixed/htmlmixed.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/javascript/javascript.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/php/php.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/xml/xml.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/none/none.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror3/mode/ruby/ruby.js" language="javascript" type="text/javascript"></script>
+
     <title>Ruby Code Editor</title>
   </head>
 
@@ -177,12 +180,10 @@ end">Create menu items</option>
 
       <div id="tabs-2" style="margin:5px;padding:0;">
         <div class="wrapper">
-        <p class="browser">
+        <p class="browser ui-widget-header">
           <a id="backbutton" class="button" href="javascript:if(history.length>1){history.back()};" title="Go back (Alt-B)" accesskey="B"><span class="ui-icon ui-icon-circle-arrow-w"></span></a>
           <a id="nextbutton" class="button" href="javascript:history.forward()" title="Go forward (Alt-F)" accesskey="F"><span class="ui-icon ui-icon-circle-arrow-e"></span></a>
-          
-          &nbsp;&nbsp;
-          Go to:&nbsp;&nbsp;<select id="browselinks">
+          <span style="vertical-align:top;">&nbsp;&nbsp;Go to:&nbsp;&nbsp;</span><select id="browselinks">
             <option value="" selected="selected" disabled="disabled">Select from list:</option>
             <optgroup label="SketchUp API Links">
               <option value="http://www.sketchup.com/intl/en/developer">Trimble - API Reference</option>
@@ -231,9 +232,6 @@ end">Create menu items</option>
             <option value="keep">Same column</option>
             <option value="flat">No indent</option>
           </select>
-          </p>
-          <p>
-           <input id="linenum" type="checkbox" value="true" checked="checked"> Show line numbers
           </p>
           <p>
            <input id="savebackup" type="checkbox" value="true" checked="checked"> Always save backup file (with BAK ending)
@@ -326,36 +324,9 @@ end">Create menu items</option>
         </div>
       </div>
       
-  </div>
-  
-
+    </div>
 
   </div>
-  
-    <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("console"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        textWrapping: false,
-        tabMode: 'shift',
-        indentUnit: 4,
-        mode: 'ruby',
-        tabindex: 1,
-        onChange: function() {
-          (c == false) ? c = true : c = c;
-        }
-      });
-      
-      /* TODO: Can't highlight active line when matching brackets is active. Otherwise use this:
-      
-        onCursorActivity: function() {
-          editor.setLineClass(hlLine, null);
-          hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
-        }
-        var hlLine = editor.setLineClass(0, "activeline");
-        
-        */
-    </script>
     
   </body>
 </html>

@@ -1,19 +1,16 @@
-/* Alex' added styles */
+/* Alex' added color-based styles */
 
-body{margin:0;  padding:0;  font:normal 12px Verdana, Helvetica, sans-serif;  background-color:#000;  overflow:hidden;  min-width:600px;}
-p{margin:10px 0;  padding:0;}
-h1{font-size:1.4em;  margin:10px 0;color: #F6982A;}
-select,input{vertical-align:middle;}
-#console{clear:both;color:#fff;border:1px solid #999;font-family:consolas,monospace;  font-size:10pt;  line-height:20px;  padding-left:4px;  background:url(../../img/background_dark.gif) repeat;  resize:none;}
-#nav_area{height:30px;  margin:10px 0 5px;  padding:0;}
-#save_name{margin:0 0 5px;  padding:0;  font-weight:bold;  text-align:left;  color:#669;  background-color:inherit;  border:0;}
-#results{resize:none;background-color:#333;color:#fff;border:0;}
-fieldset{margin-bottom:10px;border:1px solid #999;padding:5px 10px;}
-legend{font-weight:bold;color:#ccc;}
-select,input {background-color: #333;color:#fff;border:0px;padding:2px;}
-option {background-color:#333;border:none;}
-textarea {overflow:auto;}
-#ibrowser {background-color:#eee;}
+body{background-color:#000;}
+h1{color:#F6982A;}
+#save_name{color:#669;}
+#results{background-color:#333;color:#fff;}
+#results .hl{color:rgb(255,255,0)}
+fieldset{border:1px solid #999;}
+legend{color:#ccc;}
+select,input{display: inline-block; position: relative; padding: 0; margin-right: .1em; text-decoration: none !important; cursor: pointer; text-align: center; zoom: 1; overflow: visible;background-color:#333;color:#fff;}
+option{background-color:#333;}
+#ibrowser{background-color:#eee;}
+
 
 /*
 * jQuery UI CSS Framework

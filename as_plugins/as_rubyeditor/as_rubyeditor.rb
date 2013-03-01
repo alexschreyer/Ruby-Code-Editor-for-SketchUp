@@ -180,8 +180,7 @@ module AS_RubyEditor
         ## Callback to execute Ruby code in SketchUp
 
         add_action_callback("exec") do |dlg, params|
-          dlg.execute_script("$('#results').append('<p>Running the code...</p>')")
-          dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
+          dlg.execute_script("addResults('Running the code...')")
           v = dlg.get_element_value('console').strip
           # puts v
           r = nil
@@ -211,8 +210,7 @@ module AS_RubyEditor
             r.gsub!(/'/, "&rsquo;")
             r.gsub!(/`/, "&lsquo;")
             r.gsub!(/</, "&lt;")
-            dlg.execute_script("$('#results').append('<p>Done. Feedback from Ruby: <span class=\\'hl\\'>#{r}</span></p>')")
-            dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
+            dlg.execute_script("addResults('Done. Feedback from Ruby: <span class=\\'hl\\'>#{r}</span>')")
           end
         end # callback
 
@@ -223,8 +221,7 @@ module AS_RubyEditor
           # Use only single quotes here!
           script = 'editor.setValue(\''+@initCode+'\')'
           dlg.execute_script(script)
-          dlg.execute_script("$('#results').append('<p>Cleared the editor</p>')")
-          dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
+          dlg.execute_script("addResults('Cleared the editor')")
           dlg.execute_script("$('#save_name').text('untitled.rb')")
           dlg.execute_script("$('#save_filename').val('untitled.rb')")
           dlg.execute_script("c = false;")
@@ -271,8 +268,7 @@ module AS_RubyEditor
           # Not needed now:
           # script = 'editor.setValue(\''+text+'\')'
           # dlg.execute_script(script)
-          dlg.execute_script("$('#results').append('<p>File loaded: #{name}</p>')")
-          dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
+          dlg.execute_script("addResults('File loaded: #{name}')")
 
           # Save the loaded file as most recent
           Sketchup.write_default "as_RubyCodeEditor", "last_file", file
@@ -308,8 +304,7 @@ module AS_RubyEditor
           dlg.execute_script("$('#save_name').text('#{name}')")
           dlg.execute_script("$('#save_filename').val('#{name}')")
           dlg.execute_script("c = false;")
-          dlg.execute_script("$('#results').append('<p>File saved: #{name}</p>')")
-          dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
+          dlg.execute_script("addResults('File saved: #{name}')")
 
           # Save the saved file as most recent
           Sketchup.write_default "as_RubyCodeEditor", "last_file", file
@@ -319,8 +314,7 @@ module AS_RubyEditor
         ## Callback to close the dialog
 
         add_action_callback("quit") { |dlg, params|
-          dlg.execute_script("$('#results').append('<p>Closing editor...</p>')")
-          dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
+          dlg.execute_script("addResults('Closing editor...')")
           dlg.close
         }
 
@@ -329,8 +323,7 @@ module AS_RubyEditor
 
         add_action_callback("undo") do |dlg, params|
           Sketchup.undo
-          dlg.execute_script("$('#results').append('<p>Last step undone</p>')")
-          dlg.execute_script("$('#results').attr({ scrollTop: $('#results').attr('scrollHeight') })")
+          dlg.execute_script("addResults('Last step undone')")
         end # callback
 
 
