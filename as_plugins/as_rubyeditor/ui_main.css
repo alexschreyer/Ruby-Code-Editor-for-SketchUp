@@ -1,12 +1,11 @@
-/* Main UI styles go here , jQuery UI and color-based mods go into folders */
-
-body{margin:0;padding:0;font:normal 12px Verdana,Helvetica,sans-serif;background-color:#000;overflow:hidden;min-width:700px;}
-#wrap {overflow:hidden;min-width:700px;}
+/* Main UI styles go here ,jQuery UI and color-based mods go into folders */
+body{margin:0;padding:0;font:normal 12px Verdana, Helvetica, sans-serif;background-color:#000;overflow:hidden;min-width:700px;}
+#wrap{overflow:hidden;min-width:700px;}
 p{margin:10px 0;padding:0;}
 h1{font-size:1.4em;margin:10px 0;color:#F6982A;}
-select,input{vertical-align:middle;}
+select, input{vertical-align:middle;}
 #console{}
-#autoplete_txt{font-family:consolas,monospace;font-size:10pt;width:200px;}
+#autoplete_txt{font-family:consolas, monospace;font-size:10pt;width:200px;}
 #nav_area{height:30px;margin:10px 0 5px;padding:0;display:inline-block;}
 #save_name{margin:0 0 5px;padding:0;font-weight:bold;text-align:left;color:#669;background-color:inherit;border:0;}
 #results{resize:none;background-color:#333;color:#fff;border:0;}
@@ -14,13 +13,14 @@ select,input{vertical-align:middle;}
 #results .hl{font-weight:bold;color:rgb(255,255,0)}
 fieldset{margin-bottom:10px;border:1px solid #999;padding:5px 10px;}
 legend{font-weight:bold;color:#ccc;}
-select,input{border:none;background-color:inherit;color:#fff;padding:1px;margin:1px;height:25px;}
-select {vertical-align: top;}
+select, input{vertical-align:middle;border:none;background-color:inherit;color:#fff;height:25px;}
 option{background-color:#333;}
 textarea{overflow:auto;}
 #ibrowser{background-color:#eee;}
-
+.zoom1{-webkit-transform:scale(0.5,0.5);    -ms-transform:scale(0.5,0.5);    transform:scale(0.5,0.5);    -webkit-transform-origin:top left;    -ms-transform-origin:top left;    transform-origin:top left;}
+.zoom2{-webkit-transform:scale(0.75,0.75);    -ms-transform:scale(0.75,0.75);    transform:scale(0.75,0.75);    -webkit-transform-origin:top left;    -ms-transform-origin:top left;    transform-origin:top left;}
+.zoom3{-webkit-transform:scale(1,1);    -ms-transform:scale(1,1);    transform:scale(1,1);    -webkit-transform-origin:top left;    -ms-transform-origin:top left;    transform-origin:top left;}
+.zoom4{-webkit-transform:scale(1.25,1.25);    -ms-transform:scale(1.25,1.25);    transform:scale(1.25,1.25);    -webkit-transform-origin:top left;    -ms-transform-origin:top left;    transform-origin:top left;}
 /* Default CodeMiroor stuff goes here */
-
-.CodeMirror {  line-height: 20px;font-family: Monaco, Menlo,"Andale Mono","lucida console","Courier New",monospace !important;}
-.CodeMirror-linenumber {z-index:9999!important;}
+.CodeMirror{line-height:20px;font-family:Monaco,Menlo, "Andale Mono", "lucida console", "Courier New", monospace !important;}
+.CodeMirror-linenumber{z-index:9999!important;}

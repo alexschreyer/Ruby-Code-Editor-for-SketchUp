@@ -15,8 +15,8 @@ Author :        Alexander Schreyer, www.alexschreyer.net, mail@alexschreyer.net
 Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
-Version:        2.1
-Date :          2/26/2013
+Version:        3.0
+Date :          TBD
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This
                 editor was built based on Jim Folz's WebConsole but offers many
@@ -74,20 +74,28 @@ History:        1.0 (2/3/2010):
                     - Uses most recently used directory for file loading and saving
                     - Fixed the outdated URLs in the browser
                     - Update checking now uses www.sketchupplugins.com
-                 Changes:
+                 3.0:
                     - Got rid of settings file
                     - Results feedback now wrapped in Paragraph
-                    - Minor CSS changes
+                    - Improved feedback scrolling
+                    - Some CSS changes, separated CSS by theme
+                    - Two editor themes now: ambiance and eclipse
+                    - Updated Codemirror to 3.1
+                    - Updated jQuery
+                    - Updated jQuery UI
+                    - Improved editor stability
+                    - Set IE version number to 9 (allows for more features))
 
 
-To-Do List:     - Highlighting for color light schemes
-                - Multiple files
+
+
+
+To-Do List:     - Multiple files
                 - Autocomplete (soon!)
                 - Move settings into SU default section
 
 Isues:          - Page zoom does not work well in reference browser - just use this as a backup if the font is unreadable
                 - Doesn't like to work when other code editors are running in SketchUp - Just restart SketchUp
-                - Coloring sometimes needs text change to update
 
 
 =================================================================

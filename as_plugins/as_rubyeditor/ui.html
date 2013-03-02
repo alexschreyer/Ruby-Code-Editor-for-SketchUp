@@ -56,7 +56,7 @@
       <div id="tabs-1" style="margin:5px;padding:0;">
         <div class="wrapper">
           <div id="console_area">
-            <p id="nav_area" style="overflow:hidden;" class="ui-widget-header">
+            <p id="nav_area" style="width:100%;" class="ui-widget-header">
               <a class="button" onClick="cb_new()" href="#" title="New document (Alt+N)" tabindex="2" accesskey="N"><span class="ui-icon ui-icon-document"></span></a>
               <a class="button" onClick="cb_open()" href="#" title="Open file for editing (Alt+O)" tabindex="3" accesskey="O"><span class="ui-icon ui-icon-folder-open"></span></a>
               <a class="button" onClick="cb_save()" href="#" title="Save editor content to file (Alt+S)" tabindex="4" accesskey="S"><span class="ui-icon ui-icon-disk"></span></a>
@@ -65,7 +65,7 @@
               <a class="button" onClick="cb('show_console')" href="#" title="Show Ruby console (Alt+R)" tabindex="7" accesskey="R"><span class="ui-icon ui-icon-wrench"></span></a>
               <a class="button" onClick="javascript:printMe('console');" href="#" title="Print code (Alt+P)" tabindex="8" accesskey="P"><span class="ui-icon ui-icon-print"></span></a>
               &nbsp;
-              <select id="snippets" tabindex="9" title="Insert snippets at cursor">
+              <select id="snippets" tabindex="9" title="Insert snippets at cursor" style="vertical-align:top;margin:2px;width:200px;">
 <option value="" selected="selected" disabled="disabled">Insert at cursor:</option>
               <optgroup label="Ruby Snippets">
 <option value="(0..10).each { |i|
@@ -147,10 +147,10 @@ end">Create menu items</option>
               </optgroup>
               </select>
               &nbsp;
-              <select id="lang" tabindex="10" title="Code highlighter language">
+              <select id="lang" tabindex="10" title="Code highlighter language" style="vertical-align:top;margin:2px;width:100px;">
                 <option value="" disabled="disabled">Language:</option>
                 <option value="none">None</option>
-                <option value="ruby" selected="selected">SU Ruby</option>
+                <option value="ruby" selected="selected">Ruby</option>
                 <option value="htmlmixed">HTML</option>
                 <option value="javascript">JavaScript</option>
                 <option value="css">CSS</option>
@@ -183,7 +183,7 @@ end">Create menu items</option>
         <p class="browser ui-widget-header">
           <a id="backbutton" class="button" href="javascript:if(history.length>1){history.back()};" title="Go back (Alt-B)" accesskey="B"><span class="ui-icon ui-icon-circle-arrow-w"></span></a>
           <a id="nextbutton" class="button" href="javascript:history.forward()" title="Go forward (Alt-F)" accesskey="F"><span class="ui-icon ui-icon-circle-arrow-e"></span></a>
-          <span style="vertical-align:top;">&nbsp;&nbsp;Go to:&nbsp;&nbsp;</span><select id="browselinks">
+          <span style="display:inline-block;vertical-align:top;margin:5px!important;">&nbsp;&nbsp;Go to:&nbsp;&nbsp;</span><select id="browselinks"  style="vertical-align:top;margin:2px;width:300px;">
             <option value="" selected="selected" disabled="disabled">Select from list:</option>
             <optgroup label="SketchUp API Links">
               <option value="http://www.sketchup.com/intl/en/developer">Trimble - API Reference</option>
@@ -220,18 +220,20 @@ end">Create menu items</option>
           </select>
           </p>
           <p>
+           <input id="indentWithTabs" type="checkbox" value="true" checked="checked"> Indent with tabs
+          </p>
+          <p>
            Indent unit:&nbsp;&nbsp;<select id="tabsize" tabindex="1">
-            <option value="0">Nothing</option>
+            <option value="0">No indent</option>
             <option value="2" selected="selected">2 Spaces</option>
             <option value="4">4 Spaces</option>
           </select>
           </p>
           <p>
-           Indent on enter:&nbsp;&nbsp;<select id="indentmode" tabindex="1">
-            <option value="indent" selected="selected">Indent again</option>
-            <option value="keep">Same column</option>
-            <option value="flat">No indent</option>
-          </select>
+           <input id="smartIndent" type="checkbox" value="true" checked="checked"> Smart indenting (language dependent)
+          </p>
+          <p>
+           <input id="linenum" type="checkbox" value="true" checked="checked"> Show line numbers
           </p>
           <p>
            <input id="savebackup" type="checkbox" value="true" checked="checked"> Always save backup file (with BAK ending)
@@ -244,11 +246,10 @@ end">Create menu items</option>
           <legend>Reference Browser</legend>
           <p>
            Page zoom (not 100% reliable):&nbsp;&nbsp;<select id="pzoom">
-            <option value="60">60%</option>
-            <option value="80">80%</option>
-            <option value="100" selected="selected">100%</option>
-            <option value="120">120%</option>
-            <option value="140">140%</option>
+            <option value="zoom1">50%</option>
+            <option value="zoom2">75%</option>
+            <option value="zoom3" selected="selected">100%</option>
+            <option value="zoom4">125%</option>
           </select>
           </p>
         </fieldset>
@@ -273,7 +274,7 @@ end">Create menu items</option>
         <h1>SketchUp Ruby Code Editor</h1>
         <div style="height:400px;width:100%;overflow:auto;margin-right:0;" class="webbox">
         <p><b>By: Alexander C. Schreyer<br />
-        Version: 2.1 (2/26/2013)</b></p>
+        Version: 3.0 (TBD)</b></p>
         <p>This code editor allows creating and modifying Ruby scripts directly within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment.</p>
         <p>
          This editor was originally an extension of Jim Folz's excellent
@@ -281,7 +282,7 @@ end">Create menu items</option>
          I modified it mainly for two reasons: When I code, I permanently need to look up documentation.
          To fix this, I added a bunch of reference webpages to a browser in a tab. The other reason
          was that I wanted it to behave a bit more like a real code editor, so I added a bit of <a href="http://jqueryui.com/" target="_blank">jQuery</a> magic
-         to make it look good and have some additional features. The editor now also uses the <a href="http://codemirror.net" target="_blank">Codemirror 2.0</a> syntax highlighter to make the code more readable.
+         to make it look good and have some additional features. The editor now also uses the <a href="http://codemirror.net" target="_blank">Codemirror 3.1</a> syntax highlighter to make the code more readable.
         </p>
 				<p>Contributors: Jim Folz, Dan Rathbun and others at SCF.</p>
         <p>
@@ -317,8 +318,7 @@ end">Create menu items</option>
          <b>Issues:</b>
         </p>
         <ul>
-         <li>Doesn't like to work when other code editors are running in SketchUp - Just restart SketchUp if there are problems</li>
-         <li>Coloring sometimes needs text change to update</li>
+         <li>Sometimes doesn't work when other code editors are running in SketchUp - Just restart SketchUp if there are problems</li>
         </ul>
         <p>For feedback and feature suggestions, visit <a href="http://www.alexschreyer.net/projects/sketchup-ruby-code-editor" title="http://www.alexschreyer.net/projects/sketchup-ruby-code-editor" target="_blank">my webpage</a> and leave a comment.</p>
         </div>

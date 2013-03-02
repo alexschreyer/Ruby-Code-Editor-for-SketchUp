@@ -110,7 +110,7 @@ window.onbeforeunload = function(){
 // Add content to the results area and scroll upward
 function addResults(txt) {
   $('#results').append('<p>'+txt+'</p>');
-  // Scroll to some very large number
+  // Scroll to some very large number to move bottom upward
   $('#results').scrollTop(9999);
 }
 
@@ -119,13 +119,11 @@ function addResults(txt) {
 //========== jQuery FUNCTIONS - LOAD AT STARTUP ========================
 
 
-
 $(document).ready(function(){
 
 
 
   //========== INITIALIZE ELEMENTS ON STARTUP ========================
-
 
 
   // Start the CodeMirror editor and attach it to text area
@@ -153,10 +151,6 @@ $(document).ready(function(){
   c = false;
 
 
-  // Fix editor gap issue at top of IE editor
-  // $(".CodeMirror div pre:first").css("position","absolute");
-
-
   // Straighten out window element sizes
   function sizeWin() {
     newheight = $(window).height()-270;
@@ -170,9 +164,9 @@ $(document).ready(function(){
   $('#tabs').tabs();
 
 
-  // Fix editor sizing when tabs are changed (line number problem)
+  // Fix editor sizing when tabs are changed
   $('#tabs').on("tabsactivate", function( event, ui ) {
-    editor.setSize(null,'100%');
+    // editor.setSize(null,'100%');
     sizeWin();
   });
 
@@ -192,11 +186,10 @@ $(document).ready(function(){
 
 
 
-  //========== INITIALIZE SETTINGS ON STARTUP ========================
+  //========== INITIALIZE OPTIONS ON STARTUP ========================
 
 
-
-  // Initialize selections from cookies
+  // Initialize editor font size
   if ($.cookie('fontsize')!= null) {
     var newsize = $.cookie('fontsize');
     $('.CodeMirror').css('font-size' , newsize+'pt');
@@ -204,19 +197,20 @@ $(document).ready(function(){
   };
 
 
+  // TODO indentWithTabs
+
+
+  // Initialize indent unit
   if ($.cookie('tabsize')!= null) {
     var newsize = $.cookie('tabsize');
     $('#tabsize').val(newsize);
   };
 
 
-  if ($.cookie('indentmode')!= null) {
-    var newsize = $.cookie('indentmode');
-    $('#indentmode').val(newsize);
-  };
+  // TODO smartIndent
 
-/*   REMOVE CAPABILITY
 
+  // Initialize line numbers
   if ($.cookie('linenum')!= null) {
     if ($.cookie('linenum') == 'false') {
       $('#linenum').attr('checked',false);
@@ -227,8 +221,8 @@ $(document).ready(function(){
     }
   };
 
-  */
 
+  // Initialize backup option
   if ($.cookie('savebackup')!= null) {
     $('#savebackup').val($.cookie('savebackup'));
     if ($.cookie('savebackup') == 'false')
@@ -238,7 +232,7 @@ $(document).ready(function(){
   };
 
 
-  // TODO: Still some issues with this...
+  // Initialize single undo option
   if ($.cookie('doundo')!= null) {
     $('#doundo').val($.cookie('doundo'));
     if ($.cookie('doundo') == 'false')
@@ -248,6 +242,7 @@ $(document).ready(function(){
   };
 
 
+  // Initialize style sheet
   if ($.cookie('css')!= null) {
     newcss = $.cookie("css");
     $('link.switcher').attr('href',newcss);
@@ -269,12 +264,48 @@ $(document).ready(function(){
   //========== INTERACTIVE ELEMENTS ========================
 
 
+  // Tab 1:
+
+
+  // Insert snippets from dropdown at cursor
+  $('#snippets').change(function(){
+    field = $('#snippets');
+    pos = editor.getCursor();
+    editor.replaceSelection(field.val());
+    // Put cursor at beginning of snippet again
+    editor.setCursor(pos);
+    // Reset dropdown to first option
+    field.val($('option:first', field).val());
+  });
+
+
+  // Change editor code languages dropdown
+  $("#lang").change(function() {
+    editor.setOption('mode', $("#lang").val());
+    // Disable run buttons if it's not Ruby
+    if ($("#lang").val() == "ruby") {
+      $( "#exec_area a" ).button( "option", "disabled", false );
+    } else {
+      $( "#exec_area a" ).button( "option", "disabled", true );
+    };
+    // Refresh the editor so that the color changes take effect immediately
+    editor.refresh();
+    // editor.undo();
+    // editor.redo();
+  });
+
+
+  // Tab 2:
+
 
   // Change iFrame url location dropdown
   $('#browselinks').change(function(){
     var loc = $('#browselinks').val();
     $('#ibrowser').attr("src",loc);
   });
+
+
+  // Tab 3:
 
 
   // Change font size dropdown
@@ -285,6 +316,13 @@ $(document).ready(function(){
   });
 
 
+  // Indent tabs switch checkbox
+  $('#indentWithTabs').click(function() {
+    $.cookie('indentWithTabs', $('#indentWithTabs').is(':checked'), { path: '/', expires: 365 });
+    editor.setOption('indentWithTabs', $('#indentWithTabs').is(':checked'));
+  });
+
+
   // Save tab size dropdown
   $('#tabsize').change(function(){
     $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
@@ -292,25 +330,21 @@ $(document).ready(function(){
   });
 
 
-  // Indent on enter dropdown
-  $('#indentmode').change(function(){
-    $.cookie('indentmode', $('#indentmode').val(), { path: '/', expires: 365 });
-    editor.setOption('enterMode',$('#indentmode').val());
-  });
+  // TODO smartIndex
 
-/*   REMOVE CAPABILITY
 
   // Show line numbers checkbox
   $('#linenum').click(function() {
     $.cookie('linenum', $('#linenum').is(':checked'), { path: '/', expires: 365 });
     if ($('#linenum').is(':checked')) {
       editor.setOption("lineNumbers", true);
+      sizeWin();
     } else {
       editor.setOption("lineNumbers", false);
+      sizeWin();
     };
   });
 
-*/
 
   // Save backup checkbox
   $('#savebackup').click(function() {
@@ -328,8 +362,8 @@ $(document).ready(function(){
 
   // Change iFrame zoom dropdown
   $('#pzoom').change(function(){
-    var newzoom = $('#pzoom').val()+'%';
-    $('#ibrowser').css('zoom',newzoom);
+    var newzoom = $('#pzoom').val();
+    $('#ibrowser').removeClass().addClass(newzoom);
   });
 
 
@@ -338,22 +372,6 @@ $(document).ready(function(){
     css_url = $("#stylesheet").val();
     $("link.switcher").attr("href",css_url);
     $.cookie('css',css_url, { path: '/' , expires: 365 });
-  });
-
-
-  // Change editor code languages dropdown
-  $("#lang").change(function() {
-    editor.setOption('mode', $("#lang").val());
-    // Disable run buttons if it's not Ruby
-    if ($("#lang").val() == "ruby") {
-      $( "#exec_area a" ).button( "option", "disabled", false );
-    } else {
-      $( "#exec_area a" ).button( "option", "disabled", true );
-    };
-    // Refresh the editor so that the color changes take effect immediately
-    editor.refresh();
-    editor.undo();
-    editor.redo();
   });
 
 
@@ -373,28 +391,11 @@ $(document).ready(function(){
         if (data.version[0] > rceVersion) {
             msg += "New version available! (" + data.version[0] + ")";
         } else {
-            msg += "You have the latest version.";
+            msg += "You have the latest version (" + rceVersion + ")";
         }
         alert(msg);
     });
   });
-
-
-
-  //========== TEXT INSERTION / AUTOCOMPLETE ========================
-
-
-  // Insert snippets from dropdown at cursor
-  $('#snippets').change(function(){
-    field = $('#snippets');
-    pos = editor.getCursor();
-    editor.replaceSelection(field.val());
-    // Put cursor at beginning of snippet again
-    editor.setCursor(pos);
-    // Reset dropdown to first option
-    field.val($('option:first', field).val());
-  });
-
 
 
 }); // END jQuery.ready
