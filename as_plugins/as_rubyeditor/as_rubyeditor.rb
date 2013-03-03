@@ -85,7 +85,7 @@ History:        1.0 (2/3/2010):
                     - Updated jQuery UI
                     - Improved editor stability
                     - Set IE version number to 9 (allows for more features))
-
+                    - Fixed SU class highlighting and added SU method highlighting
 
 
 
