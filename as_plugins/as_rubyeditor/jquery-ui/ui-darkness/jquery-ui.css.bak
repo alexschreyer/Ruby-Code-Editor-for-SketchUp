@@ -1,4 +1,4 @@
-/* Alex' added color-based styles */
+/* Alex' added color-based styles - DARK */
 
 body{background-color:#000;}
 h1{color:#F6982A;}
@@ -7,9 +7,12 @@ h1{color:#F6982A;}
 #results .hl{color:rgb(255,255,0)}
 fieldset{border:1px solid #999;}
 legend{color:#ccc;}
-select,input{display: inline-block; position: relative; padding: 0; margin-right: .1em; text-decoration: none !important; cursor: pointer; text-align: center; zoom: 1; overflow: visible;background-color:#333;color:#fff;}
+select,input{background-color:#333;color:#fff;}
 option{background-color:#333;}
 #ibrowser{background-color:#eee;}
+
+.cm-rb-su-class {color:#ff0;}
+.cm-rb-su-method {color:#fb0;}
 
 
 /*

@@ -74,7 +74,7 @@ History:        1.0 (2/3/2010):
                     - Uses most recently used directory for file loading and saving
                     - Fixed the outdated URLs in the browser
                     - Update checking now uses www.sketchupplugins.com
-                 3.0:
+                 3.0 ():
                     - Got rid of settings file
                     - Results feedback now wrapped in Paragraph
                     - Improved feedback scrolling
@@ -83,19 +83,21 @@ History:        1.0 (2/3/2010):
                     - Updated Codemirror to 3.1
                     - Updated jQuery
                     - Updated jQuery UI
-                    - Improved editor stability
+                    - Improved editor stability, smoother scrolling
                     - Set IE version number to 9 (allows for more features))
                     - Fixed SU class highlighting and added SU method highlighting
+                    - Added syntax highlighting for SketchUp classes and methods
+                    - Better closing handling
+                    - Changed some options for newer Codemirror
+                    - Fixed theme color options
 
 
 
 
-To-Do List:     - Multiple files
-                - Autocomplete (soon!)
-                - Move settings into SU default section
+To-Do List:     - Move settings into SU default section
 
 Isues:          - Page zoom does not work well in reference browser - just use this as a backup if the font is unreadable
-                - Doesn't like to work when other code editors are running in SketchUp - Just restart SketchUp
+                - Occasional problems when other code editors are running in SketchUp - Just restart SketchUp
 
 
 =================================================================
@@ -184,6 +186,7 @@ module AS_RubyEditor
         navigation_buttons_enabled = false
         min_width = 720
         min_height = 600
+
 
         ## Callback to execute Ruby code in SketchUp
 
@@ -317,6 +320,41 @@ module AS_RubyEditor
           # Save the saved file as most recent
           Sketchup.write_default "as_RubyCodeEditor", "last_file", file
         end # callback
+
+
+        ## Offer a save when dialog closes
+
+        set_on_close do
+          result = UI.messagebox "Save this file before quitting?", MB_YESNO
+          if result == 6 then
+            filename = get_element_value("save_filename")
+            file = UI.savepanel("Save File", @snip_dir, filename)
+            return if file.nil?
+            # Set file directory as current
+            @snip_dir = File.dirname(file)
+            name = File.basename(file)
+            extension = File.extname(file)
+            # Add RB extension if nothing is there
+            if extension == ""
+              name = name+".rb"
+              file = file+".rb"
+            end
+            # Need to copy editor to textarea before we pull data
+            execute_script("editor.save()")
+            str=get_element_value("console")
+            str.gsub!(/\r\n/, "\n")
+            # Save backup as well if file exists - always here...
+            if File.exist?(file)
+              f = File.new(file,"r")
+              oldfile = f.readlines
+              File.open(file+".bak", "w") { |f| f.puts oldfile }
+            end
+            File.open(file, "w") { |f| f.puts str }
+
+            # Save the saved file as most recent
+            Sketchup.write_default "as_RubyCodeEditor", "last_file", file
+          end
+        end
 
 
         ## Callback to close the dialog

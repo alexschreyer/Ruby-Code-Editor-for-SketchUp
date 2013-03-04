@@ -31,3 +31,7 @@
   background-color: #fff;
 
 }
+
+.cm-s-eclipse .CodeMirror-activeline-background {
+  background-color: #f3f3f3!important;
+}

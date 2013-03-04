@@ -10,8 +10,10 @@ fieldset{border:1px solid #999;}
 legend{color:#000;}
 select,input{background-color:#fcfdfd;color:#000;}
 option{background-color:#fcfdfd;}
-#ibrowser{background-color:#fff;}
+#ibrowser{background-color:#ddd;}
 
+.cm-rb-su-class {color:#c0c;}
+.cm-rb-su-method {color:#ff8c00;}
 
 /*
 * jQuery UI CSS Framework

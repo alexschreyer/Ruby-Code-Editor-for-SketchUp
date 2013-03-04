@@ -66,7 +66,7 @@
               <a class="button" onClick="cb_save()" href="#" title="Save editor content to file (Alt+S)" tabindex="4" accesskey="S"><span class="ui-icon ui-icon-disk"></span></a>
               <a class="button" onClick="cb('sel_explore')" href="#" title="Explore current selection (Alt+E)" tabindex="5" accesskey="E"><span class="ui-icon ui-icon-search"></span></a>
               <a class="button" onClick="cb('att_explore')" href="#" title="List object's attributes (Alt+A)" tabindex="6" accesskey="A"><span class="ui-icon ui-icon-script"></span></a>
-              <a class="button" onClick="cb('show_console')" href="#" title="Show Ruby console (Alt+R)" tabindex="7" accesskey="R"><span class="ui-icon ui-icon-wrench"></span></a>
+              <a class="button" onClick="cb('show_console')" href="#" title="Show Ruby console (Alt+C)" tabindex="7" accesskey="C"><span class="ui-icon ui-icon-wrench"></span></a>
               <a class="button" onClick="javascript:printMe('console');" href="#" title="Print code (Alt+P)" tabindex="8" accesskey="P"><span class="ui-icon ui-icon-print"></span></a>
               &nbsp;
               <select id="snippets" tabindex="9" title="Insert snippets at cursor" style="vertical-align:top;margin:2px;width:200px;">
@@ -224,17 +224,17 @@ end">Create menu items</option>
           </select>
           </p>
           <p>
-           <input id="indentWithTabs" type="checkbox" value="true" checked="checked"> Indent with tabs
+           <input id="indentWithTabs" type="checkbox" value="" checked=""> Indent with tabs
           </p>
           <p>
-           Indent unit:&nbsp;&nbsp;<select id="tabsize" tabindex="1">
-            <option value="0">No indent</option>
+           Indent size:&nbsp;&nbsp;<select id="tabsize" tabindex="1">
             <option value="2" selected="selected">2 Spaces</option>
             <option value="4">4 Spaces</option>
+            <option value="8">8 Spaces</option>
           </select>
           </p>
           <p>
-           <input id="smartIndent" type="checkbox" value="true" checked="checked"> Smart indenting (language dependent)
+           <input id="smartIndent" type="checkbox" value="" checked=""> Smart indenting (language dependent)
           </p>
           <p>
            <input id="linenum" type="checkbox" value="true" checked="checked"> Show line numbers
@@ -261,9 +261,9 @@ end">Create menu items</option>
           <legend>Design</legend>
             <p>
              User interface style:&nbsp;&nbsp;<select id="stylesheet">
-              <option value="jquery-ui/ui-darkness/jquery-ui.css" selected="selected">Dark</option>
-              <option value="jquery-ui/ui-lightness/jquery-ui.css">Light</option>
-              <option value="jquery-ui/redmond/jquery-ui.css">Blue</option>
+              <option value="dark" selected="selected">Dark</option>
+              <option value="light">Light</option>
+              <option value="blue">Blue</option>
             </select>
             </p>
         </fieldset>

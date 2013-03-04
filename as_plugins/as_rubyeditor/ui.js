@@ -79,28 +79,21 @@ function cb_exec() {
 }
 
 
-// TODO: Can this go?
-/*
-function inc_rows(id, v) {
-  var c = document.getElementById(id)
-    var rows = c.rows
-    c.rows = c.rows + v
-}
-*/
-
-
 // Quit dialog callback
 function cb_quit() {
-  var a = true
-  if (c) {
-    a = confirm("Changes have not been saved. Quit this editor?")
-  }
-  if (a) window.location = "skp:quit";
+  // var a = true
+  // if (c) {
+  //   a = confirm("Changes have not been saved. Quit this editor?")
+  // }
+  // if (a) window.location = "skp:quit";
+
+  // Closing handled by Ruby side now
+  window.location = "skp:quit";
 }
 
 
 // Close window function
-window.onbeforeunload = function(){
+window.onbeforeunload = function(e){
   // q();
   // This doesn't seem to work in SU - works fine in IE
   // return 'Your changes may not have been saved. Do you really wish to close this editor window?';
@@ -205,17 +198,37 @@ $(document).ready(function(){
   };
 
 
-  // TODO indentWithTabs
+  // Indent with tabs option
+  if ($.cookie('indentWithTabs')!= null) {
+    if ($.cookie('indentWithTabs') == 'false') {
+      $('#indentWithTabs').attr('checked',false);
+      editor.setOption("indentWithTabs", false);
+   } else {
+      $('#indentWithTabs').attr('checked',true);
+      editor.setOption("indentWithTabs", true);
+    }
+  };
 
 
   // Initialize indent unit
   if ($.cookie('tabsize')!= null) {
     var newsize = $.cookie('tabsize');
     $('#tabsize').val(newsize);
+    editor.setOption('indentUnit',newsize);
+    editor.setOption('tabSize',newsize);
   };
 
 
-  // TODO smartIndent
+  // SmartIndent option
+  if ($.cookie('smartIndent')!= null) {
+    if ($.cookie('smartIndent') == 'false') {
+      $('#smartIndent').attr('checked',false);
+      editor.setOption("smartIndent", false);
+   } else {
+      $('#smartIndent').attr('checked',true);
+      editor.setOption("smartIndent", true);
+    }
+  };
 
 
   // Initialize line numbers
@@ -251,9 +264,19 @@ $(document).ready(function(){
 
 
   // Initialize style sheet
-  if ($.cookie('css')!= null) {
-    newcss = $.cookie("css");
-    $('link.switcher').attr('href',newcss);
+  if ($.cookie('stylesheet')!= null) {
+    newcss = $.cookie("stylesheet");
+    if (newcss == "dark") {
+      editor.setOption("theme", "ambiance");
+      css_url = "jquery-ui/ui-darkness/jquery-ui.css";
+    } else if (newcss == "light"){
+      editor.setOption("theme", "eclipse");
+      css_url = "jquery-ui/ui-lightness/jquery-ui.css";
+    } else {
+      editor.setOption("theme", "eclipse");
+      css_url = "jquery-ui/redmond/jquery-ui.css";
+    };
+    $("link.switcher").attr("href",css_url);
     $("#stylesheet").val(newcss);
   };
 
@@ -335,10 +358,15 @@ $(document).ready(function(){
   $('#tabsize').change(function(){
     $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
     editor.setOption('indentUnit',$('#tabsize').val());
+    editor.setOption('tabSize',$('#tabsize').val());
   });
 
 
-  // TODO smartIndex
+  // Smart indent switch checkbox
+  $('#smartIndent').click(function() {
+    $.cookie('smartIndent', $('#smartIndent').is(':checked'), { path: '/', expires: 365 });
+    editor.setOption('smartIndent', $('#smartIndent').is(':checked'));
+  });
 
 
   // Show line numbers checkbox
@@ -377,9 +405,18 @@ $(document).ready(function(){
 
   // Change stylesheets dropdown
   $("#stylesheet").change(function() {
-    css_url = $("#stylesheet").val();
+    if ($("#stylesheet").val() == "dark") {
+      editor.setOption("theme", "ambiance");
+      css_url = "jquery-ui/ui-darkness/jquery-ui.css";
+    } else if ($("#stylesheet").val() == "light"){
+      editor.setOption("theme", "eclipse");
+      css_url = "jquery-ui/ui-lightness/jquery-ui.css";
+    } else {
+      editor.setOption("theme", "eclipse");
+      css_url = "jquery-ui/redmond/jquery-ui.css";
+    };
     $("link.switcher").attr("href",css_url);
-    $.cookie('css',css_url, { path: '/' , expires: 365 });
+    $.cookie('stylesheet',$("#stylesheet").val(), { path: '/' , expires: 365 });
   });
 
 
