@@ -23,6 +23,5 @@ textarea{overflow:auto;}
 .zoom4{-webkit-transform:scale(1.25,1.25);    -ms-transform:scale(1.25,1.25);    transform:scale(1.25,1.25);    -webkit-transform-origin:top left;    -ms-transform-origin:top left;    transform-origin:top left;}
 /* Default CodeMiroor stuff goes here */
 .CodeMirror{line-height:20px;font-family:Monaco,Menlo, "Andale Mono", "lucida console", "Courier New", monospace !important;}
-.CodeMirror-linenumber{z-index:9999!important;}
 .cm-rb-su-class {color:#ff0;}
 .cm-rb-su-method {color:#fb0;}

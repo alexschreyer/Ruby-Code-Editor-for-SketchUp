@@ -126,6 +126,12 @@ $(document).ready(function(){
   //========== INITIALIZE ELEMENTS ON STARTUP ========================
 
 
+  // Initialize code autocompletion
+  CodeMirror.commands.autocomplete = function(cm) {
+    CodeMirror.showHint(cm, CodeMirror.surubyHint);
+  }
+
+
   // Start the CodeMirror editor and attach it to text area
   editor = CodeMirror.fromTextArea(document.getElementById("console"), {
     mode: 'ruby',
@@ -135,7 +141,9 @@ $(document).ready(function(){
     lineNumbers: true,
     autofocus: 'true',
     highlightSelectionMatches: true,
-    matchBrackets: true
+    matchBrackets: true,
+    styleActiveLine: true,
+    extraKeys: { 'Ctrl-Space': 'autocomplete' }
   });
 
 
