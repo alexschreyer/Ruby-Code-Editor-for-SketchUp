@@ -79,10 +79,30 @@ History:
 					- Uses most recently used directory for file loading and saving
 					- Fixed the outdated URLs in the browser
 					- Update checking now uses www.sketchupplugins.com
+                 3.0 (3/4/2013):
+                    - Got rid of settings file
+                    - Results feedback now wrapped in Paragraph
+                    - Improved feedback scrolling
+                    - Some CSS changes, separated CSS by theme
+                    - Two editor themes now: ambiance and eclipse
+                    - Updated Codemirror to 3.1
+                    - Updated jQuery
+                    - Updated jQuery UI
+                    - Improved editor stability, smoother scrolling
+                    - Set IE version number to 9 (allows for more features and better display)
+                    - Fixed SU class highlighting and added SU method highlighting
+                    - Added syntax highlighting for SketchUp classes and methods
+                    - Better editor closing handling
+                    - Changed some options for newer Codemirror
+                    - Fixed theme color options
+                    - Better error display
+                    - Fixed Mac rendering of results window
+                    - Fixed Mac default folder issue					
 					                    
 
 How to install this plugin in SketchUp:
 =======================================
 
-See instructions on the plugin website.
+See instructions on the plugin website:
+http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
             
