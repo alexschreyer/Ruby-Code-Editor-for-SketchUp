@@ -20,9 +20,10 @@ Version:        2.1
 
 Date :          2/26/2013
 
-Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This
-                editor was built based on Jim Folz's WebConsole but offers many
-                new features.
+Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
+                creating and modifying Ruby (and other) scripts within SketchUp.
+                These scripts can be used to create geometry, add functionality or add
+                data within the SketchUp 3D modeling environment.
                 
 Usage :         Just click on the menu item and edit away.
 
