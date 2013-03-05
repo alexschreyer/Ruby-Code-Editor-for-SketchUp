@@ -16,11 +16,13 @@ Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
 Version:        3.0
-Date :          TBD
+Date :          3/4/2013
 
-Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This
-                editor was built based on Jim Folz's WebConsole but offers many
-                new features.
+Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
+                creating and modifying Ruby (and other) scripts within SketchUp.
+                These scripts can be used to create geometry, add functionality or add
+                data within the SketchUp 3D modeling environment.
+
 Usage :         Just click on the menu item and edit away.
 
 History:        1.0 (2/3/2010):
@@ -74,7 +76,7 @@ History:        1.0 (2/3/2010):
                     - Uses most recently used directory for file loading and saving
                     - Fixed the outdated URLs in the browser
                     - Update checking now uses www.sketchupplugins.com
-                 3.0 (TBD):
+                 3.0 (3/4/2013):
                     - Got rid of settings file
                     - Results feedback now wrapped in Paragraph
                     - Improved feedback scrolling
@@ -84,17 +86,15 @@ History:        1.0 (2/3/2010):
                     - Updated jQuery
                     - Updated jQuery UI
                     - Improved editor stability, smoother scrolling
-                    - Set IE version number to 9 (allows for more features))
+                    - Set IE version number to 9 (allows for more features and better display)
                     - Fixed SU class highlighting and added SU method highlighting
                     - Added syntax highlighting for SketchUp classes and methods
-                    - Better closing handling
+                    - Better editor closing handling
                     - Changed some options for newer Codemirror
                     - Fixed theme color options
                     - Better error display
                     - Fixed Mac rendering of results window
                     - Fixed Mac default folder issue
-
-
 
 
 
