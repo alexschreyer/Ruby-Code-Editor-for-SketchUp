@@ -74,7 +74,7 @@ History:        1.0 (2/3/2010):
                     - Uses most recently used directory for file loading and saving
                     - Fixed the outdated URLs in the browser
                     - Update checking now uses www.sketchupplugins.com
-                 3.0 ():
+                 3.0 (TBD):
                     - Got rid of settings file
                     - Results feedback now wrapped in Paragraph
                     - Improved feedback scrolling
@@ -90,6 +90,10 @@ History:        1.0 (2/3/2010):
                     - Better closing handling
                     - Changed some options for newer Codemirror
                     - Fixed theme color options
+                    - Better error display
+                    - Fixed Mac rendering of results window
+                    - Fixed Mac default folder issue
+
 
 
 
@@ -159,16 +163,22 @@ module AS_RubyEditor
         ## Set some variables
 
         # Plugin version
-        @rceVersion = "2.1"
+        @rceVersion = "3.0"
         # Get platform info
         @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? :windows :
           ((Object::RUBY_PLATFORM =~ /darwin/i) ? :mac : :other)
         # Get plugin's directory
         @baseDir = File.dirname(__FILE__)
+        # Get user default directory
+        if @as_su_os != 'windows'
+          @user_dir = ENV['USERPROFILE']
+        else
+          @user_dir = ENV['HOME']
+        end
         # Initial code snippet - keep all on one line!
         @initCode = Sketchup.read_default "as_RubyCodeEditor", "init_code", 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
         # Get working directory - set to user directory at first
-        @snip_dir = Sketchup.read_default "as_RubyCodeEditor", "last_file", ENV['USERPROFILE']
+        @snip_dir = Sketchup.read_default "as_RubyCodeEditor", "last_file", @user_dir
         @snip_dir = @snip_dir.split("/").join("\\") + "\\"
         if @as_su_os != 'windows'
           @snip_dir = @snip_dir.split("\\").join("/") + "/"
@@ -177,14 +187,14 @@ module AS_RubyEditor
 
         ## Set up the WebDialog
 
-        super "Ruby Code Editor", false, "RubyCodeEditor", 720, 600, 100, 100, true
+        super "Ruby Code Editor", false, "RubyCodeEditor", 750, 600, 100, 100, true
         ui_loc = File.join(@baseDir , "ui.html")
         # Fix directory name on Win
         ui_loc.gsub!('//', "/")
         # Set HTML UI file for WebDialog
         set_file(ui_loc)
         navigation_buttons_enabled = false
-        min_width = 720
+        min_width = 750
         min_height = 600
 
 
@@ -208,7 +218,7 @@ module AS_RubyEditor
             end # evaluation
           rescue
             Sketchup.active_model.abort_operation
-            r = 'Run aborted (error has occurred)'
+            r = 'Run aborted. Error: ' + e
           else # only do if NO errors
             if params == 'true'
               Sketchup.active_model.commit_operation
@@ -221,7 +231,7 @@ module AS_RubyEditor
             r.gsub!(/'/, "&rsquo;")
             r.gsub!(/`/, "&lsquo;")
             r.gsub!(/</, "&lt;")
-            dlg.execute_script("addResults('Done. Feedback from Ruby: <span class=\\'hl\\'>#{r}</span>')")
+            dlg.execute_script("addResults('Done. Ruby says: <span class=\\'hl\\'>#{r}</span>')")
           end
         end # callback
 
@@ -280,6 +290,7 @@ module AS_RubyEditor
           # script = 'editor.setValue(\''+text+'\')'
           # dlg.execute_script(script)
           dlg.execute_script("addResults('File loaded: #{name}')")
+          dlg.execute_script("c = false;")
 
           # Save the loaded file as most recent
           Sketchup.write_default "as_RubyCodeEditor", "last_file", file
@@ -325,6 +336,7 @@ module AS_RubyEditor
         ## Offer a save when dialog closes
 
         set_on_close do
+          execute_script("addResults('Closing editor...')")
           result = UI.messagebox "Save this file before quitting?", MB_YESNO
           if result == 6 then
             filename = get_element_value("save_filename")
@@ -360,7 +372,6 @@ module AS_RubyEditor
         ## Callback to close the dialog
 
         add_action_callback("quit") { |dlg, params|
-          dlg.execute_script("addResults('Closing editor...')")
           dlg.close
         }
 

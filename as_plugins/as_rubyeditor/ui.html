@@ -177,7 +177,8 @@ end">Create menu items</option>
               <span id="running" style="display:none;"><img src="img/loading.gif" alt="running..." title="running..." height="16" width="25"></span>
               <a class="button" onClick="cb('undo')" href="#" title="Undo last action in SketchUp (Alt+U)" tabindex="13" accesskey="U"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></a>
             </p>
-            <textarea id="results" style="height:100px; width: 100%;" readonly="readonly" tabindex="0" rows="20" cols="80"></textarea>
+            <!-- <textarea id="results" style="height:100px; width: 100%;" readonly="readonly" tabindex="0" rows="20" cols="80"></textarea> -->
+            <div id="results" style="height:100px; width: 100%; overflow:auto;" tabindex="0" ></div>
           </div>
         </div>
       </div>
@@ -224,7 +225,7 @@ end">Create menu items</option>
           </select>
           </p>
           <p>
-           <input id="indentWithTabs" type="checkbox" value="" checked=""> Indent with tabs
+           <input id="indentWithTabs" type="checkbox" value=""> Indent with tabs
           </p>
           <p>
            Indent size:&nbsp;&nbsp;<select id="tabsize" tabindex="1">
@@ -234,7 +235,7 @@ end">Create menu items</option>
           </select>
           </p>
           <p>
-           <input id="smartIndent" type="checkbox" value="" checked=""> Smart indenting (language dependent)
+           <input id="smartIndent" type="checkbox" value=""> Smart indenting (language dependent)
           </p>
           <p>
            <input id="linenum" type="checkbox" value="true" checked="checked"> Show line numbers

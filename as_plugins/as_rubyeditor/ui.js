@@ -102,7 +102,7 @@ window.onbeforeunload = function(e){
 
 // Add content to the results area and scroll upward
 function addResults(txt) {
-  $('#results').append('<p>'+txt+'</p>');
+  $('#results').append('<p>' + txt + '</p>');
   // Scroll to some very large number to move bottom upward
   $('#results').scrollTop(9999);
 }
@@ -452,7 +452,7 @@ $(document).ready(function(){
 
 function printMe(container) {
   var DocumentContainer = document.getElementById(container);
-  var WindowObject = window.open("","PrintWindow","width=500,height=500,top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes");
+  var WindowObject = window.open("","PrintWindow","width=500,height=500,top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes","false");
   // TODO: Doesn't create plain text on mac:
   WindowObject.document.open("text/plain");
   WindowObject.document.writeln("FILE NAME: "+$('#save_filename').val());
