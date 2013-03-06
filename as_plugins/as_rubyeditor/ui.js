@@ -218,8 +218,8 @@ $(document).ready(function(){
   if ($.cookie('tabsize')!= null) {
     var newsize = $.cookie('tabsize');
     $('#tabsize').val(newsize);
-    editor.setOption('indentUnit',newsize);
-    editor.setOption('tabSize',newsize);
+    editor.setOption('indentUnit',parseInt(newsize));
+    editor.setOption('tabSize',parseInt(newsize));
   };
 
 
