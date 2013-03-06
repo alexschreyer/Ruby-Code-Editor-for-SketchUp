@@ -203,10 +203,11 @@ module AS_RubyEditor
         # Plugin version
         @rceVersion = "3.1"
         # Get platform info
-        @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? :windows :
-          ((Object::RUBY_PLATFORM =~ /darwin/i) ? :mac : :other)
+        @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? 'windows' :
+          ((Object::RUBY_PLATFORM =~ /darwin/i) ? 'mac' : 'other')
         # Get plugin's directory
         @baseDir = File.dirname(__FILE__)
+        @user_dir = @baseDir
         # Get user default directory
         if @as_su_os == 'windows'
           @user_dir = ENV['USERPROFILE']
