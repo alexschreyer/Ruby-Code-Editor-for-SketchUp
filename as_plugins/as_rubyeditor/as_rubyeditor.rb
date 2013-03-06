@@ -15,8 +15,8 @@ Author :        Alexander Schreyer, www.alexschreyer.net, mail@alexschreyer.net
 Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
-Version:        3.0
-Date :          3/4/2013
+Version:        3.1
+Date :          3/6/2013
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
                 creating and modifying Ruby (and other) scripts within SketchUp.
@@ -95,6 +95,11 @@ History:        1.0 (2/3/2010):
                     - Better error display
                     - Fixed Mac rendering of results window
                     - Fixed Mac default folder issue
+                  3.1 (3/6/2013)
+                    - Fixed default file bug
+                    - Updated jQuery cookie plugin
+                    - Fixed Tab problem
+
 
 
 
@@ -108,7 +113,9 @@ Isues:          - Page zoom does not work well in reference browser - just use t
 
 This plugin was originally based on Jim Foz's Web Console:
 
-webconsole.rb Copyright (C) 2006 jim.foltz@gmail.com
+webconsole.rb
+
+Copyright (C) 2006 jim.foltz@gmail.com
 
 This software is free to use, copy, modify and disribute, but
 if you do, I'd like to know about it.
@@ -116,10 +123,10 @@ This software comes with no warranty.
 
 =================================================================
 
-This plugin uses CodeMirror 2:
+This plugin uses CodeMirror 3.1:
 http://codemirror.net/
 
-Copyright (C) 2011 by Marijn Haverbeke <marijnh@gmail.com>
+Copyright (C) 2013 by Marijn Haverbeke <marijnh@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -139,7 +146,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+Please note that some subdirectories of the CodeMirror distribution
+include their own LICENSE files, and are released under different
+licences.
+
 =================================================================
+
+This plugin uses the jQuery cookie plugin:
+https://github.com/carhartl/jquery-cookie
+
+Copyright 2013 Klaus Hartl
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+=================================================================
+
 
 =end
 
@@ -163,7 +201,7 @@ module AS_RubyEditor
         ## Set some variables
 
         # Plugin version
-        @rceVersion = "3.0"
+        @rceVersion = "3.1"
         # Get platform info
         @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? :windows :
           ((Object::RUBY_PLATFORM =~ /darwin/i) ? :mac : :other)
