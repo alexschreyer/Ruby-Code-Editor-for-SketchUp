@@ -1,6 +1,6 @@
 /* Main UI styles go here ,jQuery UI and color-based mods go into folders */
 body{margin:0;padding:0;font:normal 12px Verdana, Helvetica, sans-serif;background-color:#000;overflow:hidden;min-width:700px;}
-#wrap{overflow:hidden;min-width:700px;}
+#wrap{overflow:hidden;min-width:750px;}
 p{margin:10px 0;padding:0;}
 h1{font-size:1.4em;margin:10px 0;color:#F6982A;}
 select, input{vertical-align:middle;}

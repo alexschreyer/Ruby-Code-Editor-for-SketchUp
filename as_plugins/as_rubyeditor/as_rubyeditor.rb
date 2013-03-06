@@ -170,7 +170,7 @@ module AS_RubyEditor
         # Get plugin's directory
         @baseDir = File.dirname(__FILE__)
         # Get user default directory
-        if @as_su_os != 'windows'
+        if @as_su_os == 'windows'
           @user_dir = ENV['USERPROFILE']
         else
           @user_dir = ENV['HOME']

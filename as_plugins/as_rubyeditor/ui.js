@@ -136,7 +136,11 @@ $(document).ready(function(){
     highlightSelectionMatches: true,
     matchBrackets: true,
     styleActiveLine: true,
-    extraKeys: { 'Ctrl-Space': 'autocomplete' }
+    extraKeys: {
+      'Ctrl-Space' : 'autocomplete',
+      'Tab' : 'indentMore',
+      'Shift-Tab' : 'indentLess'
+    }
   });
 
 
@@ -357,8 +361,8 @@ $(document).ready(function(){
   // Save tab size dropdown
   $('#tabsize').change(function(){
     $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
-    editor.setOption('indentUnit',$('#tabsize').val());
-    editor.setOption('tabSize',$('#tabsize').val());
+    editor.setOption('indentUnit',parseInt($('#tabsize').val()));
+    editor.setOption('tabSize',parseInt($('#tabsize').val()));
   });
 
 
