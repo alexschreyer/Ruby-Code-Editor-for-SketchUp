@@ -16,9 +16,9 @@ Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
 
-Version:        3.0
+Version:        3.1
 
-Date :          3/4/2013
+Date :          3/6/2013
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
                 creating and modifying Ruby (and other) scripts within SketchUp.
@@ -98,7 +98,11 @@ History:
                     - Fixed theme color options
                     - Better error display
                     - Fixed Mac rendering of results window
-                    - Fixed Mac default folder issue					
+                    - Fixed Mac default folder issue	
+                  3.1 (3/6/2013)
+                    - Fixed default file bug
+                    - Updated jQuery cookie plugin
+                    - Fixed Tab problem                    
 					                    
 
 How to install this plugin in SketchUp:
