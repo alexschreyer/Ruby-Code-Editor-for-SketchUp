@@ -169,10 +169,11 @@ $(document).ready(function(){
   $('#tabs').tabs();
 
 
-  // Fix editor sizing when tabs are changed
+  // Fix editor refresh and sizing when tabs are changed
   $('#tabs').on("tabsactivate", function( event, ui ) {
     // editor.setSize(null,'100%');
-    sizeWin();
+    // sizeWin();
+    editor.refresh();
   });
 
 
