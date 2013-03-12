@@ -217,7 +217,12 @@ module AS_RubyEditor
         # Initial code snippet - keep all on one line!
         @initCode = Sketchup.read_default "as_RubyCodeEditor", "init_code", 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
         # Get working directory - set to user directory at first
-        @snip_dir = Sketchup.read_default "as_RubyCodeEditor", "last_file", @user_dir
+        last_file = Sketchup.read_default "as_RubyCodeEditor", "last_file"
+        if last_file != nil
+          @snip_dir = last_file
+        else
+          @snip_dir = @user_dir
+        end
         @snip_dir = @snip_dir.split("/").join("\\") + "\\"
         if @as_su_os != 'windows'
           @snip_dir = @snip_dir.split("\\").join("/") + "/"
