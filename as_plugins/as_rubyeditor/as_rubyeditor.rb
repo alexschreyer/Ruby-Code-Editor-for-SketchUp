@@ -99,6 +99,8 @@ History:        1.0 (2/3/2010):
                     - Fixed default file bug
                     - Updated jQuery cookie plugin
                     - Fixed Tab problem
+                    - Minor fix: results window text wrap and editor refresh
+                    - Proper markClean handling
 
 
 
@@ -207,19 +209,14 @@ module AS_RubyEditor
           ((Object::RUBY_PLATFORM =~ /darwin/i) ? 'mac' : 'other')
         # Get plugin's directory
         @baseDir = File.dirname(__FILE__)
-        @user_dir = @baseDir
-        # Get user default directory
-        if @as_su_os == 'windows'
-          @user_dir = ENV['USERPROFILE']
-        else
-          @user_dir = ENV['HOME']
-        end
+        @user_dir = (ENV['USERPROFILE'] != nil) ? ENV['USERPROFILE'] :
+          ((ENV['HOME'] != nil) ? ENV['HOME'] : @baseDir )
         # Initial code snippet - keep all on one line!
         @initCode = Sketchup.read_default "as_RubyCodeEditor", "init_code", 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
         # Get working directory - set to user directory at first
-        last_file = Sketchup.read_default "as_RubyCodeEditor", "last_file"
-        if last_file != nil
-          @snip_dir = last_file
+        @last_file = Sketchup.read_default "as_RubyCodeEditor", "last_file"
+        if @last_file != nil
+          @snip_dir = @last_file
         else
           @snip_dir = @user_dir
         end
@@ -286,10 +283,11 @@ module AS_RubyEditor
           # Use only single quotes here!
           script = 'editor.setValue(\''+@initCode+'\')'
           dlg.execute_script(script)
+          dlg.execute_script("editor.scrollTo(0,0)")
           dlg.execute_script("addResults('Cleared the editor')")
           dlg.execute_script("$('#save_name').text('untitled.rb')")
           dlg.execute_script("$('#save_filename').val('untitled.rb')")
-          dlg.execute_script("c = false;")
+          dlg.execute_script("editor.markClean()")
         end # callback
 
 
@@ -333,8 +331,9 @@ module AS_RubyEditor
           # Not needed now:
           # script = 'editor.setValue(\''+text+'\')'
           # dlg.execute_script(script)
+          dlg.execute_script("editor.scrollTo(0,0)")
           dlg.execute_script("addResults('File loaded: #{name}')")
-          dlg.execute_script("c = false;")
+          dlg.execute_script("editor.markClean()")
 
           # Save the loaded file as most recent
           Sketchup.write_default "as_RubyCodeEditor", "last_file", file
@@ -369,7 +368,7 @@ module AS_RubyEditor
           File.open(file, "w") { |f| f.puts str }
           dlg.execute_script("$('#save_name').text('#{name}')")
           dlg.execute_script("$('#save_filename').val('#{name}')")
-          dlg.execute_script("c = false;")
+          dlg.execute_script("editor.markClean()")
           dlg.execute_script("addResults('File saved: #{name}')")
 
           # Save the saved file as most recent
@@ -496,6 +495,7 @@ module AS_RubyEditor
           # execute_script("editor.setValue('#{@initCode}')")
           # Set version number in dialog
           execute_script("rceVersion = #{@rceVersion}")
+          execute_script("editor.markClean()")
         end # show dialog
 
 

@@ -12,9 +12,6 @@
 // Initialize version number - updated from Ruby file
 var rceVersion = "unknown";
 
-// Set editor as unchanged on startup
-var c = false;
-
 // Initialize temporary variable
 var tmp = '';
 
@@ -40,7 +37,7 @@ function cb_initialize() {
 function cb_new() {
   // Clear editor and load default snippet
   var a = true
-  if (c) {
+  if (!editor.isClean()) {
     a = confirm("Changes will be lost. Clear editor?");
   }
   if (a) window.location = "skp:new";
@@ -51,7 +48,7 @@ function cb_new() {
 function cb_open() {
   // Load a file into the editor
   var a = true
-  if (c) {
+  if (!editor.isClean()) {
     a = confirm('Changes have not been saved. Load a file?')
   }
   if (a) window.location = 'skp:load';
@@ -82,13 +79,13 @@ function cb_exec() {
 // Quit dialog callback
 function cb_quit() {
   // var a = true
-  // if (c) {
+  // if (!editor.isClean()) {
   //   a = confirm("Changes have not been saved. Quit this editor?")
   // }
   // if (a) window.location = "skp:quit";
 
   // Closing handled by Ruby side now
-  window.location = "skp:quit";
+  window.location = "skp:quit@"+editor.isClean();
 }
 
 
