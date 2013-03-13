@@ -76,10 +76,10 @@ History:
                     - Moved menu item to "Windows" menu
                     - Added settings file for modifications
                     - Added code printing
-				2.1 (2/26/2013)
-					- Uses most recently used directory for file loading and saving
-					- Fixed the outdated URLs in the browser
-					- Update checking now uses www.sketchupplugins.com
+                 2.1 (2/26/2013)
+                    - Uses most recently used directory for file loading and saving
+                    - Fixed the outdated URLs in the browser
+                    - Update checking now uses www.sketchupplugins.com
                  3.0 (3/4/2013):
                     - Got rid of settings file
                     - Results feedback now wrapped in Paragraph
@@ -103,7 +103,8 @@ History:
                     - Fixed default file bug
                     - Updated jQuery cookie plugin
                     - Fixed Tab problem                    
-					                    
+                    - Minor fix: results window text wrap and editor refresh
+                    - Proper markClean handling					                    
 
 How to install this plugin in SketchUp:
 =======================================
