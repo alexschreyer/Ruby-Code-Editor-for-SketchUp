@@ -159,6 +159,8 @@ $(document).ready(function(){
     $('.CodeMirror').css('height',newheight);
     newheight = $(window).height()-100;
     $('.webbox').css('height',newheight);
+    newheight = $(window).height()-60;
+    $('.optbox').css('height',newheight);
   }
 
 
@@ -264,6 +266,14 @@ $(document).ready(function(){
       $('#doundo').attr('checked',true)
   };
 
+
+  // Initialize load paths
+  if ($.cookie('loadpath1')!= null) {
+    $('#loadpath1').val($.cookie('loadpath1'));
+  };
+  if ($.cookie('loadpath2')!= null) {
+    $('#loadpath2').val($.cookie('loadpath2'));
+  };
 
   // Initialize style sheet
   if ($.cookie('stylesheet')!= null) {
@@ -395,6 +405,15 @@ $(document).ready(function(){
   $('#doundo').click(function() {
     $.cookie('doundo', $('#doundo').is(':checked'), { path: '/', expires: 365 });
     $('#doundo').val($('#doundo').is(':checked'));
+  });
+
+
+  // Load paths
+  $('#loadpath1').change(function() {
+    $.cookie('loadpath1', $('#loadpath1').val(), { path: '/', expires: 365 });
+  });
+  $('#loadpath2').change(function() {
+    $.cookie('loadpath2', $('#loadpath2').val(), { path: '/', expires: 365 });
   });
 
 

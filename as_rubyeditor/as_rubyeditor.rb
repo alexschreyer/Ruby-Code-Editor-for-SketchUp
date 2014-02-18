@@ -103,6 +103,9 @@ History:        1.0 (2/3/2010):
                     - Proper markClean handling
                   3.2 (4/25/2013)
                     - Reorganized files and folders
+                  3.3 ():
+                    - Added preloading of $LIBRARY_PATH items
+                    - Fixed recent file bug. Opens in correct folder now
 
 
 
@@ -205,33 +208,35 @@ module AS_RubyEditor
         ## Set some variables
 
         # Plugin version
-        @rceVersion = "3.1"
+        @rceVersion = "3.2"
+
         # Get platform info
         @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? 'windows' :
           ((Object::RUBY_PLATFORM =~ /darwin/i) ? 'mac' : 'other')
+
         # Get plugin's directory
-        @baseDir = File.dirname(__FILE__)
+        @base_dir = File.dirname(__FILE__)
+        # Get user directory
         @user_dir = (ENV['USERPROFILE'] != nil) ? ENV['USERPROFILE'] :
-          ((ENV['HOME'] != nil) ? ENV['HOME'] : @baseDir )
-        # Initial code snippet - keep all on one line!
-        @initCode = Sketchup.read_default "as_RubyCodeEditor", "init_code", 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
-        # Get working directory - set to user directory at first
+          ((ENV['HOME'] != nil) ? ENV['HOME'] : @base_dir )
+        # Get working directory from last file - set to user directory otherwise
         @last_file = Sketchup.read_default "as_RubyCodeEditor", "last_file"
         if @last_file != nil
-          @snip_dir = @last_file
+          @snip_dir = File.dirname(@last_file)
         else
           @snip_dir = @user_dir
         end
-        @snip_dir = @snip_dir.split("/").join("\\") + "\\"
-        if @as_su_os != 'windows'
-          @snip_dir = @snip_dir.split("\\").join("/") + "/"
-        end
+        # Clean up a bit
+        @snip_dir = @snip_dir.tr("\\","/") + "/"
+
+        # Initial code snippet - keep all on one line!
+        @initCode = Sketchup.read_default "as_RubyCodeEditor", "init_code", 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
 
 
         ## Set up the WebDialog
 
         super "Ruby Code Editor", false, "RubyCodeEditor", 750, 600, 100, 100, true
-        ui_loc = File.join(@baseDir , "ui.html")
+        ui_loc = File.join(@base_dir , "ui.html")
         # Fix directory name on Win
         ui_loc.gsub!('//', "/")
         # Set HTML UI file for WebDialog
@@ -338,7 +343,7 @@ module AS_RubyEditor
           dlg.execute_script("editor.markClean()")
 
           # Save the loaded file as most recent
-          Sketchup.write_default "as_RubyCodeEditor", "last_file", file
+          Sketchup.write_default "as_RubyCodeEditor", "last_file", file.tr("\\","/")
         end # callback
 
 
@@ -374,7 +379,7 @@ module AS_RubyEditor
           dlg.execute_script("addResults('File saved: #{name}')")
 
           # Save the saved file as most recent
-          Sketchup.write_default "as_RubyCodeEditor", "last_file", file
+          Sketchup.write_default "as_RubyCodeEditor", "last_file", file.tr("\\","/")
         end # callback
 
 
@@ -409,7 +414,7 @@ module AS_RubyEditor
             File.open(file, "w") { |f| f.puts str }
 
             # Save the saved file as most recent
-            Sketchup.write_default "as_RubyCodeEditor", "last_file", file
+            Sketchup.write_default "as_RubyCodeEditor", "last_file", file.tr("\\","/")
           end
         end
 
@@ -498,6 +503,15 @@ module AS_RubyEditor
           # Set version number in dialog
           execute_script("rceVersion = #{@rceVersion}")
           execute_script("editor.markClean()")
+          # Add Ruby paths to loadpath variable
+          lp1 = get_element_value("loadpath1") # .gsub(%r{/}) { "//" }
+          lp2 = get_element_value("loadpath2") # .gsub(%r{/}) { "//" }
+          if not lp1.empty?
+            $LOAD_PATH << lp1 unless $LOAD_PATH.include? lp1
+          end
+          if not lp2.empty?
+            $LOAD_PATH << lp2 unless $LOAD_PATH.include? lp2
+          end
         end # show dialog
 
 
