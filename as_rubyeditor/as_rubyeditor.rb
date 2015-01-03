@@ -251,6 +251,8 @@ module AS_RubyEditor
         add_action_callback("exec") do |dlg, params|
           dlg.execute_script("addResults('Running the code...')")
           v = dlg.get_element_value('console').strip
+          # Force encoding for non-UTF text (e.g. in China)
+          v.force_encoding('UTF-8')
           # puts v
           r = nil
           begin
