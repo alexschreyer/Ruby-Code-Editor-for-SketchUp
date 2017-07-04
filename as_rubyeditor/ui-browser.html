@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- Use compatibility mode in IE to allow for newer features -->
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    
+    <!-- Main and jQuery UI styles -->
+    <link rel=StyleSheet href="ui_main.css" type="text/css">
+    <link class="switcher" rel=StyleSheet href="jquery-ui/dark/jquery-ui.css" type="text/css">
+
+    <!-- Main and jQuery scripts -->
+    <script src="jquery-ui/js/jquery-3.2.1.min.js" language="javascript" type="text/javascript"></script>
+    <script src="jquery-ui/js/jquery-ui-1.12.1.min.js" language="javascript" type="text/javascript"></script>
+    <script>
+    
+      // Set up the page
+      $(document).ready(function(){
+
+        // Style the top button row as a control group
+        $(".controlgroup").controlgroup();  
+              
+        // Change iFrame url with location dropdown
+        $( "#browselinks" ).on( "selectmenuchange", function() {        
+          var loc = $('#browselinks').val();
+          $('#ibrowser').attr("src",loc);
+        });
+  
+      });
+      
+    </script>
+
+    <title>Ruby Reference Browser</title>
+    
+  </head>
+
+  <body> 
+  
+    <div id="wrap">
+    
+      <div class="controlgroup" style="height:30px;margin: 10px;">
+      
+        <a id="backbutton" class="button" href="javascript:if(history.length>1){history.back()};" title="Go back (Alt-B)" accesskey="B"><span class="ui-icon ui-icon-circle-arrow-w"></span></a>
+        <a id="nextbutton" class="button" href="javascript:history.forward()" title="Go forward (Alt-F)" accesskey="F"><span class="ui-icon ui-icon-circle-arrow-e"></span></a>
+        
+        <select id="browselinks" title="Browse websites">
+          <option value="" selected="selected" disabled="disabled">Select website from list...</option>
+          <optgroup label="SketchUp API References:">
+            <option value="http://ruby.sketchup.com/" title="http://ruby.sketchup.com/">SketchUp Ruby - API Reference</option>
+            <option value="http://developer.sketchup.com/en/content/getting-started" title="http://developer.sketchup.com/en/content/getting-started">SketchUp Ruby - Getting Started Tutorial</option>
+            <option value="http://ruby.sketchup.com/file.ReleaseNotes.html" title="http://ruby.sketchup.com/file.ReleaseNotes.html">SketchUp Ruby - Release Notes</option>
+            <option value="http://sketchupfordesign.com/the-book/chapter-7-creating-geometry-using-ruby-scripting/" title="http://sketchupfordesign.com/the-book/chapter-7-creating-geometry-using-ruby-scripting/">Architectural Design with SketchUp - Scripting Chapter</option>
+            <option value="https://www.scribd.com/embeds/81081023/content" title="https://www.scribd.com/embeds/81081023/content">Automatic SketchUp E-Book</option>
+            <option value="http://www.martinrinehart.com/models/tutorial/tutorial_toc.html" title="http://www.martinrinehart.com/models/tutorial/tutorial_toc.html">Edges to Rubies E-Book</option>
+            <option value="https://forums.sketchup.com/c/developers" title="https://forums.sketchup.com/c/developers">SketchUp Community Forum - Developers</option>
+            <option value="http://sketchucation.com/forums/viewforum.php?f=180" title="http://sketchucation.com/forums/viewforum.php?f=180">SketchUcation - Developer Forum</option>
+            <option value="http://sketchucation.com/forums/viewforum.php?f=323" title="http://sketchucation.com/forums/viewforum.php?f=323">SketchUcation - Plugins Forum</option>
+          </optgroup>
+          <optgroup label="Ruby References:">
+            <option value="http://www.ruby-doc.org/" title="http://www.ruby-doc.org/">Ruby Docs</option>
+            <option value="http://ruby-doc.org/core-2.2.4/" title="http://ruby-doc.org/core-2.2.4/">Ruby 2.2.4 Core Docs</option>
+            <option value="http://ruby-doc.com/docs/ProgrammingRuby/" title="http://ruby-doc.com/docs/ProgrammingRuby/">Programming Ruby</option>
+            <option value="http://www.techotopia.com/index.php/Ruby_Essentials" title="http://www.techotopia.com/index.php/Ruby_Essentials">Ruby Essentials</option>
+            <option value="http://www.zenspider.com/ruby/quickref.html" title="http://www.zenspider.com/ruby/quickref.html">Ruby QuickRef</option>
+            <option value="http://rubylearning.com/satishtalim/tutorial.html" title="http://rubylearning.com/satishtalim/tutorial.html">Ruby Tutorial</option>
+          </optgroup>
+        </select>
+        
+      </div> <!-- .controlgroup -->
+      
+      <iframe id="ibrowser" style="height:calc( 100vh - 50px); width:100%;" src="" noresize="noresize" frameborder="0" onerror="return true;"></iframe>
+
+    </div> <!-- #wrap -->
+    
+  </body>
+</html>

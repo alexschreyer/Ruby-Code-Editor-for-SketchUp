@@ -13,7 +13,7 @@ require 'sketchup'
 module AS_Extensions
 
   module AS_RubyEditor
-
+  
 
     # Creates new class
     class RubyEditor < UI::WebDialog
@@ -24,9 +24,6 @@ module AS_Extensions
 
 
           ## Set some variables
-
-          # Plugin version
-          @rceVersion = "3.2"
 
           # Get platform info
           @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? 'windows' :
@@ -47,10 +44,11 @@ module AS_Extensions
           # Clean up a bit
           @snip_dir = @snip_dir.tr("\\","/") + "/"
 
-          # Initial code snippet - keep all on one line!
-          @initCode = Sketchup.read_default "as_RubyCodeEditor", "init_code", 'mod = Sketchup.active_model # Open model\nent = mod.entities # All entities in model\nsel = mod.selection # Current selection'
-
-
+          # Initial code snippet - load from file
+          loadcode = File.readlines(File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'templates' , 'default.rb' ))
+          loadcode.each{ |i| i.gsub!(/\n/, '') }
+          @initCode = loadcode.join('\n')
+          
           ## Set up the WebDialog
 
           super "Ruby Code Editor", false, "RubyCodeEditor", 750, 600, 100, 100, true
@@ -108,13 +106,22 @@ module AS_Extensions
 
           add_action_callback("new") do |dlg, params|
             # Use only single quotes here!
-            script = 'editor.setValue(\''+@initCode+'\')'
+            script = 'editor.getDoc().setValue(\''+@initCode+'\')'
             dlg.execute_script(script)
             dlg.execute_script("editor.scrollTo(0,0)")
             dlg.execute_script("addResults('Cleared the editor')")
             dlg.execute_script("$('#save_name').text('untitled.rb')")
             dlg.execute_script("$('#save_filename').val('untitled.rb')")
             dlg.execute_script("editor.markClean()")
+            dlg.execute_script("editor.getDoc().clearHistory()")
+            
+            # Update the MRU list
+            mru = []
+            (1..5).each { |i|
+               mru.push Sketchup.read_default("as_RubyCodeEditor", "mru#{i}", "" )
+            }
+            dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")
+                             
           end # callback
 
 
@@ -123,7 +130,14 @@ module AS_Extensions
           add_action_callback("load") do |dlg, params|
             p @snip_dir
             # Use working directory
-            file = UI.openpanel("Open File", @snip_dir, "*.*")
+            case params
+              when 'undefined'
+                file = UI.openpanel("Open File", @snip_dir, "*.*") 
+              when 'default'
+                file = File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'templates' , 'default.rb' )  
+              else
+                file = params
+            end            
             return unless file
             # Set file directory as current
             @snip_dir = File.dirname(file)
@@ -161,8 +175,21 @@ module AS_Extensions
             dlg.execute_script("editor.scrollTo(0,0)")
             dlg.execute_script("addResults('File loaded: #{name}')")
             dlg.execute_script("editor.markClean()")
+            dlg.execute_script("editor.getDoc().clearHistory()")
 
-            # Save the loaded file as most recent
+            # Update the MRU list
+            mru = []
+            save_file = file.tr("\\","/")
+            (1..5).each { |i|
+               mru.push Sketchup.read_default("as_RubyCodeEditor", "mru#{i}", "" )
+            }
+            if not mru.include?(save_file)
+              (5).downto(2) { |i|
+                Sketchup.write_default("as_RubyCodeEditor", "mru#{i}", mru[i-2].to_s ) 
+              }
+              Sketchup.write_default("as_RubyCodeEditor", "mru1", save_file )           
+            end
+            dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")            
             Sketchup.write_default "as_RubyCodeEditor", "last_file", file.tr("\\","/")
           end # callback
 
@@ -311,6 +338,20 @@ module AS_Extensions
           add_action_callback("show_console") do |dlg, params|
             Sketchup.send_action "showRubyPanel:"
           end # callback
+          
+          
+          ## Callback to show Help dialog
+
+          add_action_callback("help") do |dlg, params|
+            AS_RubyEditor::browser( "#{AS_RubyEditor::EXTTITLE} - Help" , "https://alexschreyer.net/projects/sketchup-ruby-code-editor/" )
+          end # callback          
+
+
+          ## Callback to show Browser dialog
+
+          add_action_callback("browser") do |dlg, params|
+            AS_RubyEditor::browser( "#{AS_RubyEditor::EXTTITLE} - Reference Browser" , File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'ui-browser.html' ) , true )
+          end # callback  
 
 
           ## Show the dialog and insert sample code
@@ -321,7 +362,8 @@ module AS_Extensions
             # execute_script("document.getElementById('console').value=''")
             # execute_script("editor.setValue('#{@initCode}')")
             # Set version number in dialog
-            execute_script("rceVersion = #{@rceVersion}")
+            execute_script("var rceVersion = #{AS_RubyEditor::EXTVERSION.to_s}")
+            execute_script("$('#version').text( rceVersion )")
             execute_script("editor.markClean()")
             # Add Ruby paths to loadpath variable
             lp1 = get_element_value("loadpath1") # .gsub(%r{/}) { "//" }
@@ -339,21 +381,49 @@ module AS_Extensions
 
 
     end # class RubyEditor
+    
+    
+    # ==================
+    
+    
+    def self.browser( title , loc , isfile = false )
+    # Show local or remote website either as a WebDialog or HtmlDialog
+    
+      if Sketchup.version.to_f < 17 then  # Use old method
+        d = UI::WebDialog.new( title , true ,
+          title.gsub(/\s+/, "_") , 1000 , 600 , 100 , 100 , true);
+        d.navigation_buttons_enabled = false
+        isfile ? d.set_file( loc ) : d.set_url( loc )
+        d.show      
+      else
+        d = UI::HtmlDialog.new( { :dialog_title => title, :width => 1000, :height => 600,
+          :style => UI::HtmlDialog::STYLE_DIALOG, :preferences_key => title.gsub(/\s+/, "_") } )
+        isfile ? d.set_file( loc ) : d.set_url( loc )
+        d.show
+        d.center
+      end  
+    
+    end       
+    
+    
+    # ========================
 
-
-    # Get file name of this file
-    file = File.basename(__FILE__)
 
     # Add menu items
-    unless file_loaded?(file)
-      # Add main menu item
-      UI.menu("Window").add_item("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new }
+    unless file_loaded?(__FILE__)
+    
+      # Add main menu items
+      sub = UI.menu("Window").add_submenu( "Ruby Code Editor" )
+      sub.add_item("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new }
+      sub.add_item("Reference Browser") { self.browser( "#{AS_RubyEditor::EXTTITLE} - Reference Browser" , File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'ui-browser.html' ) , true ) }
+      sub.add_item("Help") { self.browser( "#{AS_RubyEditor::EXTTITLE} - Help" , "https://alexschreyer.net/projects/sketchup-ruby-code-editor/" ) }
 
       # Add toolbar
       as_rce_tb = UI::Toolbar.new "Ruby Code Editor"
       as_rce_cmd = UI::Command.new("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new }
       # One instance only version:
       # as_rce_cmd = UI::Command.new("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new unless editordlg }
+      
       as_rce_cmd.small_icon = "img/rce_1_16.png"
       as_rce_cmd.large_icon = "img/rce_1_24.png"
       as_rce_cmd.tooltip = "Ruby Code Editor"
@@ -363,7 +433,8 @@ module AS_Extensions
       as_rce_tb.show
 
       # Tell SU that we loaded this file
-      file_loaded file
+      file_loaded(__FILE__)
+      
     end
 
 

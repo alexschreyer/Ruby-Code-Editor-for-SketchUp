@@ -1,9 +1,8 @@
 //=======================================
 //
 //  Javascript file for Ruby Code Editor
-//  by Alexander Schreyer
-//  www.alexschreyer.net
-//  See main plugin file for license
+//  by Alexander Schreyer, www.alexschreyer.net
+//  See main plugin file for license etc.
 //
 //=======================================
 
@@ -45,13 +44,13 @@ function cb_new() {
 
 
 // Open file callback
-function cb_open() {
+function cb_open( loc ) {
   // Load a file into the editor
   var a = true
   if (!editor.isClean()) {
     a = confirm('Changes have not been saved. Load a file?')
   }
-  if (a) window.location = 'skp:load';
+  if (a) window.location = 'skp:load@'+loc;
 }
 
 
@@ -71,8 +70,8 @@ function cb_exec() {
   $('#runbutton').hide();
   $('#running').show();
   window.location = "skp:exec@"+$('#doundo').is(':checked');
-  $('#runbutton').show();
   $('#running').hide();
+  $('#runbutton').show();
 }
 
 
@@ -89,19 +88,21 @@ function cb_quit() {
 }
 
 
-// Close window function
-window.onbeforeunload = function(e){
-  // q();
-  // This doesn't seem to work in SU - works fine in IE
-  // return 'Your changes may not have been saved. Do you really wish to close this editor window?';
-}
-
-
 // Add content to the results area and scroll upward
 function addResults(txt) {
   $('#results').append('<p>' + txt + '</p>');
   // Scroll to some very large number to move bottom upward
   $('#results').scrollTop(9999);
+}
+
+
+// Add file names to MRU
+function updateMRU() {
+  $("#mru").empty();
+  for (i = 0; i < 5; i++) {
+    $("#mru").append("<li><a href='#' onClick=\"cb_open('" + arguments[i] + "');\">" + arguments[i].replace(/^.*[\\\/]/, '') + "</a></li>"); 
+  };
+  $( "#menu" ).menu( "refresh" );
 }
 
 
@@ -112,14 +113,39 @@ function addResults(txt) {
 $(document).ready(function(){
 
 
-
   //========== INITIALIZE ELEMENTS ON STARTUP ========================
-
-
-  // Initialize code autocompletion
-  CodeMirror.commands.autocomplete = function(cm) {
-    CodeMirror.showHint(cm, CodeMirror.surubyHint);
-  }
+  
+  
+  // Set the menu up at the top of the page
+  $( "#menu" ).menu({position: {at: "left bottom"}});
+  
+  
+  // Set up jQuery UI About dialog        
+  $( "#about-dlg" ).dialog({ 
+    autoOpen: false,
+    modal: true, 
+    buttons: { Ok: function() { $( this ).dialog( "close" ); }
+    }
+  });
+  
+  
+  // Set up jQuery UI Preferences dialog
+  $( "#option-dlg" ).dialog({ 
+    width: 500,
+    height: 500,
+    autoOpen: false,
+    modal: true, 
+    buttons: { Ok: function() { $( this ).dialog( "close" ); }
+    }
+  });  
+  
+  
+  // Create page tabs using jQuery UI
+  $('#tabs').tabs(); 
+ 
+  
+  // Style the button row as a control group
+  $(".controlgroup").controlgroup();     
 
 
   // Start the CodeMirror editor and attach it to text area
@@ -139,11 +165,23 @@ $(document).ready(function(){
       'Shift-Tab' : 'indentLess'
     }
   });
+  
+
+  // Initialize code autocompletion
+  CodeMirror.commands.autocomplete = function(cm) {
+    CodeMirror.showHint(cm, CodeMirror.surubyHint);
+  }  
 
 
   // What to do when the editor's content changes
   editor.on("change", function() {
     c = true
+  });
+
+
+  // Blur the menu when editor gets focus
+  editor.on("focus", function() {
+    $( "#menu" ).menu( "blur" );
   });
 
 
@@ -155,29 +193,15 @@ $(document).ready(function(){
 
   // Straighten out window element sizes
   function sizeWin() {
-    newheight = $(window).height()-270;
+    newheight = $(window).height()-235;
     $('.CodeMirror').css('height',newheight);
-    newheight = $(window).height()-100;
-    $('.webbox').css('height',newheight);
-    newheight = $(window).height()-60;
-    $('.optbox').css('height',newheight);
   }
-
-
-  // Create page tabs using jQuery UI
-  $('#tabs').tabs();
 
 
   // Fix editor refresh and sizing when tabs are changed
   $('#tabs').on("tabsactivate", function( event, ui ) {
-    // editor.setSize(null,'100%');
-    // sizeWin();
     editor.refresh();
   });
-
-
-  // Style all buttons using jQuery UI
-  $(".button").button();
 
 
   // Initialize window element sizes on start
@@ -190,19 +214,52 @@ $(document).ready(function(){
   });
 
 
+  //========== SET OR INITIALIZE OPTIONS ========================
 
-  //========== INITIALIZE OPTIONS ON STARTUP ========================
+
+  // STYLE SHEETS:
+  function changeTheme( color ) {
+    if (color == "dark") {
+      editor.setOption("theme", "ambiance");
+      css_url = "jquery-ui/dark/jquery-ui.css";
+    } else {
+      editor.setOption("theme", "eclipse");
+      css_url = "jquery-ui/light/jquery-ui.css";
+    };
+    $("link.switcher").attr("href", css_url);
+  };
+  // Initialize style sheet
+  if ($.cookie('stylesheet')!= null) {
+    var newcss = $.cookie("stylesheet");
+    changeTheme( newcss );
+    $("#stylesheet").val( newcss );
+  };
+  // Change stylesheets dropdown
+  $("#stylesheet").change(function() {
+    var newcss = $("#stylesheet").val();
+    changeTheme( newcss );
+    $.cookie('stylesheet', newcss , { path: '/' , expires: 365 });   
+  });
 
 
+  // FONT SIZE:
   // Initialize editor font size
   if ($.cookie('fontsize')!= null) {
     var newsize = $.cookie('fontsize');
     $('.CodeMirror').css('font-size' , newsize+'pt');
     $('#fontsize').val(newsize);
   };
+  // Change font size dropdown
+  $('#fontsize').change(function(){
+    var size = $('#fontsize').val();
+    $('.CodeMirror').css('font-size',size+'pt');
+    $.cookie('fontsize', size, { path: '/', expires: 365 });
+  });
+  
 
 
-  // Indent with tabs option
+  // TABS:
+  // Initialize tabs option
   if ($.cookie('indentWithTabs')!= null) {
     if ($.cookie('indentWithTabs') == 'false') {
       $('#indentWithTabs').attr('checked',false);
@@ -212,8 +269,14 @@ $(document).ready(function(){
       editor.setOption("indentWithTabs", true);
     }
   };
+  // Indent tabs switch checkbox
+  $('#indentWithTabs').click(function() {
+    $.cookie('indentWithTabs', $('#indentWithTabs').is(':checked'), { path: '/', expires: 365 });
+    editor.setOption('indentWithTabs', $('#indentWithTabs').is(':checked'));
+  });  
+  
 
-
+  // TAB SIZE:
   // Initialize indent unit
   if ($.cookie('tabsize')!= null) {
     var newsize = $.cookie('tabsize');
@@ -221,8 +284,15 @@ $(document).ready(function(){
     editor.setOption('indentUnit',parseInt(newsize));
     editor.setOption('tabSize',parseInt(newsize));
   };
+  // Save tab size dropdown
+  $('#tabsize').change(function(){
+    $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
+    editor.setOption('indentUnit',parseInt($('#tabsize').val()));
+    editor.setOption('tabSize',parseInt($('#tabsize').val()));
+  }); 
+  
 
-
+  // SMART INDENT:
   // SmartIndent option
   if ($.cookie('smartIndent')!= null) {
     if ($.cookie('smartIndent') == 'false') {
@@ -233,8 +303,14 @@ $(document).ready(function(){
       editor.setOption("smartIndent", true);
     }
   };
+  // Smart indent switch checkbox
+  $('#smartIndent').click(function() {
+    $.cookie('smartIndent', $('#smartIndent').is(':checked'), { path: '/', expires: 365 });
+    editor.setOption('smartIndent', $('#smartIndent').is(':checked'));
+  });  
+  
 
-
+  // LINENUMBERS:
   // Initialize line numbers
   if ($.cookie('linenum')!= null) {
     if ($.cookie('linenum') == 'false') {
@@ -245,8 +321,20 @@ $(document).ready(function(){
       editor.setOption("lineNumbers", true);
     }
   };
+  // Show line numbers checkbox
+  $('#linenum').click(function() {
+    $.cookie('linenum', $('#linenum').is(':checked'), { path: '/', expires: 365 });
+    if ($('#linenum').is(':checked')) {
+      editor.setOption("lineNumbers", true);
+      sizeWin();
+    } else {
+      editor.setOption("lineNumbers", false);
+      sizeWin();
+    };
+  });  
 
 
+  // BACKUP:
   // Initialize backup option
   if ($.cookie('savebackup')!= null) {
     $('#savebackup').val($.cookie('savebackup'));
@@ -255,8 +343,14 @@ $(document).ready(function(){
     else
       $('#savebackup').attr('checked',true)
   };
+  // Save backup checkbox
+  $('#savebackup').click(function() {
+    $.cookie('savebackup', $('#savebackup').is(':checked'), { path: '/', expires: 365 });
+    $('#savebackup').val($('#savebackup').is(':checked'));
+  });
+  
 
-
+  // SINGLE UNDO:
   // Initialize single undo option
   if ($.cookie('doundo')!= null) {
     $('#doundo').val($.cookie('doundo'));
@@ -265,8 +359,14 @@ $(document).ready(function(){
     else
       $('#doundo').attr('checked',true)
   };
+  // Do undo checkbox
+  $('#doundo').click(function() {
+    $.cookie('doundo', $('#doundo').is(':checked'), { path: '/', expires: 365 });
+    $('#doundo').val($('#doundo').is(':checked'));
+  });
+  
 
-
+  // LOAD PATHS:
   // Initialize load paths
   if ($.cookie('loadpath1')!= null) {
     $('#loadpath1').val($.cookie('loadpath1'));
@@ -274,40 +374,16 @@ $(document).ready(function(){
   if ($.cookie('loadpath2')!= null) {
     $('#loadpath2').val($.cookie('loadpath2'));
   };
-
-  // Initialize style sheet
-  if ($.cookie('stylesheet')!= null) {
-    newcss = $.cookie("stylesheet");
-    if (newcss == "dark") {
-      editor.setOption("theme", "ambiance");
-      css_url = "jquery-ui/ui-darkness/jquery-ui.css";
-    } else if (newcss == "light"){
-      editor.setOption("theme", "eclipse");
-      css_url = "jquery-ui/ui-lightness/jquery-ui.css";
-    } else {
-      editor.setOption("theme", "eclipse");
-      css_url = "jquery-ui/redmond/jquery-ui.css";
-    };
-    $("link.switcher").attr("href",css_url);
-    $("#stylesheet").val(newcss);
-  };
-
-
-  // Set back/forward buttons in browser different for Safari
-  // jQuery.browser deprecated - use .support instead.
-  /*
-  var browser;
-  if($.browser.safari) {
-    $('#backbutton').css('display','none');
-    $('#nextbutton').css('display','none');
-  };
-  */
+  // Load paths
+  $('#loadpath1').change(function() {
+    $.cookie('loadpath1', $('#loadpath1').val(), { path: '/', expires: 365 });
+  });
+  $('#loadpath2').change(function() {
+    $.cookie('loadpath2', $('#loadpath2').val(), { path: '/', expires: 365 });
+  });  
 
 
   //========== INTERACTIVE ELEMENTS ========================
-
-
-  // Tab 1:
 
 
   // Insert snippets from dropdown at cursor
@@ -333,135 +409,7 @@ $(document).ready(function(){
     };
     // Refresh the editor so that the color changes take effect immediately
     editor.refresh();
-    // editor.undo();
-    // editor.redo();
-  });
-
-
-  // Tab 2:
-
-
-  // Change iFrame url location dropdown
-  $('#browselinks').change(function(){
-    var loc = $('#browselinks').val();
-    $('#ibrowser').attr("src",loc);
-  });
-
-
-  // Tab 3:
-
-
-  // Change font size dropdown
-  $('#fontsize').change(function(){
-    var size = $('#fontsize').val();
-    $('.CodeMirror').css('font-size',size+'pt');
-    $.cookie('fontsize', size, { path: '/', expires: 365 });
-  });
-
-
-  // Indent tabs switch checkbox
-  $('#indentWithTabs').click(function() {
-    $.cookie('indentWithTabs', $('#indentWithTabs').is(':checked'), { path: '/', expires: 365 });
-    editor.setOption('indentWithTabs', $('#indentWithTabs').is(':checked'));
-  });
-
-
-  // Save tab size dropdown
-  $('#tabsize').change(function(){
-    $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
-    editor.setOption('indentUnit',parseInt($('#tabsize').val()));
-    editor.setOption('tabSize',parseInt($('#tabsize').val()));
-  });
-
-
-  // Smart indent switch checkbox
-  $('#smartIndent').click(function() {
-    $.cookie('smartIndent', $('#smartIndent').is(':checked'), { path: '/', expires: 365 });
-    editor.setOption('smartIndent', $('#smartIndent').is(':checked'));
-  });
-
-
-  // Show line numbers checkbox
-  $('#linenum').click(function() {
-    $.cookie('linenum', $('#linenum').is(':checked'), { path: '/', expires: 365 });
-    if ($('#linenum').is(':checked')) {
-      editor.setOption("lineNumbers", true);
-      sizeWin();
-    } else {
-      editor.setOption("lineNumbers", false);
-      sizeWin();
-    };
-  });
-
-
-  // Save backup checkbox
-  $('#savebackup').click(function() {
-    $.cookie('savebackup', $('#savebackup').is(':checked'), { path: '/', expires: 365 });
-    $('#savebackup').val($('#savebackup').is(':checked'));
-  });
-
-
-  // Do undo checkbox
-  $('#doundo').click(function() {
-    $.cookie('doundo', $('#doundo').is(':checked'), { path: '/', expires: 365 });
-    $('#doundo').val($('#doundo').is(':checked'));
-  });
-
-
-  // Load paths
-  $('#loadpath1').change(function() {
-    $.cookie('loadpath1', $('#loadpath1').val(), { path: '/', expires: 365 });
-  });
-  $('#loadpath2').change(function() {
-    $.cookie('loadpath2', $('#loadpath2').val(), { path: '/', expires: 365 });
-  });
-
-
-  // Change iFrame zoom dropdown
-  $('#pzoom').change(function(){
-    var newzoom = $('#pzoom').val();
-    $('#ibrowser').removeClass().addClass(newzoom);
-  });
-
-
-  // Change stylesheets dropdown
-  $("#stylesheet").change(function() {
-    if ($("#stylesheet").val() == "dark") {
-      editor.setOption("theme", "ambiance");
-      css_url = "jquery-ui/ui-darkness/jquery-ui.css";
-    } else if ($("#stylesheet").val() == "light"){
-      editor.setOption("theme", "eclipse");
-      css_url = "jquery-ui/ui-lightness/jquery-ui.css";
-    } else {
-      editor.setOption("theme", "eclipse");
-      css_url = "jquery-ui/redmond/jquery-ui.css";
-    };
-    $("link.switcher").attr("href",css_url);
-    $.cookie('stylesheet',$("#stylesheet").val(), { path: '/' , expires: 365 });
-  });
-
-
-
-  //========== UPDATE CHECKING ========================
-  // Now uses www.sketchupplugins.com data
-
-
-  $('#updatecheck').click(function(){
-    // # Use correct plugin ID below
-    var plugin_id = '22';
-    // Check via JSON
-    $.getJSON('http://sketchupplugins.com/get/single.php?callback=?',
-      { id : plugin_id},
-      function(data) {
-        var msg = "Ruby Code Editor - Update Check\n\n";
-        if (data.version[0] > rceVersion) {
-            msg += "New version available! (" + data.version[0] + ")";
-        } else {
-            msg += "You have the latest version (" + rceVersion + ")";
-        }
-        alert(msg);
-    });
-  });
+  });  
 
 
 }); // END jQuery.ready

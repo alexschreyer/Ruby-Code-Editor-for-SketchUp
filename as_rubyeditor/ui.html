@@ -1,20 +1,22 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <meta http-equiv="Content-Script-Type" content="text/javascript">
-    <!-- Use compatibility mode to allow for newer features -->
-    <meta http-equiv="x-ua-compatible" content="IE=9">
 
+  <head>
+  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <!-- Use compatibility mode in IE to allow for newer features -->
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+                            
     <!-- Codemirror styles -->
-    <link rel=StyleSheet href="codemirror3/lib/codemirror.css" type="text/css">
-    <link rel=StyleSheet href="codemirror3/theme/ambiance.css" type="text/css">
-    <link rel=StyleSheet href="codemirror3/theme/eclipse.css" type="text/css">
-    <link rel=StyleSheet href="codemirror3/addon/hint/show-hint.css" type="text/css">
+    <link rel=StyleSheet href="codemirror5/lib/codemirror.css" type="text/css">
+    <link rel=StyleSheet href="codemirror5/theme/ambiance.css" type="text/css">
+    <link rel=StyleSheet href="codemirror5/theme/eclipse.css" type="text/css">
+    <link rel=StyleSheet href="codemirror5/addon/hint/show-hint.css" type="text/css">
 
     <!-- Main and jQuery UI styles -->
     <link rel=StyleSheet href="ui_main.css" type="text/css">
-    <link class="switcher" rel=StyleSheet href="jquery-ui/ui-darkness/jquery-ui.css" type="text/css">
+    <link class="switcher" rel=StyleSheet href="jquery-ui/dark/jquery-ui.css" type="text/css">
     <link rel=StyleSheet href="ui_p.css" type="text/css" media="print">
 
     <!-- Main and jQuery scripts -->
@@ -23,53 +25,110 @@
       window.onerror = function (e) { return true; };
       document.frames('ibrowser').document.onerror = function (e) { return true; };
     </script>
-    <script src="jquery-ui/js/jquery-1.9.1.min.js" language="javascript" type="text/javascript"></script>
-    <script src="jquery-ui/js/jquery-ui-1.10.1.custom.min.js" language="javascript" type="text/javascript"></script>
+    <script src="jquery-ui/js/jquery-3.2.1.min.js" language="javascript" type="text/javascript"></script>
+    <script src="jquery-ui/js/jquery-ui-1.12.1.min.js" language="javascript" type="text/javascript"></script>
     <script src="jquery-ui/js/jquery.cookie.js" type="text/javascript" language="javascript"></script>
     <script src="ui.js" language="javascript" type="text/javascript"></script>
 
     <!-- Codemirror scripts -->
-    <script src="codemirror3/lib/codemirror.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/addon/edit/matchbrackets.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/addon/hint/show-hint.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/addon/hint/suruby-hint.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/addon/selection/active-line.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/clike/clike.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/css/css.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/htmlmixed/htmlmixed.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/javascript/javascript.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/php/php.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/xml/xml.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/none/none.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror3/mode/ruby/ruby.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/lib/codemirror.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/addon/edit/matchbrackets.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/addon/hint/show-hint.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/addon/hint/suruby-hint.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/addon/selection/active-line.js" language="javascript" type="text/javascript"></script>
+    
+    <script src="codemirror5/mode/css/css.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/mode/htmlmixed/htmlmixed.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/mode/javascript/javascript.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/mode/xml/xml.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/mode/ruby/ruby.js" language="javascript" type="text/javascript"></script>
 
     <title>Ruby Code Editor</title>
+    
   </head>
 
   <body>
+  
   <div id="wrap">
+ 
+    <div id="nav">
+    
+      <ul id="menu" accesskey="m">
+        <li><a href="#">File</a>
+          <ul>
+          	<li><a href="#" onClick="cb_new();"><span class="ui-icon ui-icon-document"></span>New</a></li>
+            <li><a href="#" onClick="cb_open();"><span class="ui-icon ui-icon-folder-open"></span>Open...</a></li>
+            <li><a href="#"><span class="ui-icon ui-icon-folder-open"></span>Open Recent</a>
+              <ul id="mru"> <li><a href="#" onClick="cb_save();">ajksdh aksjh dakjd h</a></li>
+              </ul>
+            </li>
+            <li><a href="#" onClick="cb_save();"><span class="ui-icon ui-icon-disk"></span>Save...</a></li>
+            <li>-</li>
+            <li><a href="#" onClick="printMe('console');"><span class="ui-icon ui-icon-print"></span>Print Code</a></li>
+            <li>-</li>
+            <li><a href="#" onClick="cb_quit();"><span class="ui-icon ui-icon-close"></span>Close Editor</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Edit</a>
+          <ul>
+          	<li><a href="#" onClick="editor.getDoc().undo()"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span>Undo</a></li>
+            <li><a href="#" onClick="editor.getDoc().redo()"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>Redo</a></li>
+            <li>-</li>
+            <li><a href="#" onClick="cb_open('default');">Edit Default Code</a></li>
+           </ul>
+        </li>                   
+        <li><a href="#">Run</a>
+          <ul>
+          	<li><a href="#" onClick="cb_exec();"><span class="ui-icon ui-icon-play"></span>Run Code</a></li>
+            <li><a href="#" onClick="cb('undo');"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span>Undo</a></li>
+          </ul>
+        </li>        
+        <li><a href="#">Tools</a>
+          <ul>
+          	<li><a href="#" onClick="cb('show_console');"><span class="ui-icon ui-icon-search"></span>Show Ruby Console</a></li>
+            <li><a href="#" onClick="cb('sel_explore');"><span class="ui-icon ui-icon-search"></span>Explore Selection</a></li>
+            <li><a href="#" onClick="cb('att_explore');"><span class="ui-icon ui-icon-search"></span>List Selection's Attributes</a></li>
+            <li>-</li>
+            <li><a href="#" onClick="cb('browser')"><span class="ui-icon ui-icon-link"></span>Reference Browser</a></li>
+            <li>-</li>
+          	<li><a href="#" onClick="$('#option-dlg').dialog('open');"><span class="ui-icon ui-icon-gear"></span>Preferences</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Help</a>
+          <ul>
+            <li><a href="#" onClick="cb('help')"><span class="ui-icon ui-icon-help"></span>Help</a></li>
+            <li><a href="#" onClick="$('#about-dlg').dialog('open');"><span class="ui-icon ui-icon-info"></span>About</a></li>
+          </ul>
+        </li>            
+      </ul> 
+      
+    </div> <!-- #nav -->
+  
 
     <div id="tabs">
+    
       <ul>
-      	<li><a href="#tabs-1">Ruby Code Editor</a></li>
-      	<li><a href="#tabs-2">Reference Browser</a></li>
-      	<li><a href="#tabs-3">Options</a></li>
-      	<li><a href="#tabs-4">About</a></li>
+      	<li><a id="save_name" href="#tabs-1">untitled.rb</a></li>
       </ul>
 
-      <div id="tabs-1" style="margin:5px;padding:0;">
-        <div class="wrapper">
+      <div id="tabs-1" class="tab-content">
+        
           <div id="console_area">
-            <p id="nav_area" style="width:100%;" class="ui-widget-header">
-              <a class="button" onClick="cb_new()" href="#" title="New document (Alt+N)" tabindex="2" accesskey="N"><span class="ui-icon ui-icon-document"></span></a>
-              <a class="button" onClick="cb_open()" href="#" title="Open file for editing (Alt+O)" tabindex="3" accesskey="O"><span class="ui-icon ui-icon-folder-open"></span></a>
-              <a class="button" onClick="cb_save()" href="#" title="Save editor content to file (Alt+S)" tabindex="4" accesskey="S"><span class="ui-icon ui-icon-disk"></span></a>
-              <a class="button" onClick="cb('sel_explore')" href="#" title="Explore current selection (Alt+E)" tabindex="5" accesskey="E"><span class="ui-icon ui-icon-search"></span></a>
-              <a class="button" onClick="cb('att_explore')" href="#" title="List object's attributes (Alt+A)" tabindex="6" accesskey="A"><span class="ui-icon ui-icon-script"></span></a>
-              <a class="button" onClick="cb('show_console')" href="#" title="Show Ruby console (Alt+C)" tabindex="7" accesskey="C"><span class="ui-icon ui-icon-wrench"></span></a>
-              <a class="button" onClick="javascript:printMe('console');" href="#" title="Print code (Alt+P)" tabindex="8" accesskey="P"><span class="ui-icon ui-icon-print"></span></a>
-              &nbsp;
-              <select id="snippets" tabindex="9" title="Insert snippets at cursor" style="vertical-align:top;margin:2px;width:200px;">
+          
+            <textarea id="console" style="width: 100%;" wrap="off" onChange="c=true;" tabindex="1" rows="20" cols="80"></textarea>
+            
+          </div> <!-- #console_area -->
+          
+          <div id="exec_area">            
+            
+              <div class="controlgroup" style="height:30px;margin: 10px 0;">
+    
+                <a class="button" onClick="cb_exec()" href="#" title="Execute code in SketchUp (Alt+R)" tabindex="12" accesskey="R"><span class="ui-icon ui-icon-play"></span></a>
+                <a class="button" onClick="cb('undo')" href="#" title="Undo last action in SketchUp (Alt+U)" tabindex="13" accesskey="U"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></a>
+                
+              </div> <!-- .controlgroup -->
+              
+              <select id="snippets" tabindex="9" title="Insert snippets at cursor" style="vertical-align:middle;margin-left:10px;">
 <option value="" selected="selected" disabled="disabled">Insert at cursor:</option>
               <optgroup label="Ruby Snippets">
 <option value="(0..10).each { |i|
@@ -150,200 +209,96 @@ end">Create menu items</option>
 </html>">Page template</option>
               </optgroup>
               </select>
-              &nbsp;
-              <select id="lang" tabindex="10" title="Code highlighter language" style="vertical-align:top;margin:2px;width:100px;">
+              
+              <select id="lang" tabindex="10" title="Code highlighter language" style="vertical-align:middle;margin-left:10px;">
                 <option value="" disabled="disabled">Language:</option>
                 <option value="none">None</option>
                 <option value="ruby" selected="selected">Ruby</option>
                 <option value="htmlmixed">HTML</option>
                 <option value="javascript">JavaScript</option>
                 <option value="css">CSS</option>
-                <option value="clike">C++/Java</option>
                 <option value="xml">XML</option>
-                <option value="php">PHP</option>
-              </select>
-              &nbsp;
-              <a class="button" onClick="cb_quit()" href="#" title="Quit this editor (Alt+Q)" tabindex="11" accesskey="Q"><span class="ui-icon ui-icon-close"></span></a>
-            </p>
-            <p id="save_name">
-              untitled.rb
-            </p>
-            <input type="hidden" id="save_filename" value="untitled.rb">
-            <textarea id="console" style="width: 100%;" wrap="off" onChange="c=true;" tabindex="1" rows="20" cols="80"></textarea>
-          </div>
-          <div id="exec_area">
-            <p>
-              <span id="runbutton"><a class="button" onClick="cb_exec()" href="#" title="Execute code in SketchUp (Alt+R)" tabindex="12" accesskey="R"><span class="ui-icon ui-icon-play"></span></a></span>
-              <span id="running" style="display:none;"><img src="img/loading.gif" alt="running..." title="running..." height="25" width="25"></span>
-              <a class="button" onClick="cb('undo')" href="#" title="Undo last action in SketchUp (Alt+U)" tabindex="13" accesskey="U"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></a>
-            </p>
+              </select> 
+            
+            <span id="running" style="display:none;"><img src="img/loading.gif" alt="running..." title="running..." height="20" width="20"></span>
+          
             <!-- <textarea id="results" style="height:100px; width: 100%;" readonly="readonly" tabindex="0" rows="20" cols="80"></textarea> -->
             <div id="results" style="height:100px; width: 100%; overflow:auto;" tabindex="0" ></div>
-          </div>
-        </div>
-      </div>
+            
+          </div> <!-- exec_area -->
+        
+      </div> <!-- #tabs-1 -->
+      
+    </div> <!-- #tabs -->
+    
+    <div id="option-dlg" title="Preferences" style="display:none;">
 
-      <div id="tabs-2" style="margin:5px;padding:0;">
-        <div class="wrapper">
-        <p class="browser ui-widget-header">
-          <a id="backbutton" class="button" href="javascript:if(history.length>1){history.back()};" title="Go back (Alt-B)" accesskey="B"><span class="ui-icon ui-icon-circle-arrow-w"></span></a>
-          <a id="nextbutton" class="button" href="javascript:history.forward()" title="Go forward (Alt-F)" accesskey="F"><span class="ui-icon ui-icon-circle-arrow-e"></span></a>
-          <span style="display:inline-block;vertical-align:top;margin:5px!important;">&nbsp;&nbsp;Go to:&nbsp;&nbsp;</span><select id="browselinks"  style="vertical-align:top;margin:2px;width:300px;">
-            <option value="" selected="selected" disabled="disabled">Select from list:</option>
-            <optgroup label="SketchUp API Links">
-              <option value="http://www.sketchup.com/intl/en/developer">Trimble - API Reference</option>
-              <option value="http://www.sketchup.com/intl/en/developer/docs/tutorial_geometry">Trimble - Geometry Tutorial</option>
-              <option value="http://www.alexschreyer.net/downloads/sketchup_ruby_cheatsheet_v2.pdf">SketchUp API Cheatsheet (PDF)</option>
-              <option value="http://www.martinrinehart.com/models/tutorial/tutorial_toc.html">Edges to Rubies E-Book</option>
-              <option value="http://sketchucation.com/forums/viewforum.php?f=180">SketchUcation - Developer Forum</option>
-              <option value="http://sketchucation.com/forums/viewforum.php?f=323">SketchUcation - Plugins Forum</option>
-            </optgroup>
-            <optgroup label="Ruby References">
-              <option value="http://www.ruby-doc.org/docs/">Ruby Docs</option>
-              <option value="http://www.ruby-doc.org/core-1.8.6/">Ruby 1.8.6 Core Docs</option>
-              <option value="http://www.ruby-doc.org/docs/ProgrammingRuby/">Programming Ruby</option>
-              <option value="http://www.techotopia.com/index.php/Ruby_Essentials">Ruby Essentials</option>
-              <option value="http://www.zenspider.com/Languages/Ruby/QuickRef.html">Ruby QuickRef</option>
-              <option value="http://rubylearning.com/satishtalim/tutorial.html">Ruby Tutorial</option>
-            </optgroup>
+        <h1>Preferences</h1>
+        <fieldset>
+          <legend>Code Editor</legend>
+          <p>
+           User interface style:&nbsp;&nbsp;<select id="stylesheet">
+            <option value="dark" selected="selected">Dark</option>
+            <option value="light">Light</option>
           </select>
-        </p>
-        <iframe id="ibrowser" name="ibrowser" class="webbox" width="100%" height="400px" src="" noresize="noresize" frameborder="0" onerror="return true;"></iframe>
-        </div>
-      </div>
-      
-      <div id="tabs-3">
-        <div style="height:400px;width:100%;overflow:auto;margin-right:0;" class="optbox">
-          <fieldset>
-            <legend>Code Editor</legend>
-            <p>
-             Font size:&nbsp;&nbsp;<select id="fontsize" tabindex="0">
-              <option value="8">8 pt</option>
-              <option value="9">9 pt</option>
-              <option value="10" selected="selected">10 pt</option>
-              <option value="11">11 pt</option>
-              <option value="12">12 pt</option>
-            </select>
-            </p>
-            <p>
-             <input id="indentWithTabs" type="checkbox" value=""> Indent with tabs
-            </p>
-            <p>
-             Indent size:&nbsp;&nbsp;<select id="tabsize" tabindex="1">
-              <option value="2" selected="selected">2 Spaces</option>
-              <option value="4">4 Spaces</option>
-              <option value="8">8 Spaces</option>
-            </select>
-            </p>
-            <p>
-             <input id="smartIndent" type="checkbox" value=""> Smart indenting (language dependent)
-            </p>
-            <p>
-             <input id="linenum" type="checkbox" value="true" checked="checked"> Show line numbers
-            </p>
-            <p>
-             <input id="savebackup" type="checkbox" value="true" checked="checked"> Always save backup file (with BAK ending)
-            </p>
-            <p>
-             <input id="doundo" type="checkbox" value="true" checked="checked"> Wrap entire code in single undo
-            </p>
-          </fieldset>
-          <fieldset>
-            <legend>Reference Browser</legend>
-            <p>
-             Page zoom (not 100% reliable):&nbsp;&nbsp;<select id="pzoom">
-              <option value="zoom1">50%</option>
-              <option value="zoom2">75%</option>
-              <option value="zoom3" selected="selected">100%</option>
-              <option value="zoom4">125%</option>
-            </select>
-            </p>
-          </fieldset>
-          <fieldset>
-            <legend>Design</legend>
-              <p>
-               User interface style:&nbsp;&nbsp;<select id="stylesheet">
-                <option value="dark" selected="selected">Dark</option>
-                <option value="light">Light</option>
-                <option value="blue">Blue</option>
-              </select>
-              </p>
-          </fieldset>
-          <fieldset>
-            <legend>Add Ruby Search Paths (Advanced)</legend>
-            <p>Enter any local paths here to your Ruby Standard Libraries.
-            Any non-empty fields will be added to the $LOAD_PATH variable each time this editor opens.
-            To use this, install the applicable Ruby version first (if necessary). (<a href="http://sketchucation.com/forums/viewtopic.php?f=180&t=29412" target="_blank">Reference</a>)</p>
-            <p>Path 1: <input id="loadpath1" type="text" style="width:300px;padding:2px 5px;" value="" placeholder="Sample: C:/Ruby186/lib/ruby/1.8" /></p>
-            <p>Path 2: <input id="loadpath2" type="text" style="width:300px;padding:2px 5px;" value="" placeholder="Sample: C:/Ruby186/lib/ruby/1.8/i386-mingw32" /></p>
-          </fieldset>
-          <fieldset>
-            <legend>Get Updates</legend>
-            <p><a id="updatecheck" class="button" href="#">Check for latest version</a>
-            &nbsp;and download updates <a href="http://www.alexschreyer.net/projects/sketchup-ruby-code-editor/" title="http://www.alexschreyer.net/projects/sketchup-ruby-code-editor/" target="_blank">here</a>.</p>
-          </fieldset>
-        </div>
-      </div>
+          </p>          
+          <p>
+           Font size:&nbsp;&nbsp;<select id="fontsize" tabindex="0">
+            <option value="8">8 pt</option>
+            <option value="9">9 pt</option>
+            <option value="10" selected="selected">10 pt</option>
+            <option value="11">11 pt</option>
+            <option value="12">12 pt</option>
+          </select>
+          </p>
+          <p>
+           <input id="indentWithTabs" type="checkbox" value=""> Indent with tabs
+          </p>
+          <p>
+           Indent size:&nbsp;&nbsp;<select id="tabsize" tabindex="1">
+            <option value="2" selected="selected">2 Spaces</option>
+            <option value="4">4 Spaces</option>
+            <option value="8">8 Spaces</option>
+          </select>
+          </p>
+          <p>
+           <input id="smartIndent" type="checkbox" value=""> Smart indenting (language dependent)
+          </p>
+          <p>
+           <input id="linenum" type="checkbox" value="true" checked="checked"> Show line numbers
+          </p>
+          <p>
+           <input id="savebackup" type="checkbox" value="true" checked="checked"> Always save backup file (with BAK ending)
+          </p>
+        </fieldset>
+        <fieldset>
+          <legend>SketchUp Ruby</legend>
+          <p>
+           <input id="doundo" type="checkbox" value="true" checked="checked"> Wrap entire code in single undo
+          </p>          
+          <p><b>Add Ruby Search Paths (Advanced):</b><br />
+          Enter any local paths here to your Ruby Standard Libraries.
+          Any non-empty fields will be added to the $LOAD_PATH variable each time this editor opens.
+          To use this, install the applicable Ruby version first (if necessary). 
+          (<a href="http://sketchucation.com/forums/viewtopic.php?f=180&t=29412" target="_blank">Reference</a>)</p>
+          <p>Search Path 1: <input id="loadpath1" type="text" style="width:300px;padding:2px 5px;" value="" placeholder="Sample: C:/Ruby186/lib/ruby/1.8" /></p>
+          <p>Search Path 2: <input id="loadpath2" type="text" style="width:300px;padding:2px 5px;" value="" placeholder="Sample: C:/Ruby186/lib/ruby/1.8/i386-mingw32" /></p>
+        </fieldset>
+        
+    </div> <!-- #option-dlg -->           
+    
+    <div id="about-dlg" title="About" style="display:none;">
+    
+      <h1>SketchUp Ruby Code Editor</h1>
+      <p>By: Alexander C. Schreyer (www.alexschreyer.net)</p>
+      <p>Version: <span id="version"></span></p>
+      <p>This code editor allows creating and modifying Ruby scripts directly within SketchUp. 
+      These scripts can be used to create geometry, add functionality or 
+      add data within the SketchUp 3D modeling environment.</p>    
 
-      <div id="tabs-4">
-        <div style="height:400px;width:100%;overflow:auto;margin-right:0;" class="optbox">
-        <h1>SketchUp Ruby Code Editor</h1>
-        <p><b>By: Alexander C. Schreyer<br />
-        Version: 3.2</b></p>
-        <p>This code editor allows creating and modifying Ruby scripts directly within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment.</p>
-        <p>
-         This editor was originally an extension of Jim Folz's excellent
-				 <a href="http://sketchuptips.blogspot.com/2007/08/plugin-webconsolerb.html" title="http://sketchuptips.blogspot.com/" target="_blank">Web Console</a> plugin.
-         I modified it mainly for two reasons: When I code, I permanently need to look up documentation.
-         To fix this, I added a bunch of reference webpages to a browser in a tab. There is also now a code-completion
-         feature (click CTRL-SPACE to activate). The other reason
-         was that I wanted it to behave a bit more like a real code editor, so I added a bit of <a href="http://jqueryui.com/" target="_blank">jQuery</a> magic
-         to make it look good and have some additional features. The editor now also uses the <a href="http://codemirror.net" target="_blank">Codemirror 3.1</a> syntax highlighter to make the code more readable.
-        </p>
-				<p>Contributors: Jim Folz, Dan Rathbun and others at SCF.</p>
-        <p>
-          <b>At this point, this editor has the following features:</b>
-        </p>
-        <ul>
-          <li>Execute multiline Ruby code directly in SketchUp</li>
-          <li>Open and save files of any size</li>
-          <li>Fast opening of large files</li>
-          <li>Nice and clean user interface</li>
-          <li>Tab key works as expected in editor (inserts spaces or tabs)</li>
-          <li>Indenting/dedenting of code blocks</li>
-          <li>Dropdown with code snippets inserts snippets at cursor</li>
-          <li>Code-completion for SU classes and methods (click CTRL-SPACE to activate)</li>
-          <li>On save, a backup file can be created</li>
-          <li>Text size dropdown selects editor font size</li>
-          <li>Line numbering in editor</li>
-          <li>Matching brackets highlighting</li>
-          <li>Undo in editor</li>
-          <li>Undo (of code execution) button next to run button</li>
-          <li>Single undo for entire code or multiple undo steps</li>
-          <li>Results window keeps track of history</li>
-          <li>Reliable editor dialog resizing</li>
-          <li>Tab and accesskey navigation</li>
-          <li>Reference web browser for common websites</li>
-          <li>Browser zoom (a little buggy!)</li>
-          <li>Style changer for user interface</li>
-          <li>Buttons to explore selection object properties and object attributes</li>
-          <li>Button for direct access to the Ruby console</li>
-          <li>Clean printing of code</li>
-          <li>Version update checking</li>
-        </ul>
-        <p>
-         <b>Issues:</b>
-        </p>
-        <ul>
-         <li>Sometimes doesn't work when other code editors are running in SketchUp - Just restart SketchUp if there are problems</li>
-        </ul>
-        <p>For feedback and feature suggestions, visit <a href="http://www.alexschreyer.net/projects/sketchup-ruby-code-editor" title="http://www.alexschreyer.net/projects/sketchup-ruby-code-editor" target="_blank">my webpage</a> and leave a comment.</p>
-        </div>
-      </div>
-      
-    </div>
+    </div> <!-- #about-dlg -->
 
-  </div>
+  </div>  <!-- #wrap -->
     
   </body>
 </html>

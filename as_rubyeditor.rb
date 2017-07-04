@@ -101,10 +101,13 @@ History:        1.0 (2/3/2010):
                     - Proper markClean handling
                   3.2 (4/25/2013)
                     - Reorganized files and folders
-                  TBD:
+                  4.0 (TBD):
+                    - Updated jQuery, jQueryUI, codemirror
+                    - Code cleanup
+                    - Fixed loading code
                     - Added preloading of $LIBRARY_PATH items
                     - Fixed recent file bug. Opens in correct folder now
-                    - Code cleanup
+
 
 
 
@@ -188,22 +191,41 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 =end
 
 
-# =========================
+# ========================
 
 
-require 'sketchup'
-require 'extensions'
+require 'sketchup.rb'
+require 'extensions.rb'
 
 
-# =========================
+# ========================
 
 
-as_rubyeditor = SketchupExtension.new "Ruby Code Editor", "as_rubyeditor/as_rubyeditor.rb"
-as_rubyeditor.copyright= 'Copyright 2010-2014 Alexander C. Schreyer, GPL License'
-as_rubyeditor.creator= 'Alexander C. Schreyer, www.alexschreyer.net'
-as_rubyeditor.version = '3.2'
-as_rubyeditor.description = "This code editor allows creating and modifying Ruby (and other) scripts within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment."
-Sketchup.register_extension as_rubyeditor, true
+module AS_Extensions
+
+  module AS_RubyEditor
+  
+    EXTVERSION            = "4.0"
+    EXTTITLE              = "Ruby Code Editor"
+    EXTNAME               = "as_rubyeditor"
+    
+    @extdir = File.dirname(__FILE__)
+    @extdir.force_encoding('UTF-8') if @extdir.respond_to?(:force_encoding)
+    EXTDIR = @extdir
+    
+    loader = File.join( EXTDIR , EXTNAME , "as_rubyeditor.rb" )
+   
+    extension             = SketchupExtension.new( EXTTITLE , loader )
+    extension.copyright   = "Copyright 2010-#{Time.now.year} Alexander C. Schreyer"
+    extension.creator     = "Alexander C. Schreyer, www.alexschreyer.net"
+    extension.version     = EXTVERSION
+    extension.description = "This code editor simplifies writing and modifying Ruby (and other) scripts within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment."
+    
+    Sketchup.register_extension( extension , true )
+         
+  end  # module AS_RubyEditor
+  
+end  # module AS_Extensions
 
 
-# =========================
+# ========================
