@@ -22,87 +22,117 @@ var tmp = '';
 
 // Generic callback function
 function cb(name, args) {
+
   window.location='skp:'+name+'@'+args;
+  
 }
 
 
 // Initialize callback
 function cb_initialize() {
+
   window.location = "skp:new";
+  
 }
 
 
 // New file callback
 function cb_new() {
+
   // Clear editor and load default snippet
   var a = true
   if (!editor.isClean()) {
     a = confirm("Changes will be lost. Clear editor?");
   }
   if (a) window.location = "skp:new";
+  
 }
 
 
 // Open file callback
 function cb_open( loc ) {
+
   // Load a file into the editor
   var a = true
   if (!editor.isClean()) {
     a = confirm('Changes have not been saved. Load a file?')
   }
   if (a) window.location = 'skp:load@'+loc;
+  
+}
+
+
+// Save As file callback
+function cb_save_as() {
+
+  // First save to textbox
+  editor.save();
+  // Set to true if backup option is checked
+  window.location = "skp:save@"+$('#savebackup').is(':checked')+','+'true';
+  
 }
 
 
 // Save file callback
 function cb_save() {
+
   // First save to textbox
   editor.save();
   // Set to true if backup option is checked
-  window.location = "skp:save@"+$('#savebackup').is(':checked');
+  window.location = "skp:save@"+$('#savebackup').is(':checked')+','+'false';
+  
 }
 
 
 // Execute callback
 function cb_exec() {
+
   // First save to textbox
   editor.save();
-  $('#runbutton').hide();
-  $('#running').show();
-  window.location = "skp:exec@"+$('#doundo').is(':checked');
-  $('#running').hide();
-  $('#runbutton').show();
+  
+  // Need to add timeouts so that everything show up and hides properly
+  window.setTimeout ( function() {
+    $('.controlgroup').controlgroup( "disable" );
+    $('#running').show();
+  } , 10 );
+  window.setTimeout ( function() {
+    // Execute the code
+    window.location = "skp:exec@"+$('#doundo').is(':checked');
+    $('#running').hide();
+    $('.controlgroup').controlgroup( "enable" );
+  } , 20 );
+  
 }
 
 
 // Quit dialog callback
 function cb_quit() {
-  // var a = true
-  // if (!editor.isClean()) {
-  //   a = confirm("Changes have not been saved. Quit this editor?")
-  // }
-  // if (a) window.location = "skp:quit";
 
   // Closing handled by Ruby side now
   window.location = "skp:quit@"+editor.isClean();
+  
 }
 
 
 // Add content to the results area and scroll upward
 function addResults(txt) {
+
   $('#results').append('<p>' + txt + '</p>');
   // Scroll to some very large number to move bottom upward
   $('#results').scrollTop(9999);
+  
 }
 
 
 // Add file names to MRU
 function updateMRU() {
+
   $("#mru").empty();
   for (i = 0; i < 5; i++) {
     $("#mru").append("<li><a href='#' onClick=\"cb_open('" + arguments[i] + "');\">" + arguments[i].replace(/^.*[\\\/]/, '') + "</a></li>"); 
   };
   $( "#menu" ).menu( "refresh" );
+  
 }
 
 
@@ -117,7 +147,7 @@ $(document).ready(function(){
   
   
   // Set the menu up at the top of the page
-  $( "#menu" ).menu({position: {at: "left bottom"}});
+  $( "#menu" ).menu({position: {at: "left bottom"}}); 
   
   
   // Set up jQuery UI About dialog        
@@ -127,7 +157,16 @@ $(document).ready(function(){
     buttons: { Ok: function() { $( this ).dialog( "close" ); }
     }
   });
-  
+
+
+  // Set up jQuery UI About dialog        
+  $( "#shorts-dlg" ).dialog({ 
+    autoOpen: false,
+    modal: true, 
+    buttons: { Ok: function() { $( this ).dialog( "close" ); }
+    }
+  });
+    
   
   // Set up jQuery UI Preferences dialog
   $( "#option-dlg" ).dialog({ 
@@ -149,9 +188,10 @@ $(document).ready(function(){
 
 
   // Start the CodeMirror editor and attach it to text area
+  // Also set up key shortcuts
   editor = CodeMirror.fromTextArea(document.getElementById("console"), {
     mode: 'ruby',
-    theme: 'ambiance',
+    theme: 'eclipse',
     tabindex: 1,
     smartIndent: false,
     lineNumbers: true,
@@ -159,10 +199,19 @@ $(document).ready(function(){
     highlightSelectionMatches: true,
     matchBrackets: true,
     styleActiveLine: true,
+    scrollbarStyle: "simple",
     extraKeys: {
       'Ctrl-Space' : 'autocomplete',
       'Tab' : 'indentMore',
-      'Shift-Tab' : 'indentLess'
+      'Shift-Tab' : 'indentLess',
+      "Alt-F" : "findPersistent",
+      'Ctrl-N' : function(cm) { cb_new() },
+      'Ctrl-O' : function(cm) { cb_open() },
+      'Ctrl-S' : function(cm) { cb_save() },
+      'Ctrl-P' : function(cm) { printEditor() },
+      'Ctrl-R' : function(cm) { cb_exec() },
+      'Ctrl-U' : function(cm) { cb('undo') },
+      'Ctrl-X' : function(cm) { cb_quit() }
     }
   });
   
@@ -181,7 +230,7 @@ $(document).ready(function(){
 
   // Blur the menu when editor gets focus
   editor.on("focus", function() {
-    $( "#menu" ).menu( "blur" );
+    $( "#menu" ).menu( "collapseAll", null, true );
   });
 
 
@@ -254,8 +303,7 @@ $(document).ready(function(){
     var size = $('#fontsize').val();
     $('.CodeMirror').css('font-size',size+'pt');
     $.cookie('fontsize', size, { path: '/', expires: 365 });
-  });
-  
+  });  
 
 
   // TABS:
@@ -388,6 +436,7 @@ $(document).ready(function(){
 
   // Insert snippets from dropdown at cursor
   $('#snippets').change(function(){
+  
     field = $('#snippets');
     pos = editor.getCursor();
     editor.replaceSelection(field.val());
@@ -395,11 +444,14 @@ $(document).ready(function(){
     editor.setCursor(pos);
     // Reset dropdown to first option
     field.val($('option:first', field).val());
+    editor.focus();
+    
   });
 
 
   // Change editor code languages dropdown
   $("#lang").change(function() {
+  
     editor.setOption('mode', $("#lang").val());
     // Disable run buttons if it's not Ruby
     if ($("#lang").val() == "ruby") {
@@ -408,7 +460,8 @@ $(document).ready(function(){
       $( "#exec_area a" ).button( "option", "disabled", true );
     };
     // Refresh the editor so that the color changes take effect immediately
-    editor.refresh();
+    editor.refresh(); 
+    
   });  
 
 
@@ -419,17 +472,20 @@ $(document).ready(function(){
 //========== Print code ========================
 
 
-function printMe(container) {
-  var DocumentContainer = document.getElementById(container);
-  var WindowObject = window.open("","PrintWindow","width=500,height=500,top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes","false");
-  // TODO: Doesn't create plain text on mac:
-  WindowObject.document.open("text/plain");
-  WindowObject.document.writeln("FILE NAME: "+$('#save_filename').val());
-  WindowObject.document.writeln("====================================");
-  WindowObject.document.writeln("");
-  WindowObject.document.writeln(editor.getValue().replace(/\r?\n|\r/g, "\r\n"));
-  WindowObject.document.close();
-  WindowObject.focus();
-  WindowObject.print();
-  WindowObject.close();
+function printEditor() {
+
+  // Render the entire code temporarily so that we can print it.
+  var currMargin = editor.getOption( 'viewportMargin' );
+  var currWrap = editor.getOption( 'lineWrapping' );
+  editor.setOption( 'viewportMargin' , Infinity );
+  editor.setOption( 'lineWrapping' , true );
+  editor.refresh();
+  
+  window.print();
+  
+  // Reset temporary options
+  editor.setOption( 'viewportMargin' , currMargin );
+  editor.setOption( 'lineWrapping' , currWrap );
+  editor.refresh();
+  
 };

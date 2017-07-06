@@ -13,8 +13,8 @@ Author :        Alexander Schreyer, www.alexschreyer.net, mail@alexschreyer.net
 Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
-Version:        3.2
-Date :          4/25/2013
+Version:        4.0
+Date :          TBD
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
                 creating and modifying Ruby (and other) scripts within SketchUp.

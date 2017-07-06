@@ -432,14 +432,12 @@ background-image:none;}
 
 body{background-color:#eee;}
 h1{color:#007fff;}
-#console{color:#fff;border:1px solid #999;background:url(../../img/background.gif) repeat;}
 #results{background-color:#eee;color:#000;}
 #results .hl{color:#007fff;}
 fieldset{border:1px solid #999;}
 legend{color:#333;}
 select,input{background-color:#eee;color:#000;}
 option{background-color:#fff;}
-
 
 .cm-rb-su-class {color:#c0c;}
 .cm-rb-su-method {color:#ff8c00;}

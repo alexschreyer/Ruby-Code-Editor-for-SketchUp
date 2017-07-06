@@ -1,4 +1,5 @@
-/* http://meyerweb.com/eric/tools/css/reset/    v2.0 | 20110126   License:none (public domain)*/
+/*  Reset CSS*/
+/* http://meyerweb.com/eric/tools/css/reset/    v2.0 | 20110126   License:none (public domain) */
 html,body,div,span,applet,object,iframe, h1,h2,h3,h4,h5,h6,p,blockquote,pre, a,abbr,acronym,address,big,cite,code, del,dfn,em,img,ins,kbd,q,s,samp, small,strike,strong,sub,sup,tt,var, b,u,i,center, dl,dt,dd,ol,ul,li, fieldset,form,label,legend, table,caption,tbody,tfoot,thead,tr,th,td, article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary, time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
 /* HTML5 display-role reset for older browsers */
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;}
@@ -12,16 +13,14 @@ table{border-collapse:collapse;border-spacing:0;}
 body{ margin:0; padding:0; font:normal 10pt Corbel,Verdana,Helvetica,sans-serif; background-color:#000; overflow:hidden; min-width:700px; }
 #wrap{ margin:0; padding:0; overflow:hidden; min-width:750px; }
 #nav_area{height:30px;margin:10px 0 5px;padding:0;display:inline-block;}
-
 h1{ font-size:1.4em; font-weight: bold; margin:10px 0; color:#F6982A;}       
 p{ margin:10px 0; padding:0; }
-
+strong, b {font-weight:bold;}
+ul {margin:10px;}
 .tab-content {margin:5px!important;padding:0!important;}
-
 #results{resize:none;background-color:#333;color:#fff;border:0;word-wrap: break-word;}
 #results p{margin:0;}
 #results .hl{font-weight:bold;color:rgb(255,255,0)}
-
 fieldset{margin-bottom:10px;border:1px solid #999;padding:5px 10px;}
 legend{font-weight:bold;color:#ccc;}
 input, select {border:none;background-color:#666;color:#fff;padding:2px;}
@@ -43,10 +42,16 @@ textarea{overflow:auto;}
 #menu.ui-menu > li{width:auto !important;}
 #menu.ui-menu > li {display:block; float: left!important;}
 #menu.ui-menu ul li{display:block; float: none;}
-#menu.ui-menu ul li ul{left:2em !important; width:150%;}
+#menu.ui-menu ul li ul{left:3em !important; width:150%;}
 #menu.ui-menu ul li ul li{width:auto;clear:both;}
 #menu.ui-menu ul li ul li a{padding-left:5px;!important;}
 #menu.ui-menu > li{margin:5px!important; padding:0!important;}
 #menu.ui-menu > li > a{display:block; clear:both; overflow:hidden;}
 #menu.ui-menu .ui-menu-icon{margin-top:0.3em !important;}
 #menu.ui-menu .ui-menu .ui-menu li{float:left;    display:block;}
+
+/* Print adjustments */
+@media print {
+  .CodeMirror { height:auto!important; overflow:visible; } 
+  #tabs ul, #autoplete, #nav, #exec_area {display:none}
+}

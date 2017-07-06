@@ -4,10 +4,10 @@
 # =========================
 
 
-require 'sketchup'
+require 'sketchup.rb'
 
 
-# =========================
+## =====================
 
 
 module AS_Extensions
@@ -21,270 +21,359 @@ module AS_Extensions
 
         # Initialize class and callbacks
         def initialize
-
+        
+        
+          ## =====================
 
           ## Set some variables
 
-          # Get platform info
-          @as_su_os = (Object::RUBY_PLATFORM =~ /mswin/i) ? 'windows' :
-            ((Object::RUBY_PLATFORM =~ /darwin/i) ? 'mac' : 'other')
-
-          # Get plugin's directory
+          # Get this file's directory
           @base_dir = File.dirname(__FILE__)
+          
           # Get user directory
           @user_dir = (ENV['USERPROFILE'] != nil) ? ENV['USERPROFILE'] :
             ((ENV['HOME'] != nil) ? ENV['HOME'] : @base_dir )
+            
           # Get working directory from last file - set to user directory otherwise
           @last_file = Sketchup.read_default "as_RubyCodeEditor", "last_file"
-          if @last_file != nil
-            @snip_dir = File.dirname(@last_file)
-          else
-            @snip_dir = @user_dir
-          end
-          # Clean up a bit
-          @snip_dir = @snip_dir.tr("\\","/") + "/"
-
-          # Initial code snippet - load from file
-          loadcode = File.readlines(File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'templates' , 'default.rb' ))
-          loadcode.each{ |i| i.gsub!(/\n/, '') }
-          @initCode = loadcode.join('\n')
+          @last_file != nil ? @snip_dir = File.dirname(@last_file) : @snip_dir = @user_dir
           
-          ## Set up the WebDialog
+          
+          ## =====================
+          
+          ## Set up the WebDialog interface
 
+          # Dialog parameters
           super "Ruby Code Editor", false, "RubyCodeEditor", 750, 600, 100, 100, true
-          ui_loc = File.join(@base_dir , "ui.html")
-          # Fix directory name on Win
-          ui_loc.gsub!('//', "/")
+           
           # Set HTML UI file for WebDialog
-          set_file(ui_loc)
+          ui_loc = File.join( @base_dir , "ui.html" )
+          set_file( ui_loc )
           navigation_buttons_enabled = false
           min_width = 750
           min_height = 600
+          
+          
+          ## =====================
+          
+          ## Show the dialog and run the new routine
 
+          show do
+          
+            # Set version number in about dlg
+            execute_script("var rceVersion = #{AS_RubyEditor::EXTVERSION.to_s}")
+            execute_script("$('#version').text( rceVersion )")
 
-          ## Callback to execute Ruby code in SketchUp
-
-          add_action_callback("exec") do |dlg, params|
-            dlg.execute_script("addResults('Running the code...')")
-            v = dlg.get_element_value('console').strip
-            # Force encoding for non-UTF text (e.g. in China)
-            v.force_encoding('UTF-8')
-            # puts v
-            r = nil
-            begin
-              # Should we wrap everything in an undo?
-              if params == 'true'
-                Sketchup.active_model.start_operation "RubyEditor"
-              end
-              begin # evaluation
-                r = eval v
-              rescue => e
-                r = e
-                raise # pass to outer rescue clause
-              end # evaluation
-            rescue
-              Sketchup.active_model.abort_operation
-              r = 'Run aborted. Error: ' + e
-            else # only do if NO errors
-              if params == 'true'
-                Sketchup.active_model.commit_operation
-              end
-            ensure # always do this
-              r!=nil ? r = r.to_s : r='Nil result (no result returned or run failed)'
-              p r
-              r.gsub!(/ /, "&nbsp;")
-              r.gsub!(/\n/, "<br>")
-              r.gsub!(/'/, "&rsquo;")
-              r.gsub!(/`/, "&lsquo;")
-              r.gsub!(/</, "&lt;")
-              dlg.execute_script("addResults('Done. Ruby says: <span class=\\'hl\\'>#{r}</span>')")
+            # Add Ruby paths to loadpath variable
+            lp1 = get_element_value("loadpath1")  # .gsub(%r{/}) { "//" }
+            lp2 = get_element_value("loadpath2")  # .gsub(%r{/}) { "//" }
+            if not lp1.empty?
+              $LOAD_PATH << lp1 unless $LOAD_PATH.include? lp1
             end
-          end # callback
+            if not lp2.empty?
+              $LOAD_PATH << lp2 unless $LOAD_PATH.include? lp2
+            end    
+            
+            Sketchup.status_text = "#{AS_RubyEditor::EXTTITLE} | Welcome!"      
+            
+          end  # show    
+          
+          
+          ## =====================
 
+          ## Offer a save when dialog closes
 
-          ## Callback to clear editor
+          set_on_close do
+          
+            # Some feedback
+            execute_script("addResults('Closing editor...')")
+            
+            # Handling closing confirmation in RB rather than JS
+            r = UI.messagebox "Save this file before quitting?", MB_YESNO
+            
+            if r == 6 then
+            
+              execute_script("cb_save()")
+              
+            end
+            
+            Sketchup.status_text = "#{AS_RubyEditor::EXTTITLE} | Bye!" 
+            
+          end  # set_on_close               
+
+          
+          ## =====================
+
+          ## Callback to CLEAR (NEW) editor
 
           add_action_callback("new") do |dlg, params|
-            # Use only single quotes here!
+          
+            # Get initial code snippet - load from file
+            loadcode = File.readlines(File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'templates' , 'default.rb' ))
+            # Fix newlines so that they are preserved
+            loadcode.each{ |i| i.gsub!(/\n/, '') }
+            @initCode = loadcode.join('\n')          
+          
+            # Send initial code to editor. Use only single quotes here to preserve newlines!
             script = 'editor.getDoc().setValue(\''+@initCode+'\')'
             dlg.execute_script(script)
+            
+            # Update new file names in editor
+            dlg.execute_script("$('#save_name').val('untitled.rb')")
+            dlg.execute_script("$('#file_name').text('untitled.rb')")
+            dlg.execute_script("$('#save_filepath').val('')")           
+            
+            # Reset the editor after loading
             dlg.execute_script("editor.scrollTo(0,0)")
             dlg.execute_script("addResults('Cleared the editor')")
-            dlg.execute_script("$('#save_name').text('untitled.rb')")
-            dlg.execute_script("$('#save_filename').val('untitled.rb')")
             dlg.execute_script("editor.markClean()")
             dlg.execute_script("editor.getDoc().clearHistory()")
             
-            # Update the MRU list
+            # Update the MRU list (from SU prefs)
+            # ... Load current MRU
             mru = []
             (1..5).each { |i|
                mru.push Sketchup.read_default("as_RubyCodeEditor", "mru#{i}", "" )
             }
             dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")
                              
-          end # callback
+          end  # add_action_callback("new")
+          
+          
+          ## =====================
 
-
-          ## Callback to load a file into the editor
+          ## Callback to LOAD (OPEN) a file into the editor
 
           add_action_callback("load") do |dlg, params|
-            p @snip_dir
-            # Use working directory
+            
+            # Get filename (dialog, parameter, default)
             case params
-              when 'undefined'
-                file = UI.openpanel("Open File", @snip_dir, "*.*") 
-              when 'default'
+              when 'undefined'  # No parameter supplied
+                file = UI.openpanel("Open File", @snip_dir, "*.*")
+                file.tr!("\\","/")  # Fix slashes for Windows
+              when 'default'  # Parameter "default" opens default file
                 file = File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'templates' , 'default.rb' )  
-              else
+              else  # File and path has been supplied by parameter
                 file = params
             end            
             return unless file
-            # Set file directory as current
+            
+            # Set file directory as current and get file details
             @snip_dir = File.dirname(file)
             name = File.basename(file)
             extension = File.extname(file)
-            @file = file
-            dlg.execute_script("$('#save_name').text('#{name}')")
-            dlg.execute_script("$('#save_filename').val('#{name}')")
-            if params != "true"
-              dlg.execute_script(%/document.getElementById('console').value=""/)
-            end
+            # TODO: @file = file
+            
+            # Update new file names in editor
+            dlg.execute_script("$('#save_name').val('#{name}')")
+            dlg.execute_script("$('#file_name').text('#{name}')")
+            dlg.execute_script("$('#save_filepath').val('#{file}')")
+            
+            # TODO ???
+            # if params != "true"
+            #   dlg.execute_script(%/document.getElementById('console').value=""/)
+            # end
+            
+            # Read text from file
             f = File.new(file,"r")
             text = f.readlines.join
 
-            # Encode backward slashes and single quotes in Ruby
+            # Load text into editor by encoding some parts in RB and unencoding in JS:
+            # ... Encode backward slashes and single quotes in Ruby
             text.gsub!('\\', "<84JSed>")
             text.gsub!('\'', "<25SKxw>")
             text.gsub!(/\n/, "\\n")
             text.gsub!(/\r/, "\\r")
             text.gsub!(/'\'/, '\\')
-            # Not needed now:
-            # text.gsub!(/'/, "\\\\'")
-            # Use only single quotes here!
-
-            # Load text into variable in JS and unencode the slashes and quotes
+            # ... Load text into variable in JS and unencode the slashes and quotes
             dlg.execute_script("tmp = '#{text}'")
             dlg.execute_script("tmp = tmp.replace(/<84JSed>/g,'\\\\')")
             dlg.execute_script("tmp = tmp.replace(/<25SKxw>/g,'\\'')")
             script = 'editor.setValue(tmp)'
             dlg.execute_script(script)
 
-            # Not needed now:
-            # script = 'editor.setValue(\''+text+'\')'
-            # dlg.execute_script(script)
+            # Reset the editor after loading
             dlg.execute_script("editor.scrollTo(0,0)")
             dlg.execute_script("addResults('File loaded: #{name}')")
             dlg.execute_script("editor.markClean()")
             dlg.execute_script("editor.getDoc().clearHistory()")
 
-            # Update the MRU list
+            # Update the MRU list (from SU prefs)
+            # ... Load current MRU
             mru = []
-            save_file = file.tr("\\","/")
             (1..5).each { |i|
                mru.push Sketchup.read_default("as_RubyCodeEditor", "mru#{i}", "" )
             }
-            if not mru.include?(save_file)
+            # ... Don't update if file is already in there
+            if not mru.include?(file)
               (5).downto(2) { |i|
                 Sketchup.write_default("as_RubyCodeEditor", "mru#{i}", mru[i-2].to_s ) 
               }
-              Sketchup.write_default("as_RubyCodeEditor", "mru1", save_file )           
+              Sketchup.write_default("as_RubyCodeEditor", "mru1", file )           
             end
-            dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")            
-            Sketchup.write_default "as_RubyCodeEditor", "last_file", file.tr("\\","/")
-          end # callback
+            # ... Write new MRU to editor menu
+            dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")  
+            # ... Make a note of the last file (not necessarily mru1)          
+            Sketchup.write_default "as_RubyCodeEditor", "last_file", file
+            
+          end  # add_action_callback("load")
 
 
-          ## Callback to save a file (and create a backup)
+          ## =====================
+
+          ## Callback to SAVE / SAVE AS a file (and create a backup)
 
           add_action_callback("save") do |dlg, params|
-            filename = dlg.get_element_value("save_filename")
-            file = UI.savepanel("Save File", @snip_dir, filename)
+          
+            # Extract all parameters
+            params = params.split(',')
+          
+            # Get current filename from hidden inputs
+            filename = dlg.get_element_value("save_name")
+            
+            # Get filename
+            if params[1] == 'true' or dlg.get_element_value("save_filepath") == ""
+              file = UI.savepanel("Save File", @snip_dir, filename)  # Allow to change save file in dialog
+            else
+              file = dlg.get_element_value("save_filepath")  # Get existing filename from hidden field
+            end  
             return if file.nil?
-            # Set file directory as current
+            file.tr!("\\","/")  # Fix slashes for Windows
+            
+            # Set file directory as current and get file details
             @snip_dir = File.dirname(file)
-            name = File.basename(file)
             extension = File.extname(file)
             # Add RB extension if nothing is there
-            if extension == ""
-              name = name+".rb"
-              file = file+".rb"
-            end
-            str=dlg.get_element_value("console")
+            file = file+".rb" if extension == ""
+            name = File.basename(file)
+
+            # Get text from editor and clean it up
+            str = dlg.get_element_value("console")
             str.gsub!(/\r\n/, "\n")
-            # Not needed now:
-            # str.gsub!(/'\'/, "\\")
-            # Save backup as well if file exists
-            if File.exist?(file) and params == 'true'
+            
+            # Copy current file to backup if file already exists
+            if File.exist?(file) and params[0] == 'true'
               f = File.new(file,"r")
               oldfile = f.readlines
               File.open(file+".bak", "w") { |f| f.puts oldfile }
             end
+            
+            # Write text to file
             File.open(file, "w") { |f| f.puts str }
+            
+            # Update new file names in editor
             dlg.execute_script("$('#save_name').text('#{name}')")
-            dlg.execute_script("$('#save_filename').val('#{name}')")
+            dlg.execute_script("$('#file_name').text('#{name}')")
+            dlg.execute_script("$('#save_filepath').val('#{file}')")
+            
+            # Reset the editor
             dlg.execute_script("editor.markClean()")
             dlg.execute_script("addResults('File saved: #{name}')")
 
-            # Save the saved file as most recent
-            Sketchup.write_default "as_RubyCodeEditor", "last_file", file.tr("\\","/")
-          end # callback
-
-
-          ## Offer a save when dialog closes
-
-          set_on_close do
-            execute_script("addResults('Closing editor...')")
-            result = UI.messagebox "Save this file before quitting?", MB_YESNO
-            if result == 6 then
-              filename = get_element_value("save_filename")
-              file = UI.savepanel("Save File", @snip_dir, filename)
-              return if file.nil?
-              # Set file directory as current
-              @snip_dir = File.dirname(file)
-              name = File.basename(file)
-              extension = File.extname(file)
-              # Add RB extension if nothing is there
-              if extension == ""
-                name = name+".rb"
-                file = file+".rb"
-              end
-              # Need to copy editor to textarea before we pull data
-              execute_script("editor.save()")
-              str=get_element_value("console")
-              str.gsub!(/\r\n/, "\n")
-              # Save backup as well if file exists - always here...
-              if File.exist?(file)
-                f = File.new(file,"r")
-                oldfile = f.readlines
-                File.open(file+".bak", "w") { |f| f.puts oldfile }
-              end
-              File.open(file, "w") { |f| f.puts str }
-
-              # Save the saved file as most recent
-              Sketchup.write_default "as_RubyCodeEditor", "last_file", file.tr("\\","/")
+            # Update the MRU list (from SU prefs)
+            # ... Load current MRU
+            mru = []
+            (1..5).each { |i|
+               mru.push Sketchup.read_default("as_RubyCodeEditor", "mru#{i}", "" )
+            }
+            # ... Don't update if file is already in there
+            if not mru.include?(file)
+              (5).downto(2) { |i|
+                Sketchup.write_default("as_RubyCodeEditor", "mru#{i}", mru[i-2].to_s ) 
+              }
+              Sketchup.write_default("as_RubyCodeEditor", "mru1", file )           
             end
-          end
+            # ... Write new MRU to editor menu
+            dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")  
+            # ... Make a note of the last file (not necessarily mru1)          
+            Sketchup.write_default "as_RubyCodeEditor", "last_file", file
+            
+          end  # add_action_callback("save")
+          
+
+          ## =====================
+
+          ## Callback to EXECUTE Ruby code in SketchUp
+
+          add_action_callback("exec") do |dlg, params|
+          
+            # Provide some status text
+            dlg.execute_script( "addResults('Running the code...')" )
+            Sketchup.status_text = "#{AS_RubyEditor::EXTTITLE} | Running the code..."
+            
+            # Get the code from the editor and encode it
+            v = dlg.get_element_value('console').strip
+            # ... Force encoding for non-UTF text (e.g. in China)
+            v.force_encoding('UTF-8')
+            
+            # Execute the code with eval and rescue if error
+            r = nil                                
+            begin
+              # ... Wrap everything in single undo if desired
+              Sketchup.active_model.start_operation "RCE Code Run" if params == 'true'
+              begin  # ... Evaluation
+                r = eval v
+              rescue => e
+                r = e
+                raise  # ... Pass to outer rescue clause if error
+              end  
+            rescue  # ... If error
+              Sketchup.active_model.abort_operation
+              r = 'Run aborted. Error: ' + e
+            else  # ... Commit process if no errors
+              Sketchup.active_model.commit_operation if params == 'true'
+            ensure  # ... Always do this
+              r!=nil ? r = r.to_s : r='Nil result (no result returned or run failed)'
+              p r  # ... Also return result to console
+              # ... Format for HTML box
+              r.gsub!(/ /, "&nbsp;")
+              r.gsub!(/\n/, "<br>")
+              r.gsub!(/'/, "&rsquo;")
+              r.gsub!(/`/, "&lsquo;")
+              r.gsub!(/</, "&lt;")
+              
+              # Provide some status text and return result
+              dlg.execute_script("addResults('Done running code. Ruby says: <span class=\\'hl\\'>#{r}</span>')")
+              Sketchup.status_text = "#{AS_RubyEditor::EXTTITLE} | Done running code"
+              
+            end
+            
+          end  # add_action_callback("exec")          
 
 
-          ## Callback to close the dialog
+          ## =====================
 
-          add_action_callback("quit") { |dlg, params|
+          ## Callback to CLOSE the dialog
+
+          add_action_callback("quit") do |dlg, params|
+          
             dlg.close
-          }
+            
+          end  # add_action_callback("quit")
 
 
-          ## Callback to undo the last grouped code execution
+          ## =====================
+
+          ## Callback to UNDO the last grouped code execution
 
           add_action_callback("undo") do |dlg, params|
+          
             Sketchup.undo
+            
             dlg.execute_script("addResults('Last step undone')")
-          end # callback
+            Sketchup.status_text = "#{AS_RubyEditor::EXTTITLE} | Last step undone"
+            
+          end  # add_action_callback("undo")
 
 
-          ## Callback to explore current selection
+          ## =====================
+          
+          ## Callback to EXPLORE current SELECTION
 
           add_action_callback("sel_explore") do |dlg, params|
+          
             sel = Sketchup.active_model.selection
+            
             mes = ""
             mes += "#{sel.length} "
             mes += sel.length == 1 ? "entity" : "entities"
@@ -301,14 +390,20 @@ module AS_Extensions
               mes += "Center location: #{sel[i].bounds.center}\n"
               mes += "\n"
             }
+            
             UI.messagebox mes , MB_MULTILINE, "Explore Current Selection"
-          end # callback
+            
+          end  # add_action_callback("sel_explore")
 
 
-          ## Callback to explore current selection's attributes
+          ## =====================
+
+          ## Callback to EXPLORE current selection's ATTRIBUTES
 
           add_action_callback("att_explore") do |dlg, params|
+          
             sel = Sketchup.active_model.selection
+            
             mes = ""
             mes += "#{sel.length} "
             mes += sel.length == 1 ? "entity" : "entities"
@@ -329,52 +424,43 @@ module AS_Extensions
               end
               mes += "\n"
             }
+            
             UI.messagebox mes , MB_MULTILINE, "Explore Current Selection's Attributes"
-          end # callback
+            
+          end  # add_action_callback("att_explore")
 
 
-          ## Callback to show Ruby console
+          ## =====================
+          
+          ## Callback to show RUBY CONSOLE
 
           add_action_callback("show_console") do |dlg, params|
+          
             Sketchup.send_action "showRubyPanel:"
-          end # callback
+            
+          end  # add_action_callback("show_console")
           
           
-          ## Callback to show Help dialog
+          ## =====================
+          
+          ## Callback to show HELP dialog in browser
 
           add_action_callback("help") do |dlg, params|
+          
             AS_RubyEditor::browser( "#{AS_RubyEditor::EXTTITLE} - Help" , "https://alexschreyer.net/projects/sketchup-ruby-code-editor/" )
-          end # callback          
+            
+          end  # add_action_callback("help")          
 
 
-          ## Callback to show Browser dialog
+          ## =====================
+
+          ## Callback to show REFERENCE BROWSER dialog
 
           add_action_callback("browser") do |dlg, params|
+          
             AS_RubyEditor::browser( "#{AS_RubyEditor::EXTTITLE} - Reference Browser" , File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'ui-browser.html' ) , true )
-          end # callback  
-
-
-          ## Show the dialog and insert sample code
-
-          show do
-            script = 'editor.setValue(\''+@initCode+'\')'
-            execute_script(script)
-            # execute_script("document.getElementById('console').value=''")
-            # execute_script("editor.setValue('#{@initCode}')")
-            # Set version number in dialog
-            execute_script("var rceVersion = #{AS_RubyEditor::EXTVERSION.to_s}")
-            execute_script("$('#version').text( rceVersion )")
-            execute_script("editor.markClean()")
-            # Add Ruby paths to loadpath variable
-            lp1 = get_element_value("loadpath1") # .gsub(%r{/}) { "//" }
-            lp2 = get_element_value("loadpath2") # .gsub(%r{/}) { "//" }
-            if not lp1.empty?
-              $LOAD_PATH << lp1 unless $LOAD_PATH.include? lp1
-            end
-            if not lp2.empty?
-              $LOAD_PATH << lp2 unless $LOAD_PATH.include? lp2
-            end
-          end # show dialog
+          
+          end  # add_action_callback("browser")  
 
 
        end # initialize
@@ -383,19 +469,19 @@ module AS_Extensions
     end # class RubyEditor
     
     
-    # ==================
+    ## =====================
     
+    ## Show local or remote website either as a WebDialog or HtmlDialog
     
     def self.browser( title , loc , isfile = false )
-    # Show local or remote website either as a WebDialog or HtmlDialog
     
-      if Sketchup.version.to_f < 17 then  # Use old method
+      if Sketchup.version.to_f < 17 then  # Use old WebDialog method
         d = UI::WebDialog.new( title , true ,
           title.gsub(/\s+/, "_") , 1000 , 600 , 100 , 100 , true);
         d.navigation_buttons_enabled = false
         isfile ? d.set_file( loc ) : d.set_url( loc )
         d.show      
-      else
+      else  # Use new HtmlDialog
         d = UI::HtmlDialog.new( { :dialog_title => title, :width => 1000, :height => 600,
           :style => UI::HtmlDialog::STYLE_DIALOG, :preferences_key => title.gsub(/\s+/, "_") } )
         isfile ? d.set_file( loc ) : d.set_url( loc )
@@ -403,13 +489,13 @@ module AS_Extensions
         d.center
       end  
     
-    end       
+    end  # def self.browser      
     
     
-    # ========================
+    ## =====================
 
+    ## Add menu items
 
-    # Add menu items
     unless file_loaded?(__FILE__)
     
       # Add main menu items
@@ -435,12 +521,15 @@ module AS_Extensions
       # Tell SU that we loaded this file
       file_loaded(__FILE__)
       
-    end
+    end  # unless
+    
+    
+    ## =====================
 
 
-  end # module AS_RubyEditor
+  end  # module AS_RubyEditor
 
-end # module AS_Extensions
+end  # module AS_Extensions
 
 
-# =========================
+## =====================
