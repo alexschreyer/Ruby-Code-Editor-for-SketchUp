@@ -1,7 +1,7 @@
 Ruby Code Editor for SketchUp
 =============================
 
-Copyright 2010-2013, Alexander C. Schreyer
+Copyright 2010-2017, Alexander C. Schreyer
 All rights reserved
 
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -19,7 +19,7 @@ Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code 
                 These scripts can be used to create geometry, add functionality or add
                 data within the SketchUp 3D modeling environment.
                 
-Usage :         Just click on the menu item and edit away.
+Usage :         Just click on the menu item and edit away. See website for details.
 				                    
 
 How to install this plugin in SketchUp:
