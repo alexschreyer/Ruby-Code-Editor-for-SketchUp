@@ -201,8 +201,11 @@ f.close">Save to file</option>
 <option value="Sketchup.active_model.entities.add_face [0,0,0],[0,10,0],[0,10,10]">Add face</option>
 <option value="group = Sketchup.active_model.entities.add_group
 group.entities.add_line [0,0,0],[50,50,50]">Add group</option>
-<option value="an_entity.typename == ['Face'|'Edge'|'Group'|'ComponentInstance']">Check entity type</option>
+<option value="tr = Geom::Transformation.new([10,10,10])
+an_entity.transform!(tr)">Transformation</option>
+<option value="an_entity.is_a? [Sketchup::Face | ::Edge | ::Group | ::ComponentInstance ]">Check entity type</option>
 <option value="result = UI.messagebox 'Question or Alert', [MB_OK|MB_OKCANCEL|MB_ABORTRETRYCANCEL|MB_YESNOCANCEL|MB_YESNO|MB_RETRYCANCEL|MB_MULTILINE]">Messagebox</option>
+<option value="page = Sketchup.active_model.pages.add('My Page')">Add Scene (Page)</option>
 <option value="filename = UI.[openpanel|savepanel] 'File', 'c:\\', '*.jpg'">Open/save dialog</option>
 <option value="version_as_number = Sketchup.version.to_f">SketchUp version</option>
 <option value="Sketchup.platform == :platform_win ? os = 'windows' : os = 'mac'">Mac or PC (SU14+)</option>
@@ -219,11 +222,10 @@ dlg.show
 dlg.center">Html dialog (SU17+)</option>
 <option value="an_entity.set_attribute 'dictionary_name', 'key', 'value'">Set attribute</option>
 <option value="value = an_entity.get_attribute 'dictionary_name', 'key'">Get attribute</option>
-<option value="unless file_loaded?(__FILE__)
-  mymenu = UI.menu('Plugins').add_submenu('My Plugin Collection')
-  mymenu.add_item('My Tool') {My_module::my_method}
-  file_loaded(__FILE__)
-end">Create menu items</option>
+<option value="mymenu = UI.menu('Plugins').add_submenu('My New Extension')
+mymenu.add_item('My Tool') { 
+  #...
+}">Create menu items</option>
               </optgroup>
               <optgroup label="HTML Snippets">
 <option value="<!DOCTYPE html>
@@ -315,7 +317,7 @@ end">Create menu items</option>
         
     </div> <!-- #option-dlg -->   
     
-    <div id="shorts-dlg" title="Editor Keyboard Shortcuts" style="display:none;">
+    <div id="shorts-dlg" title="Keyboard Shortcuts" style="display:none;">
     
       <h1>Editor Keyboard Shortcuts</h1>
       <ul>

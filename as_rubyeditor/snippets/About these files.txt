@@ -1,0 +1,6 @@
+This folder contains all of the Ruby scripts from the following book:
+
+Schreyer, A. / "Architectural Design with SketchUp" / John Wiley & Sons, Hoboken, NJ
+
+For more information, go to:
+http://sketchupfordesign.com

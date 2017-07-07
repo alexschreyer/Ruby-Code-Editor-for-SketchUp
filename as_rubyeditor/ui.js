@@ -129,7 +129,7 @@ function updateMRU() {
 
   $("#mru").empty();
   for (i = 0; i < 5; i++) {
-    $("#mru").append("<li><a href='#' onClick=\"cb_open('" + arguments[i] + "');\">" + arguments[i].replace(/^.*[\\\/]/, '') + "</a></li>"); 
+    $("#mru").append("<li><a href='#' title='" + arguments[i] + "' onClick=\"cb_open('" + arguments[i] + "');\">" + arguments[i].replace(/^.*[\\\/]/, '') + "</a></li>"); 
   };
   $( "#menu" ).menu( "refresh" );
   

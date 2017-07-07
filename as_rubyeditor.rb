@@ -1,6 +1,6 @@
 =begin
 
-Copyright 2010-2015, Alexander C. Schreyer
+Copyright 2010-2017, Alexander C. Schreyer
 All rights reserved
 
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -17,11 +17,11 @@ Version:        4.0
 Date :          TBD
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
-                creating and modifying Ruby (and other) scripts within SketchUp.
+                writing and modifying Ruby (and other) scripts within SketchUp.
                 These scripts can be used to create geometry, add functionality or add
                 data within the SketchUp 3D modeling environment.
 
-Usage :         Just click on the menu item and edit away.
+Usage :         Just click on the menu item and edit away. See website for details.
 
 History:        1.0 (2/3/2010):
                     - first version
@@ -101,41 +101,55 @@ History:        1.0 (2/3/2010):
                     - Proper markClean handling
                   3.2 (4/25/2013)
                     - Reorganized files and folders
-                  4.0 (TBD):
+                  4.0 (TBD)
+                    - Code cleanup                  
                     - Updated jQuery, jQueryUI, codemirror
-                    - Code cleanup
+                    - Updated styles
+                    - Updated code snippets 
+                    - New menu and tab UI
+                    - Ref browser and help windows use HtmlDialog now, also separate windows
                     - Fixed loading code
-                    - Added preloading of $LIBRARY_PATH items
-                    - Fixed recent file bug. Opens in correct folder now
+                    - Fixed recent file bug. Opens in current folder now  
+                    - Fixed printing  
+                    - Fixed preferences   
+                    - Fixed binding to be toplevel             
+                    - Added preloading of $LIBRARY_PATH items from preferences
+                    - Added MRU file list
+                    - Added quick save option
+                    - Added undo/redo
+                    - Added find/replace
+                    - Added ability to edit default code
+                    - Added help link to website
+                    - Improved keyboard shortcuts
+                    - Improved reference browser, updated links
 
 
+To-Do List:       - Improve SketchUp autocomplete
+                  - Add code folding option
+                  - Add line wrap option
+                  - Move settings into SU defaults instead of cookies
 
 
-
-To-Do List:     - Move settings into SU default section
-
-Isues:          - Page zoom does not work well in reference browser - just use this as a backup if the font is unreadable
-                - Occasional problems when other code editors are running in SketchUp - Just restart SketchUp
+Isues:          
 
 
 =================================================================
 
 This plugin was originally based on Jim Foz's Web Console:
 
-webconsole.rb
-
 Copyright (C) 2006 jim.foltz@gmail.com
 
 This software is free to use, copy, modify and disribute, but
-if you do, I'd like to know about it.
-This software comes with no warranty.
+if you do, I'd like to know about it. This software comes with no warranty.
 
 =================================================================
 
-This plugin uses CodeMirror 3.1:
+This plugin uses CodeMirror 5.27.4:
 http://codemirror.net/
 
-Copyright (C) 2013 by Marijn Haverbeke <marijnh@gmail.com>
+MIT License
+
+Copyright (C) 2017 by Marijn Haverbeke <marijnh@gmail.com> and others
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -154,10 +168,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-Please note that some subdirectories of the CodeMirror distribution
-include their own LICENSE files, and are released under different
-licences.
 
 =================================================================
 
@@ -187,6 +197,46 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 =================================================================
 
+This plugin uses the jQuery and jQuery UI:
+https://jqueryui.com/
+
+Copyright jQuery Foundation and other contributors, https://jquery.org/
+
+This software consists of voluntary contributions made by many
+individuals. For exact contribution history, see the revision history
+available at https://github.com/jquery/jquery-ui
+
+The following license applies to all parts of this software except as
+documented below:
+
+====
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+====
+
+Copyright and related rights for sample code are waived via CC0. Sample
+code is defined as all source code contained within the demos directory.
+
+CC0: http://creativecommons.org/publicdomain/zero/1.0/
+
 
 =end
 
@@ -208,6 +258,7 @@ module AS_Extensions
     EXTVERSION            = "4.0"
     EXTTITLE              = "Ruby Code Editor"
     EXTNAME               = "as_rubyeditor"
+    EXTDESCRIPTION        = "This code editor simplifies writing and modifying Ruby (and other) scripts within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment."
     
     @extdir = File.dirname(__FILE__)
     @extdir.force_encoding('UTF-8') if @extdir.respond_to?(:force_encoding)
@@ -219,7 +270,7 @@ module AS_Extensions
     extension.copyright   = "Copyright 2010-#{Time.now.year} Alexander C. Schreyer"
     extension.creator     = "Alexander C. Schreyer, www.alexschreyer.net"
     extension.version     = EXTVERSION
-    extension.description = "This code editor simplifies writing and modifying Ruby (and other) scripts within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment."
+    extension.description = EXTDESCRIPTION
     
     Sketchup.register_extension( extension , true )
          
