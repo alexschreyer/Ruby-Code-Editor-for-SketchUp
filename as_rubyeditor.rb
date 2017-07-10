@@ -112,12 +112,14 @@ History:        1.0 (2/3/2010):
                     - Fixed recent file bug. Opens in current folder now  
                     - Fixed printing  
                     - Fixed preferences   
-                    - Fixed binding to be toplevel             
+                    - Fixed binding to be toplevel     
+                    - Made line wrapping default        
                     - Added preloading of $LIBRARY_PATH items from preferences
                     - Added MRU file list
                     - Added quick save option
                     - Added undo/redo
                     - Added find/replace
+                    - Added code folding
                     - Added ability to edit default code
                     - Added help link to website
                     - Improved keyboard shortcuts
@@ -125,9 +127,9 @@ History:        1.0 (2/3/2010):
 
 
 To-Do List:       - Improve SketchUp autocomplete
-                  - Add code folding option
-                  - Add line wrap option
+                  - Add line wrapping option
                   - Move settings into SU defaults instead of cookies
+                  - Multi-document environment
 
 
 Isues:          

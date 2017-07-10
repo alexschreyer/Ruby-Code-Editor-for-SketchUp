@@ -195,11 +195,12 @@ $(document).ready(function(){
     tabindex: 1,
     smartIndent: false,
     lineNumbers: true,
+    lineWrapping: true,
     autofocus: 'true',
     highlightSelectionMatches: true,
     matchBrackets: true,
     styleActiveLine: true,
-    scrollbarStyle: "simple",
+    scrollbarStyle: "simple",   
     extraKeys: {
       'Ctrl-Space' : 'autocomplete',
       'Tab' : 'indentMore',
@@ -211,8 +212,12 @@ $(document).ready(function(){
       'Ctrl-P' : function(cm) { printEditor() },
       'Ctrl-R' : function(cm) { cb_exec() },
       'Ctrl-U' : function(cm) { cb('undo') },
-      'Ctrl-X' : function(cm) { cb_quit() }
-    }
+      'Ctrl-F4' : function(cm) { cb_quit() },
+      'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()) }
+    },
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+    foldGutter: { rangeFinder: new CodeMirror.fold.combine( CodeMirror.fold.brace, CodeMirror.fold.indent ) }    
   });
   
 

@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="codemirror5/addon/scroll/simplescrollbars.css">
     <link rel="stylesheet" href="codemirror5/addon/dialog/dialog.css">
     <link rel="stylesheet" href="codemirror5/addon/search/matchesonscrollbar.css">
+    <link rel="stylesheet" href="codemirror5/addon/fold/foldgutter.css">
 
     <!-- Main and jQuery UI styles -->
     <link rel=StyleSheet href="ui_main.css" type="text/css">
@@ -45,7 +46,14 @@
     <script src="codemirror5/addon/search/search.js"></script>
     <script src="codemirror5/addon/search/matchesonscrollbar.js"></script>
     <script src="codemirror5/addon/search/jump-to-line.js"></script>
+    <script src="codemirror5/addon/fold/foldcode.js"></script>    
+    <script src="codemirror5/addon/fold/foldgutter.js"></script>
+    <script src="codemirror5/addon/fold/indent-fold.js"></script>
+    <script src="codemirror5/addon/fold/brace-fold.js"></script>
+    <script src="codemirror5/addon/fold/xml-fold.js"></script>
+    <script src="codemirror5/addon/fold/comment-fold.js"></script>
     
+    <!-- Codemirror modes -->
     <script src="codemirror5/mode/css/css.js" language="javascript" type="text/javascript"></script>
     <script src="codemirror5/mode/htmlmixed/htmlmixed.js" language="javascript" type="text/javascript"></script>
     <script src="codemirror5/mode/javascript/javascript.js" language="javascript" type="text/javascript"></script>
@@ -77,7 +85,7 @@
             <li>-</li>
             <li><a href="#" onClick="printEditor();"><span class="ui-icon ui-icon-print"></span><u>P</u>rint Code</a></li>
             <li>-</li>
-            <li><a href="#" onClick="cb_quit();"><span class="ui-icon ui-icon-close"></span>E<u>x</u>it Editor</a></li>
+            <li><a href="#" onClick="cb_quit();"><span class="ui-icon ui-icon-close"></span>Exit Editor</a></li>
           </ul>
         </li>
         <li><a href="#">Edit</a>
@@ -201,6 +209,7 @@ f.close">Save to file</option>
 <option value="Sketchup.active_model.entities.add_face [0,0,0],[0,10,0],[0,10,10]">Add face</option>
 <option value="group = Sketchup.active_model.entities.add_group
 group.entities.add_line [0,0,0],[50,50,50]">Add group</option>
+<option value="all_faces = sel.grep(Sketchup::Face)">All faces in selection</option>
 <option value="tr = Geom::Transformation.new([10,10,10])
 an_entity.transform!(tr)">Transformation</option>
 <option value="an_entity.is_a? [Sketchup::Face | ::Edge | ::Group | ::ComponentInstance ]">Check entity type</option>
@@ -325,7 +334,7 @@ mymenu.add_item('My Tool') {
        	<li><strong>Ctrl/Cmd - O</strong> : Open</li>
        	<li><strong>Ctrl/Cmd - S</strong> : Save</li>
        	<li><strong>Ctrl/Cmd - P</strong> : Print Code</li>  
-       	<li><strong>Ctrl/Cmd - X</strong> : Exit Editor</li>   
+       	<li><strong>Ctrl/Cmd - F4</strong> : Exit Editor</li>   
       </ul>      
       <ul>  
        	<li><strong>Ctrl/Cmd - R</strong> : Run Code</li>
@@ -336,6 +345,7 @@ mymenu.add_item('My Tool') {
         <li><strong>Ctrl/Cmd - Z</strong> : Undo Edit</li>                
        	<li><strong>Tab</strong> : Indent More (selection)</li>
        	<li><strong>Shift - Tab</strong> : Indent Less (selection)</li>
+        <li><strong>Ctrl/Cmd - Q</strong> : Fold Code</li>
       </ul>      
       <ul>         	
        	<li><strong>Ctrl/Cmd - F</strong> : Search</li>

@@ -10,8 +10,8 @@ blockquote:before,blockquote:after, q:before,q:after{content:'';content:none;}
 table{border-collapse:collapse;border-spacing:0;}
 
 /* Main UI styles go here ,jQuery UI and color-based mods go into folders */
-body{ margin:0; padding:0; font:normal 10pt Corbel,Verdana,Helvetica,sans-serif; background-color:#000; overflow:hidden; min-width:700px; }
-#wrap{ margin:0; padding:0; overflow:hidden; min-width:750px; }
+body{ margin:0; padding:0; font:normal 10pt Corbel,Verdana,Helvetica,sans-serif; background-color:#000; overflow:hidden; min-width:500px; }
+#wrap{ margin:0; padding:0; overflow:hidden; min-width:500px; }
 #nav_area{height:30px;margin:10px 0 5px;padding:0;display:inline-block;}
 h1{ font-size:1.4em; font-weight: bold; margin:10px 0; color:#F6982A;}       
 p{ margin:10px 0; padding:0; }
@@ -28,7 +28,7 @@ input, select {border:none;background-color:#666;color:#fff;padding:2px;}
 /* Console and CodeMiroor stuff goes here */
 textarea{overflow:auto;}
 .CodeMirror{line-height:20px;font-family:Consolas,Monaco,Menlo,"Andale Mono","lucida console","Courier New",monospace !important; font-size:10pt;}
-.CodeMirror-linenumber {color:#aaa!important;}
+.CodeMirror-linenumber, .cm-comment {color:#aaa!important;}
 .cm-rb-su-class {color:#ff0;}
 .cm-rb-su-method {color:#fb0;}
 #autoplete_txt{font-family:Consolas,Monaco,Menlo,"Andale Mono","lucida console","Courier New",monospace;font-size:10pt;width:200px;}

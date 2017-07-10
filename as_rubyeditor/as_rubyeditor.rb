@@ -53,8 +53,8 @@ module AS_Extensions
           ui_loc = File.join( @base_dir , "ui.html" )
           set_file( ui_loc )
           navigation_buttons_enabled = false
-          min_width = 750
-          min_height = 600
+          min_width = 500
+          min_height = 500
           
           
           ## =====================
@@ -159,7 +159,13 @@ module AS_Extensions
               else  # File and path has been supplied by parameter
                 file = params
             end            
-            return unless file
+            if not File.exist?(file)
+              UI.messagebox "Cannot load #{File.basename(file).to_s}. This file doesn't exist (here)."
+              return
+            elsif not file
+              UI.messagebox "No valid file selected."
+              return
+            end
             
             # Set file directory as current and get file details
             @snip_dir = File.dirname(file)

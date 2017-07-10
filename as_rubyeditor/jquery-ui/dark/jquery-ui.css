@@ -440,5 +440,6 @@ legend{color:#ccc;}
 select,input{background-color:#333;color:#fff;}
 option{background-color:#333;}
 
+.CodeMirror-guttermarker-subtle {color:#aaa!important;}
 .cm-rb-su-class {color:#ff0;}
 .cm-rb-su-method {color:#fb0;}
