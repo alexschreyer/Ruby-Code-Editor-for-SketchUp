@@ -14,7 +14,7 @@ Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
 Version:        4.0
-Date :          TBD
+Date :          7/10/2017
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
                 writing and modifying Ruby (and other) scripts within SketchUp.
@@ -101,7 +101,7 @@ History:        1.0 (2/3/2010):
                     - Proper markClean handling
                   3.2 (4/25/2013)
                     - Reorganized files and folders
-                  4.0 (TBD)
+                  4.0 (7/10/2017)
                     - Code cleanup                  
                     - Updated jQuery, jQueryUI, codemirror
                     - Updated styles
@@ -112,22 +112,22 @@ History:        1.0 (2/3/2010):
                     - Fixed recent file bug. Opens in current folder now  
                     - Fixed printing  
                     - Fixed preferences   
-                    - Fixed binding to be toplevel     
+                    - Fixed eval binding to be top level (like the Ruby Console)    
                     - Made line wrapping default        
-                    - Added preloading of $LIBRARY_PATH items from preferences
+                    - Added preloading of optional $LIBRARY_PATH items from preferences
                     - Added MRU file list
                     - Added quick save option
                     - Added undo/redo
                     - Added find/replace
                     - Added code folding
                     - Added ability to edit default code
-                    - Added help link to website
+                    - Added help window (link to website)
                     - Improved keyboard shortcuts
                     - Improved reference browser, updated links
 
 
-To-Do List:       - Improve SketchUp autocomplete
-                  - Add line wrapping option
+To-Do List:       - Add line wrapping as option
+                  - Improve SketchUp autocomplete
                   - Move settings into SU defaults instead of cookies
                   - Multi-document environment
 
