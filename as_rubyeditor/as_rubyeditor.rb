@@ -40,7 +40,7 @@ module AS_Extensions
           # Get working directory from last file - set to user directory otherwise
           @last_file = Sketchup.read_default "as_RubyCodeEditor", "last_file"
           @last_file != nil ? @snip_dir = File.dirname(@last_file) : @snip_dir = @user_dir
-          
+ 
           
           ## =====================
           
@@ -562,9 +562,18 @@ module AS_Extensions
       as_rce_cmd = UI::Command.new("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new }
       # One instance only version:
       # as_rce_cmd = UI::Command.new("Ruby Code Editor") { editordlg = AS_RubyEditor::RubyEditor.new unless editordlg }
-      
-      as_rce_cmd.small_icon = "img/rce_1_16.png"
-      as_rce_cmd.large_icon = "img/rce_1_24.png"
+      if Sketchup.version.to_i >= 16         
+        if RUBY_PLATFORM =~ /darwin/
+          as_rce_cmd.small_icon = "img/tb_rubyeditor.pdf"
+          as_rce_cmd.large_icon = "img/tb_rubyeditor.pdf"
+        else
+          as_rce_cmd.small_icon = "img/tb_rubyeditor.svg"
+          as_rce_cmd.large_icon = "img/tb_rubyeditor.svg"
+        end
+      else
+        as_rce_cmd.small_icon = "img/tb_rubyeditor_16.png"
+        as_rce_cmd.large_icon = "img/tb_rubyeditor_24.png"
+      end
       as_rce_cmd.tooltip = "Ruby Code Editor"
       as_rce_cmd.status_bar_text = "Edit and run Ruby scripts in a nice-looking dialog"
       as_rce_cmd.menu_text = "Ruby Code Editor"
