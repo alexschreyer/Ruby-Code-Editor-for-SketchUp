@@ -387,20 +387,26 @@ module AS_Extensions
             mes += "#{sel.length} "
             mes += sel.length == 1 ? "entity" : "entities"
             mes += " selected\n\n"
-            sel.each_with_index { |item,i|
-              mes += "Entity: #{sel[i].to_s}\n"
-              mes += "Type: #{sel[i].typename}\n"
-              mes += "ID: #{sel[i].entityID}\n"
-              if sel[i].typename == "ComponentInstance"
-                mes += "Definition name: #{sel[i].definition.name}\n"
-              end
-              mes += "Parent: #{sel[i].parent}\n"
-              mes += "Layer: #{sel[i].layer.name}\n"
-              mes += "Center location: #{sel[i].bounds.center}\n"
+            
+            sel.each { |e|
+            
+              # Show useful properties
+              mes += "Entity: #{e.to_s}\n"
+              mes += "Type: #{e.typename}\n"
+              mes += "ID: #{e.entityID}\n"
+              mes += "Persistent ID: #{e.persistent_id}\n" if Sketchup.version.to_f >= 17              
+              mes += "Layer: #{e.layer.name}\n"
+              mes += "Center location (x,y,z): #{e.bounds.center}\n" 
+              size = e.bounds.max - e.bounds.min
+              mes += "Size (x,y,z): #{size}\n" 
+              mes += "Definition name: #{e.definition.name}\n" if e.is_a? Sketchup::ComponentInstance
+              mes += "Parent: #{e.parent}\n"
+              
               mes += "\n"
+              
             }
             
-            UI.messagebox mes , MB_MULTILINE, "Explore Current Selection"
+            UI.messagebox mes , MB_MULTILINE, "List Current Selection's Properties"
             
           end  # add_action_callback("sel_explore")
 
@@ -417,29 +423,67 @@ module AS_Extensions
             mes += "#{sel.length} "
             mes += sel.length == 1 ? "entity" : "entities"
             mes += " selected\n\n"
-            sel.each_with_index { |item,i|
-              mes += "Entity: #{sel[i].to_s}\n"
-              if sel[i].attribute_dictionaries
-                mes += "Attribute dictionaries:\n"
+            
+            sel.each { |e|
+            
+              mes += "Entity: #{e.to_s}\n"
+              mes += "ID: #{e.entityID}\n"
+              mes += "Persistent ID: #{e.persistent_id}\n" if Sketchup.version.to_f >= 17   
+              
+              # Check for entity attributes
+              if e.attribute_dictionaries
+                mes += "Entity attribute dictionaries:\n"
                 names = ""
-                sel[i].attribute_dictionaries.each {|dic|
+                e.attribute_dictionaries.each {|dic|
                   mes += "  Dictionary name: #{dic.name}\n"
                   dic.each { | key, value |
                     mes += "    " + key.to_s + '=' + value.to_s + "\n"
                   }
                 }
               else
-                mes += "No attributes defined\n"
-              end
+                mes += "No entity attributes defined.\n"
+              end                
+              
+              # Check for component attributes
+              if e.is_a? Sketchup::ComponentInstance and e.definition.attribute_dictionaries
+                mes += "Definition attribute dictionaries:\n"
+                names = ""
+                e.definition.attribute_dictionaries.each {|dic|
+                  mes += "   Dictionary name: #{dic.name}\n"
+                  dic.each { | key, value |
+                    mes += "      " + key.to_s + '=' + value.to_s + "\n"
+                  }
+                }              
+              else
+                mes += "No definition attributes defined.\n"
+              end 
+              
               mes += "\n"
+              
             }
             
-            UI.messagebox mes , MB_MULTILINE, "Explore Current Selection's Attributes"
+            UI.messagebox mes , MB_MULTILINE, "List Current Selection's Attributes"
             
           end  # add_action_callback("att_explore")
 
 
           ## =====================
+
+          ## Callback to INSERT the selection reference
+
+          add_action_callback("insert_ref") do |dlg, params|
+          
+            ents = []
+            Sketchup.active_model.selection.each { | e |
+              # Use persistent ID when available
+              Sketchup.version.to_f < 17 ? ents << e.entityID : ents << e.persistent_id
+            }
+            dlg.execute_script("editor.replaceSelection('#{ents}')")
+            
+          end  # add_action_callback("insert_ref")
+          
+
+          ## =====================          
           
           ## Callback to show RUBY CONSOLE
 

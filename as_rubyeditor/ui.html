@@ -19,19 +19,18 @@
     <link rel="stylesheet" href="codemirror5/addon/fold/foldgutter.css">
 
     <!-- Main and jQuery UI styles -->
-    <link rel=StyleSheet href="ui_main.css" type="text/css">
-    <link class="switcher" rel=StyleSheet href="jquery-ui/light/jquery-ui.css" type="text/css">
+    <link rel="stylesheet" href="ui_main.css">
+    <link rel="stylesheet" class="switcher" href="jquery-ui/light/jquery-ui.css">
 
     <!-- Main and jQuery scripts -->
     <script type="text/javascript">
       // Try to catch all IE errors and prevent display
       window.onerror = function (e) { return true; };
-      document.frames('ibrowser').document.onerror = function (e) { return true; };
     </script>
-    <script src="jquery-ui/js/jquery-3.2.1.min.js" language="javascript" type="text/javascript"></script>
-    <script src="jquery-ui/js/jquery-ui-1.12.1.min.js" language="javascript" type="text/javascript"></script>
-    <script src="jquery-ui/js/jquery.cookie.js" type="text/javascript" language="javascript"></script>
-    <script src="ui.js" language="javascript" type="text/javascript"></script>
+    <script src="jquery-ui/js/jquery-3.2.1.min.js"></script>
+    <script src="jquery-ui/js/jquery-ui-1.12.1.min.js"></script>
+    <script src="jquery-ui/js/jquery.cookie.js"></script>
+    <script src="ui.js"></script>
 
     <!-- Codemirror scripts -->
     <script src="codemirror5/lib/codemirror.js"></script>
@@ -54,11 +53,11 @@
     <script src="codemirror5/addon/fold/comment-fold.js"></script>
     
     <!-- Codemirror modes -->
-    <script src="codemirror5/mode/css/css.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror5/mode/htmlmixed/htmlmixed.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror5/mode/javascript/javascript.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror5/mode/xml/xml.js" language="javascript" type="text/javascript"></script>
-    <script src="codemirror5/mode/ruby/ruby.js" language="javascript" type="text/javascript"></script>
+    <script src="codemirror5/mode/css/css.js"></script>
+    <script src="codemirror5/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="codemirror5/mode/javascript/javascript.js"></script>
+    <script src="codemirror5/mode/xml/xml.js"></script>
+    <script src="codemirror5/mode/ruby/ruby.js"></script>
 
     <title>Ruby Code Editor</title>
     
@@ -73,57 +72,107 @@
       <ul id="menu" accesskey="m">
         <li><a href="#">File</a>
           <ul>
-          	<li><a href="#" onClick="cb_new();"><span class="ui-icon ui-icon-document"></span><u>N</u>ew</a></li>
-            <li><a href="#" onClick="cb_open();"><span class="ui-icon ui-icon-folder-open"></span><u>O</u>pen...</a></li>
-            <li><a href="#"><span class="ui-icon ui-icon-folder-open"></span>Open Recent</a>
+          	<li><a href="#" onClick="cb_new();"
+              title="Close current file and show default Ruby code snippet. (Ctrl/Cmd+N)">
+              <span class="ui-icon ui-icon-document"></span><u>N</u>ew</a></li>
+            <li><a href="#" onClick="cb_open();"
+              title="Open a file. (Ctrl/Cmd+O)">
+              <span class="ui-icon ui-icon-folder-open"></span><u>O</u>pen...</a></li>
+            <li><a href="#"
+              title="Open from a list of last used files.">
+              <span class="ui-icon ui-icon-folder-open"></span>Open Recent</a>
               <ul id="mru"> 
                 <li><a href="#">Last opened files will appear here</a></li>
               </ul>
             </li>
-            <li><a href="#" onClick="cb_save();"><span class="ui-icon ui-icon-disk"></span><u>S</u>ave</a></li>
-            <li><a href="#" onClick="cb_save_as();"><span class="ui-icon ui-icon-disk"></span>Save As...</a></li>
+            <li><a href="#" onClick="cb_save();"
+              title="Quick save current file. (Ctrl/Cmd+S)">
+              <span class="ui-icon ui-icon-disk"></span><u>S</u>ave</a></li>
+            <li><a href="#" onClick="cb_save_as();"
+              title="Save current file.">
+              <span class="ui-icon ui-icon-disk"></span>Save As...</a></li>
             <li>-</li>
-            <li><a href="#" onClick="printEditor();"><span class="ui-icon ui-icon-print"></span><u>P</u>rint Code</a></li>
+            <li><a href="#" onClick="printEditor();"
+              title="Print code with current syntax highlighter options. (Ctrl/Cmd+P)">
+              <span class="ui-icon ui-icon-print"></span><u>P</u>rint Code</a></li>
             <li>-</li>
-            <li><a href="#" onClick="cb_quit();"><span class="ui-icon ui-icon-close"></span>Exit Editor</a></li>
+            <li><a href="#" onClick="cb_quit();"
+              title="Close this editor window. (Ctrl/Cmd+F4)">
+              <span class="ui-icon ui-icon-close"></span>Exit Editor</a></li>
           </ul>
         </li>
         <li><a href="#">Edit</a>
           <ul>
-          	<li><a href="#" onClick="editor.getDoc().undo()"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span>Undo</a></li>
-            <li><a href="#" onClick="editor.getDoc().redo()"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>Redo</a></li>
+          	<li><a href="#" onClick="editor.getDoc().undo()"
+              title="Undo last edit(s). (Ctrl/Cmd+Z)">
+              <span class="ui-icon ui-icon-arrowreturnthick-1-w"></span>Undo</a></li>
+            <li><a href="#" onClick="editor.getDoc().redo()"
+              title="Redo last edit(s).">
+              <span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>Redo</a></li>
             <li>-</li>
-            <li><a href="#" onClick="editor.execCommand('find')"><span class="ui-icon ui-icon-search"></span><u>F</u>ind</a></li>
+            <li><a href="#" onClick="editor.execCommand('find')"
+              title="Search in the editor. (Ctrl/Cmd+F)">
+              <span class="ui-icon ui-icon-search"></span><u>F</u>ind</a></li>
             <li><a href="#" onClick="editor.execCommand('findNext')">Find Next</a></li>
             <li><a href="#" onClick="editor.execCommand('findPrev')">Find Previous</a></li>          
-            <li><a href="#" onClick="editor.execCommand('replace')"><span class="ui-icon ui-icon-search"></span>Replace</a></li>
+            <li><a href="#" onClick="editor.execCommand('replace')"
+              title="Search and replace in the editor. (Shift+Ctrl/Cmd+F)">
+              <span class="ui-icon ui-icon-search"></span>Replace</a></li>
             <li><a href="#" onClick="editor.execCommand('replaceAll')">Replace All</a></li>
-            <li><a href="#" onClick="editor.execCommand('clearSearch')">Clear Search</a></li>
+            <li><a href="#" onClick="editor.execCommand('clearSearch')"
+              title="Clear all search highlighting.">
+              Clear Search</a></li>
             <li>-</li>
-            <li><a href="#" onClick="cb_open('default')">Edit Default Code</a></li>
+            <li><a href="#" onClick="cb_open('default')"
+              title="Edit the code snippet that comes up when you select 'File > New'.">
+              Edit Default Code</a></li>
            </ul>
         </li>                   
         <li><a href="#">Run</a>
           <ul>
-          	<li><a href="#" onClick="cb_exec();"><span class="ui-icon ui-icon-play"></span><u>R</u>un Code</a></li>
-            <li><a href="#" onClick="cb('undo');"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span><u>U</u>ndo</a></li>
+          	<li><a href="#" onClick="cb_exec();"
+              title="Execute code in SketchUp. (Ctrl/Cmd+R)">
+              <span class="ui-icon ui-icon-play"></span><u>R</u>un Code</a></li>
+            <li><a href="#" onClick="cb('undo');"
+              title="Undo last action in SketchUp. (Ctrl/Cmd+U)">
+              <span class="ui-icon ui-icon-arrowreturnthick-1-w"></span><u>U</u>ndo</a></li>
+          </ul>
+        </li>        
+        <li><a href="#">Selection</a>
+          <ul> 
+            <li><a href="#" onClick="cb('sel_explore');"
+              title="List available properties for current selection.">
+              <span class="ui-icon ui-icon-search"></span>List Properties</a></li>
+            <li><a href="#" onClick="cb('att_explore');"
+              title="List attributes that are stored with selected entities.">
+              <span class="ui-icon ui-icon-search"></span>List Attributes</a></li>
+            <li><a href="#" onClick="cb('insert_ref');" 
+              title="Insert array of IDs or persistent IDs (2017+) at cursor that can be used with find_entity_by_(persistent_)id">
+              <span class="ui-icon ui-icon-pencil"></span>Insert ID Reference(s)</a></li>
           </ul>
         </li>        
         <li><a href="#">Tools</a>
-          <ul>
-          	<li><a href="#" onClick="cb('show_console');"><span class="ui-icon ui-icon-search"></span>Show Ruby Console</a></li>
-            <li><a href="#" onClick="cb('sel_explore');"><span class="ui-icon ui-icon-search"></span>Explore Selection</a></li>
-            <li><a href="#" onClick="cb('att_explore');"><span class="ui-icon ui-icon-search"></span>List Selection's Attributes</a></li>
+          <ul>           
+          	<li><a href="#" onClick="cb('show_console');"
+              title="Open SketchUp's default Ruby Console (e.g. for enhanced error display).">
+              <span class="ui-icon ui-icon-script"></span>Show Ruby Console</a></li>
+            <li><a href="#" onClick="cb('browser')"
+              title="Open browser for a selection of SketchUp Ruby API and Ruby reference websites.">
+              <span class="ui-icon ui-icon-link"></span>Reference Browser</a></li>
             <li>-</li>
-            <li><a href="#" onClick="cb('browser')"><span class="ui-icon ui-icon-link"></span>Reference Browser</a></li>
-            <li>-</li>
-          	<li><a href="#" onClick="$('#option-dlg').dialog('open');"><span class="ui-icon ui-icon-gear"></span>Preferences</a></li>
+          	<li><a href="#" onClick="$('#option-dlg').dialog('open');"
+              title="Show preferences.">
+              <span class="ui-icon ui-icon-gear"></span>Preferences</a></li>
           </ul>
         </li>
         <li><a href="#">Help</a>
           <ul>
-            <li><a href="#" onClick="cb('help')"><span class="ui-icon ui-icon-help"></span>Help</a></li>
-            <li><a href="#" onClick="$('#shorts-dlg').dialog('open');"><span class="ui-icon ui-icon-info"></span>Keyboard Shortcuts</a></li>
+            <li><a href="#" onClick="cb('help')"
+              title="Opens project page on alexschreyer.net with extension details and discussions.">
+              <span class="ui-icon ui-icon-help"></span>Help</a></li>
+            <li><a href="#" onClick="$('#shorts-dlg').dialog('open');"
+              title="Lists available keyboard shortcuts.">
+              <span class="ui-icon ui-icon-info"></span>Keyboard Shortcuts</a></li>
             <li><a href="#" onClick="$('#about-dlg').dialog('open');"><span class="ui-icon ui-icon-info"></span>About</a></li>
           </ul>
         </li>            
@@ -153,12 +202,12 @@
             
               <div class="controlgroup" style="height:30px;margin: 10px 0;">
     
-                <a class="button" onClick="cb_exec()" href="#" title="Execute code in SketchUp (Alt+R)" tabindex="12" accesskey="R"><span class="ui-icon ui-icon-play"></span></a>
-                <a class="button" onClick="cb('undo')" href="#" title="Undo last action in SketchUp (Alt+U)" tabindex="13" accesskey="U"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></a>
+                <a class="button" onClick="cb_exec()" href="#" title="Execute code in SketchUp. (Ctrl/Cmd+R)" accesskey="R"><span class="ui-icon ui-icon-play"></span></a>
+                <a class="button" onClick="cb('undo')" href="#" title="Undo last action in SketchUp. (Ctrl/Cmd+U)" accesskey="U"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></a>
                 
               </div> <!-- .controlgroup -->
               
-              <select id="snippets" tabindex="9" title="Insert snippets at cursor" style="vertical-align:middle;margin-left:10px;">
+              <select id="snippets" title="Insert snippets at cursor" accesskey="I" style="vertical-align:middle;margin-left:10px;">
 <option value="" selected="selected" disabled="disabled">Insert at cursor:</option>
               <optgroup label="Ruby Snippets">
 <option value="(0..10).each { |i|
@@ -207,12 +256,13 @@ f.close">Save to file</option>
               </optgroup>
               <optgroup label="SketchUp Snippets">
 <option value="Sketchup.active_model.entities.add_face [0,0,0],[0,10,0],[0,10,10]">Add face</option>
-<option value="group = Sketchup.active_model.entities.add_group
-group.entities.add_line [0,0,0],[50,50,50]">Add group</option>
+<option value="grp = Sketchup.active_model.entities.add_group
+grp.entities.add_line [0,0,0],[50,50,50]">Add group</option>
 <option value="all_faces = sel.grep(Sketchup::Face)">All faces in selection</option>
 <option value="tr = Geom::Transformation.new([10,10,10])
 an_entity.transform!(tr)">Transformation</option>
-<option value="an_entity.is_a? [Sketchup::Face | ::Edge | ::Group | ::ComponentInstance ]">Check entity type</option>
+<option value="an_entity.is_a? [Sketchup::Face|Edge|Group|ComponentInstance]">Check entity type</option>
+<option value="mod.[find_entity_by_id|find_entity_by_persistent_id]( ... )">Find entities</option>
 <option value="result = UI.messagebox 'Question or Alert', [MB_OK|MB_OKCANCEL|MB_ABORTRETRYCANCEL|MB_YESNOCANCEL|MB_YESNO|MB_RETRYCANCEL|MB_MULTILINE]">Messagebox</option>
 <option value="page = Sketchup.active_model.pages.add('My Page')">Add Scene (Page)</option>
 <option value="filename = UI.[openpanel|savepanel] 'File', 'c:\\', '*.jpg'">Open/save dialog</option>
@@ -330,31 +380,31 @@ mymenu.add_item('My Tool') {
     
       <h1>Editor Keyboard Shortcuts</h1>
       <ul>
-       	<li><strong>Ctrl/Cmd - N</strong> : New</li>
-       	<li><strong>Ctrl/Cmd - O</strong> : Open</li>
-       	<li><strong>Ctrl/Cmd - S</strong> : Save</li>
-       	<li><strong>Ctrl/Cmd - P</strong> : Print Code</li>  
-       	<li><strong>Ctrl/Cmd - F4</strong> : Exit Editor</li>   
+       	<li><strong>Ctrl/Cmd + N</strong> : New</li>
+       	<li><strong>Ctrl/Cmd + O</strong> : Open</li>
+       	<li><strong>Ctrl/Cmd + S</strong> : Save</li>
+       	<li><strong>Ctrl/Cmd + P</strong> : Print Code</li>  
+       	<li><strong>Ctrl/Cmd + F4</strong> : Exit Editor</li>   
       </ul>      
       <ul>  
-       	<li><strong>Ctrl/Cmd - R</strong> : Run Code</li>
-       	<li><strong>Ctrl/Cmd - U</strong> : Undo Run</li>      
+       	<li><strong>Ctrl/Cmd + R</strong> : Run Code</li>
+       	<li><strong>Ctrl/Cmd + U</strong> : Undo Run</li>      
       </ul>                 
       <ul>   
-        <li><strong>Ctrl/Cmd - Space</strong> : Autocomplete</li>
-        <li><strong>Ctrl/Cmd - Z</strong> : Undo Edit</li>                
+        <li><strong>Ctrl/Cmd + Space</strong> : Autocomplete</li>
+        <li><strong>Ctrl/Cmd + Z</strong> : Undo Edit</li>                
        	<li><strong>Tab</strong> : Indent More (selection)</li>
-       	<li><strong>Shift - Tab</strong> : Indent Less (selection)</li>
-        <li><strong>Ctrl/Cmd - Q</strong> : Fold Code</li>
+       	<li><strong>Shift + Tab</strong> : Indent Less (selection)</li>
+        <li><strong>Ctrl/Cmd + Q</strong> : Fold Code</li>
       </ul>      
       <ul>         	
-       	<li><strong>Ctrl/Cmd - F</strong> : Search</li>
-       	<li><strong>Alt - F</strong> : Search (persistent)</li>
-       	<li><strong>Ctrl/Cmd - G</strong> : Find next</li>
-       	<li><strong>Shift - Ctrl - G</strong> : Find previous</li>
-       	<li><strong>Shift - Ctrl - F</strong> : Replace</li>
-       	<li><strong>Shift - Ctrl - R</strong> : Replace all</li>
-       	<li><strong>Alt - G</strong> : Jump to line</li>        
+       	<li><strong>Ctrl/Cmd + F</strong> : Search</li>
+       	<li><strong>Alt + F</strong> : Search (persistent)</li>
+       	<li><strong>Ctrl/Cmd + G</strong> : Find next</li>
+       	<li><strong>Shift + Ctrl + G</strong> : Find previous</li>
+       	<li><strong>Shift + Ctrl + F</strong> : Replace</li>
+       	<li><strong>Shift + Ctrl + R</strong> : Replace all</li>
+       	<li><strong>Alt + G</strong> : Jump to line</li>        
       </ul> 
 
     </div> <!-- #about-dlg -->            
