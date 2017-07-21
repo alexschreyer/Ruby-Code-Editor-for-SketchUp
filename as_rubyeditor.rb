@@ -133,6 +133,8 @@ History:        1.0 (2/3/2010):
                     - Added definition attribute reporting
                     - Added inserting of IDs
                     - Added more menu tooltips
+                  4.2 (TBD)
+                    - Fixed .to_l nil comparison issue
 
 
 To-Do List:       - Add line wrapping as option

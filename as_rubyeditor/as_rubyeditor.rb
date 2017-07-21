@@ -332,7 +332,7 @@ module AS_Extensions
             else  # ... Commit process if no errors
               Sketchup.active_model.commit_operation if params == 'true'
             ensure  # ... Always do this
-              r!=nil ? r = r.to_s : r='Nil result (no result returned or run failed)'
+              r === nil ? r='Nil result (no result returned or run failed)' : r = r.to_s
               p r  # ... Also return result to console
               # ... Format for HTML box
               r.gsub!(/ /, "&nbsp;")
