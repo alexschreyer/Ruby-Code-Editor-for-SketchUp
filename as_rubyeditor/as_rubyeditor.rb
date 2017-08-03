@@ -30,8 +30,8 @@ module AS_Extensions
 
           ## Set some variables
 
-          # Get this file's directory
-          @base_dir = File.dirname(__FILE__)
+          # Get this file's directory w/ backcomp for "//" in file path
+          @base_dir = File.dirname(__FILE__).gsub(%r{//}) { "/" }
           
           # Get user directory
           @user_dir = (ENV['USERPROFILE'] != nil) ? ENV['USERPROFILE'] :
@@ -312,8 +312,8 @@ module AS_Extensions
             
             # Get the code from the editor and encode it
             v = dlg.get_element_value('console').strip
-            # ... Force encoding for non-UTF text (e.g. in China)
-            v.force_encoding('UTF-8')
+            # ... Force encoding for non-UTF text (e.g. in China) w/ backcomp
+            v.force_encoding('UTF-8') if v.respond_to?(:force_encoding)
             
             # Execute the code with eval and rescue if error
             r = nil                                
