@@ -274,7 +274,7 @@ module AS_Extensions
     EXTNAME               = "as_rubyeditor"
     EXTDESCRIPTION        = "This code editor simplifies writing and modifying Ruby (and other) scripts within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment."
     
-    @extdir = File.dirname(__FILE__)
+    @extdir = File.dirname(__FILE__).gsub(%r{//}) { "/" }
     @extdir.force_encoding('UTF-8') if @extdir.respond_to?(:force_encoding)
     EXTDIR = @extdir
     
