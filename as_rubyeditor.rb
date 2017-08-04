@@ -136,6 +136,7 @@ History:        1.0 (2/3/2010):
                   4.2 (TBD)
                     - Fixed .to_l nil comparison issue
                     - Added some backcomp fixes (works down to SU8)
+                    - Error handling for invalid filetypes
 
 
 To-Do List:       - Add line wrapping as option

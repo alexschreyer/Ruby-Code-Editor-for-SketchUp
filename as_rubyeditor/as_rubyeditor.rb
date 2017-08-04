@@ -167,63 +167,65 @@ module AS_Extensions
               return
             end
             
-            # Set file directory as current and get file details
-            @snip_dir = File.dirname(file)
-            name = File.basename(file)
-            extension = File.extname(file)
-            # TODO: @file = file
+            begin
             
-            # Update new file names in editor
-            dlg.execute_script("$('#save_name').val('#{name}')")
-            dlg.execute_script("$('#file_name').text('#{name}')")
-            dlg.execute_script("$('#save_filepath').val('#{file}')")
-            
-            # TODO ???
-            # if params != "true"
-            #   dlg.execute_script(%/document.getElementById('console').value=""/)
-            # end
-            
-            # Read text from file
-            f = File.new(file,"r")
-            text = f.readlines.join
-
-            # Load text into editor by encoding some parts in RB and unencoding in JS:
-            # ... Encode backward slashes and single quotes in Ruby
-            text.gsub!('\\', "<84JSed>")
-            text.gsub!('\'', "<25SKxw>")
-            text.gsub!(/\n/, "\\n")
-            text.gsub!(/\r/, "\\r")
-            text.gsub!(/'\'/, '\\')
-            # ... Load text into variable in JS and unencode the slashes and quotes
-            dlg.execute_script("tmp = '#{text}'")
-            dlg.execute_script("tmp = tmp.replace(/<84JSed>/g,'\\\\')")
-            dlg.execute_script("tmp = tmp.replace(/<25SKxw>/g,'\\'')")
-            script = 'editor.setValue(tmp)'
-            dlg.execute_script(script)
-
-            # Reset the editor after loading
-            dlg.execute_script("editor.scrollTo(0,0)")
-            dlg.execute_script("addResults('File loaded: #{name}')")
-            dlg.execute_script("editor.markClean()")
-            dlg.execute_script("editor.getDoc().clearHistory()")
-
-            # Update the MRU list (from SU prefs)
-            # ... Load current MRU
-            mru = []
-            (1..5).each { |i|
-               mru.push Sketchup.read_default("as_RubyCodeEditor", "mru#{i}", "" )
-            }
-            # ... Don't update if file is already in there
-            if not mru.include?(file)
-              (5).downto(2) { |i|
-                Sketchup.write_default("as_RubyCodeEditor", "mru#{i}", mru[i-2].to_s ) 
+              # Set file directory as current and get file details
+              @snip_dir = File.dirname(file)
+              name = File.basename(file)
+              extension = File.extname(file)
+              
+              # Read text from file
+              f = File.new(file,"r")
+              text = f.readlines.join
+  
+              # Load text into editor by encoding some parts in RB and unencoding in JS:
+              # ... Encode backward slashes and single quotes in Ruby
+              text.gsub!('\\', "<84JSed>")
+              text.gsub!('\'', "<25SKxw>")
+              text.gsub!(/\n/, "\\n")
+              text.gsub!(/\r/, "\\r")
+              text.gsub!(/'\'/, '\\')
+              # ... Load text into variable in JS and unencode the slashes and quotes
+              dlg.execute_script("tmp = '#{text}'")
+              dlg.execute_script("tmp = tmp.replace(/<84JSed>/g,'\\\\')")
+              dlg.execute_script("tmp = tmp.replace(/<25SKxw>/g,'\\'')")
+              script = 'editor.setValue(tmp)'
+              dlg.execute_script(script)
+  
+              # Reset the editor after loading
+              dlg.execute_script("editor.scrollTo(0,0)")
+              dlg.execute_script("addResults('File loaded: #{name}')")
+              dlg.execute_script("editor.markClean()")
+              dlg.execute_script("editor.getDoc().clearHistory()")
+              
+              # Update new file names in editor
+              dlg.execute_script("$('#save_name').val('#{name}')")
+              dlg.execute_script("$('#file_name').text('#{name}')")
+              dlg.execute_script("$('#save_filepath').val('#{file}')")              
+  
+              # Update the MRU list (from SU prefs)
+              # ... Load current MRU
+              mru = []
+              (1..5).each { |i|
+                 mru.push Sketchup.read_default("as_RubyCodeEditor", "mru#{i}", "" )
               }
-              Sketchup.write_default("as_RubyCodeEditor", "mru1", file )           
+              # ... Don't update if file is already in there
+              if not mru.include?(file)
+                (5).downto(2) { |i|
+                  Sketchup.write_default("as_RubyCodeEditor", "mru#{i}", mru[i-2].to_s ) 
+                }
+                Sketchup.write_default("as_RubyCodeEditor", "mru1", file )           
+              end
+              # ... Write new MRU to editor menu
+              dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")  
+              # ... Make a note of the last file (not necessarily mru1)          
+              Sketchup.write_default "as_RubyCodeEditor", "last_file", file
+              
+            rescue Exception => e 
+            
+              UI.messagebox "Cannot open #{File.basename(file).to_s}. \n\nError: #{e}"
+            
             end
-            # ... Write new MRU to editor menu
-            dlg.execute_script("updateMRU( '#{mru[0]}' , '#{mru[1]}' , '#{mru[2]}' , '#{mru[3]}' , '#{mru[4]}' )")  
-            # ... Make a note of the last file (not necessarily mru1)          
-            Sketchup.write_default "as_RubyCodeEditor", "last_file", file
             
           end  # add_action_callback("load")
 
