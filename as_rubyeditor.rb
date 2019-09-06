@@ -1,6 +1,6 @@
 =begin
 
-Copyright 2010-2017, Alexander C. Schreyer
+Copyright 2010-2019, Alexander C. Schreyer
 All rights reserved
 
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -13,8 +13,8 @@ Author :        Alexander Schreyer, www.alexschreyer.net, mail@alexschreyer.net
 Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
-Version:        4.1
-Date :          7/18/2017
+Version:        4.2
+Date :          9/5/2019
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
                 writing and modifying Ruby (and other) scripts within SketchUp.
@@ -102,18 +102,18 @@ History:        1.0 (2/3/2010):
                   3.2 (4/25/2013)
                     - Reorganized files and folders
                   4.0 (7/10/2017)
-                    - Code cleanup                  
+                    - Code cleanup
                     - Updated jQuery, jQueryUI, codemirror
                     - Updated styles
-                    - Updated code snippets 
+                    - Updated code snippets
                     - New menu and tab UI
                     - Ref browser and help windows use HtmlDialog now, also separate windows
                     - Fixed loading code
-                    - Fixed recent file bug. Opens in current folder now  
-                    - Fixed printing  
-                    - Fixed preferences   
-                    - Fixed eval binding to be top level (like the Ruby Console)    
-                    - Made line wrapping default        
+                    - Fixed recent file bug. Opens in current folder now
+                    - Fixed printing
+                    - Fixed preferences
+                    - Fixed eval binding to be top level (like the Ruby Console)
+                    - Made line wrapping default
                     - Added preloading of optional $LIBRARY_PATH items from preferences
                     - Added MRU file list
                     - Added quick save option
@@ -133,10 +133,12 @@ History:        1.0 (2/3/2010):
                     - Added definition attribute reporting
                     - Added inserting of IDs
                     - Added more menu tooltips
-                  4.2 (TBD)
+                  4.2 (9/5/2019)
                     - Fixed .to_l nil comparison issue
                     - Added some backcomp fixes (works down to SU8)
                     - Error handling for invalid filetypes
+                    - Fixes $LOAD_PATH inclusion, now at execution
+                    - Adds proper filetype selectors to open dialog
 
 
 To-Do List:       - Add line wrapping as option
@@ -145,7 +147,7 @@ To-Do List:       - Add line wrapping as option
                   - Multi-document environment
 
 
-Isues:          
+Isues:
 
 
 =================================================================
@@ -269,28 +271,28 @@ require 'extensions.rb'
 module AS_Extensions
 
   module AS_RubyEditor
-  
-    EXTVERSION            = "4.1"
+
+    EXTVERSION            = "4.2"
     EXTTITLE              = "Ruby Code Editor"
     EXTNAME               = "as_rubyeditor"
     EXTDESCRIPTION        = "This code editor simplifies writing and modifying Ruby (and other) scripts within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment."
-    
+
     @extdir = File.dirname(__FILE__).gsub(%r{//}) { "/" }
     @extdir.force_encoding('UTF-8') if @extdir.respond_to?(:force_encoding)
     EXTDIR = @extdir
-    
+
     loader = File.join( EXTDIR , EXTNAME , "as_rubyeditor.rb" )
-   
+
     extension             = SketchupExtension.new( EXTTITLE , loader )
     extension.copyright   = "Copyright 2010-#{Time.now.year} Alexander C. Schreyer"
     extension.creator     = "Alexander C. Schreyer, www.alexschreyer.net"
     extension.version     = EXTVERSION
     extension.description = EXTDESCRIPTION
-    
+
     Sketchup.register_extension( extension , true )
-         
+
   end  # module AS_RubyEditor
-  
+
 end  # module AS_Extensions
 
 

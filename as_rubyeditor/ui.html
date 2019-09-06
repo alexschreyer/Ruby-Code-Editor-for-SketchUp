@@ -2,12 +2,12 @@
 <html>
 
   <head>
-  
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="Content-Script-Type" content="text/javascript">
     <!-- Use compatibility mode in IE to allow for newer features -->
     <meta http-equiv="x-ua-compatible" content="IE=edge">
-                            
+
     <!-- Codemirror styles -->
     <link rel="stylesheet" href="codemirror5/lib/codemirror.css">
     <link rel="stylesheet" href="codemirror5/theme/ambiance.css">
@@ -39,19 +39,19 @@
     <script src="codemirror5/addon/hint/suruby-hint.js"></script>
     <script src="codemirror5/addon/selection/active-line.js"></script>
     <script src="codemirror5/addon/scroll/simplescrollbars.js"></script>
-    <script src="codemirror5/addon/scroll/annotatescrollbar.js"></script>    
+    <script src="codemirror5/addon/scroll/annotatescrollbar.js"></script>
     <script src="codemirror5/addon/dialog/dialog.js"></script>
     <script src="codemirror5/addon/search/searchcursor.js"></script>
     <script src="codemirror5/addon/search/search.js"></script>
     <script src="codemirror5/addon/search/matchesonscrollbar.js"></script>
     <script src="codemirror5/addon/search/jump-to-line.js"></script>
-    <script src="codemirror5/addon/fold/foldcode.js"></script>    
+    <script src="codemirror5/addon/fold/foldcode.js"></script>
     <script src="codemirror5/addon/fold/foldgutter.js"></script>
     <script src="codemirror5/addon/fold/indent-fold.js"></script>
     <script src="codemirror5/addon/fold/brace-fold.js"></script>
     <script src="codemirror5/addon/fold/xml-fold.js"></script>
     <script src="codemirror5/addon/fold/comment-fold.js"></script>
-    
+
     <!-- Codemirror modes -->
     <script src="codemirror5/mode/css/css.js"></script>
     <script src="codemirror5/mode/htmlmixed/htmlmixed.js"></script>
@@ -60,15 +60,15 @@
     <script src="codemirror5/mode/ruby/ruby.js"></script>
 
     <title>Ruby Code Editor</title>
-    
+
   </head>
 
   <body>
-  
+
   <div id="wrap">
- 
+
     <div id="nav">
-    
+
       <ul id="menu" accesskey="m">
         <li><a href="#">File</a>
           <ul>
@@ -81,7 +81,7 @@
             <li><a href="#"
               title="Open from a list of last used files.">
               <span class="ui-icon ui-icon-folder-open"></span>Open Recent</a>
-              <ul id="mru"> 
+              <ul id="mru">
                 <li><a href="#">Last opened files will appear here</a></li>
               </ul>
             </li>
@@ -114,7 +114,7 @@
               title="Search in the editor. (Ctrl/Cmd+F)">
               <span class="ui-icon ui-icon-search"></span><u>F</u>ind</a></li>
             <li><a href="#" onClick="editor.execCommand('findNext')">Find Next</a></li>
-            <li><a href="#" onClick="editor.execCommand('findPrev')">Find Previous</a></li>          
+            <li><a href="#" onClick="editor.execCommand('findPrev')">Find Previous</a></li>
             <li><a href="#" onClick="editor.execCommand('replace')"
               title="Search and replace in the editor. (Shift+Ctrl/Cmd+F)">
               <span class="ui-icon ui-icon-search"></span>Replace</a></li>
@@ -127,7 +127,7 @@
               title="Edit the code snippet that comes up when you select 'File > New'.">
               Edit Default Code</a></li>
            </ul>
-        </li>                   
+        </li>
         <li><a href="#">Run</a>
           <ul>
           	<li><a href="#" onClick="cb_exec();"
@@ -137,22 +137,22 @@
               title="Undo last action in SketchUp. (Ctrl/Cmd+U)">
               <span class="ui-icon ui-icon-arrowreturnthick-1-w"></span><u>U</u>ndo</a></li>
           </ul>
-        </li>        
+        </li>
         <li><a href="#">Selection</a>
-          <ul> 
+          <ul>
             <li><a href="#" onClick="cb('sel_explore');"
               title="List available properties for current selection.">
               <span class="ui-icon ui-icon-search"></span>List Properties</a></li>
             <li><a href="#" onClick="cb('att_explore');"
               title="List attributes that are stored with selected entities.">
               <span class="ui-icon ui-icon-search"></span>List Attributes</a></li>
-            <li><a href="#" onClick="cb('insert_ref');" 
+            <li><a href="#" onClick="cb('insert_ref');"
               title="Insert array of IDs or persistent IDs (2017+) at cursor that can be used with find_entity_by_(persistent_)id">
               <span class="ui-icon ui-icon-pencil"></span>Insert ID Reference(s)</a></li>
           </ul>
-        </li>        
+        </li>
         <li><a href="#">Tools</a>
-          <ul>           
+          <ul>
           	<li><a href="#" onClick="cb('show_console');"
               title="Open SketchUp's default Ruby Console (e.g. for enhanced error display).">
               <span class="ui-icon ui-icon-script"></span>Show Ruby Console</a></li>
@@ -175,38 +175,38 @@
               <span class="ui-icon ui-icon-info"></span>Keyboard Shortcuts</a></li>
             <li><a href="#" onClick="$('#about-dlg').dialog('open');"><span class="ui-icon ui-icon-info"></span>About</a></li>
           </ul>
-        </li>            
-      </ul> 
-      
+        </li>
+      </ul>
+
     </div> <!-- #nav -->
-  
+
 
     <div id="tabs">
-    
+
       <ul>
       	<li><a id="file_name" href="#tabs-1">untitled.rb</a></li>
       </ul>
 
       <div id="tabs-1" class="tab-content">
-      
+
           <input type="hidden" id="save_name" value="untitled.rb">
           <input type="hidden" id="save_filepath" value="">
-        
+
           <div id="console_area">
-          
+
             <textarea id="console" style="width: 100%;" wrap="off" onChange="c=true;" tabindex="1" rows="20" cols="80"></textarea>
-            
+
           </div> <!-- #console_area -->
-          
-          <div id="exec_area">            
-            
+
+          <div id="exec_area">
+
               <div class="controlgroup" style="height:30px;margin: 10px 0;">
-    
+
                 <a class="button" onClick="cb_exec()" href="#" title="Execute code in SketchUp. (Ctrl/Cmd+R)" accesskey="R"><span class="ui-icon ui-icon-play"></span></a>
                 <a class="button" onClick="cb('undo')" href="#" title="Undo last action in SketchUp. (Ctrl/Cmd+U)" accesskey="U"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></a>
-                
+
               </div> <!-- .controlgroup -->
-              
+
               <select id="snippets" title="Insert snippets at cursor" accesskey="I" style="vertical-align:middle;margin-left:10px;">
 <option value="" selected="selected" disabled="disabled">Insert at cursor:</option>
               <optgroup label="Ruby Snippets">
@@ -282,7 +282,7 @@ dlg.center">Html dialog (SU17+)</option>
 <option value="an_entity.set_attribute 'dictionary_name', 'key', 'value'">Set attribute</option>
 <option value="value = an_entity.get_attribute 'dictionary_name', 'key'">Get attribute</option>
 <option value="mymenu = UI.menu('Plugins').add_submenu('My New Extension')
-mymenu.add_item('My Tool') { 
+mymenu.add_item('My Tool') {
   #...
 }">Create menu items</option>
               </optgroup>
@@ -298,7 +298,7 @@ mymenu.add_item('My Tool') {
 </html>">Page template</option>
               </optgroup>
               </select>
-              
+
               <select id="lang" tabindex="10" title="Code highlighter language" style="vertical-align:middle;margin-left:10px;">
                 <option value="" disabled="disabled">Language:</option>
                 <option value="none">None</option>
@@ -307,19 +307,19 @@ mymenu.add_item('My Tool') {
                 <option value="javascript">JavaScript</option>
                 <option value="css">CSS</option>
                 <option value="xml">XML</option>
-              </select> 
-            
+              </select>
+
             <span id="running" style="display:none;"><img src="img/loading.gif" alt="running..." title="running..." height="20" width="40" style="margin-left:20px;vertical-align:middle;"></span>
-          
+
             <!-- <textarea id="results" style="height:100px; width: 100%;" readonly="readonly" tabindex="0" rows="20" cols="80"></textarea> -->
             <div id="results" style="height:100px; width: 100%; overflow:auto;" tabindex="0" ></div>
-            
+
           </div> <!-- exec_area -->
-        
+
       </div> <!-- #tabs-1 -->
-      
+
     </div> <!-- #tabs -->
-    
+
     <div id="option-dlg" title="Preferences" style="display:none;">
 
         <h1>Preferences</h1>
@@ -330,7 +330,7 @@ mymenu.add_item('My Tool') {
             <option value="light" selected="selected">Light</option>
             <option value="dark">Dark</option>
           </select>
-          </p>          
+          </p>
           <p>
            Font size:&nbsp;&nbsp;<select id="fontsize" tabindex="0">
             <option value="8">8 pt</option>
@@ -364,67 +364,66 @@ mymenu.add_item('My Tool') {
           <legend>SketchUp Ruby</legend>
           <p>
            <input id="doundo" type="checkbox" value="true" checked="checked"> Wrap entire code in single undo
-          </p>          
+          </p>
           <p><b>Add Ruby Search Paths (Advanced):</b><br />
-          Enter any local paths here to your Ruby Standard Libraries.
-          Any non-empty fields will be added to the $LOAD_PATH variable each time this editor opens.
-          To use this, install the applicable Ruby version first (if necessary). 
-          (<a href="http://sketchucation.com/forums/viewtopic.php?f=180&t=29412" target="_blank">Reference</a>)</p>
+          Enter any local paths to additional Ruby files or libraries here.
+          Any non-empty fields will be added to the $LOAD_PATH variable before code execution.
+          This enables correct behavior for e.g. "require" statements.</p>
           <p>Search Path 1: <input id="loadpath1" type="text" style="width:300px;padding:2px 5px;" value="" placeholder="Sample: C:/Ruby186/lib/ruby/1.8" /></p>
           <p>Search Path 2: <input id="loadpath2" type="text" style="width:300px;padding:2px 5px;" value="" placeholder="Sample: C:/Ruby186/lib/ruby/1.8/i386-mingw32" /></p>
         </fieldset>
-        
-    </div> <!-- #option-dlg -->   
-    
+
+    </div> <!-- #option-dlg -->
+
     <div id="shorts-dlg" title="Keyboard Shortcuts" style="display:none;">
-    
+
       <h1>Editor Keyboard Shortcuts</h1>
       <ul>
        	<li><strong>Ctrl/Cmd + N</strong> : New</li>
        	<li><strong>Ctrl/Cmd + O</strong> : Open</li>
        	<li><strong>Ctrl/Cmd + S</strong> : Save</li>
-       	<li><strong>Ctrl/Cmd + P</strong> : Print Code</li>  
-       	<li><strong>Ctrl/Cmd + F4</strong> : Exit Editor</li>   
-      </ul>      
-      <ul>  
+       	<li><strong>Ctrl/Cmd + P</strong> : Print Code</li>
+       	<li><strong>Ctrl/Cmd + F4</strong> : Exit Editor</li>
+      </ul>
+      <ul>
        	<li><strong>Ctrl/Cmd + R</strong> : Run Code</li>
-       	<li><strong>Ctrl/Cmd + U</strong> : Undo Run</li>      
-      </ul>                 
-      <ul>   
+       	<li><strong>Ctrl/Cmd + U</strong> : Undo Run</li>
+      </ul>
+      <ul>
         <li><strong>Ctrl/Cmd + Space</strong> : Autocomplete</li>
-        <li><strong>Ctrl/Cmd + Z</strong> : Undo Edit</li>                
+        <li><strong>Ctrl/Cmd + Z</strong> : Undo Edit</li>
        	<li><strong>Tab</strong> : Indent More (selection)</li>
        	<li><strong>Shift + Tab</strong> : Indent Less (selection)</li>
         <li><strong>Ctrl/Cmd + Q</strong> : Fold Code</li>
-      </ul>      
-      <ul>         	
+      </ul>
+      <ul>
        	<li><strong>Ctrl/Cmd + F</strong> : Search</li>
        	<li><strong>Alt + F</strong> : Search (persistent)</li>
        	<li><strong>Ctrl/Cmd + G</strong> : Find next</li>
        	<li><strong>Shift + Ctrl + G</strong> : Find previous</li>
        	<li><strong>Shift + Ctrl + F</strong> : Replace</li>
        	<li><strong>Shift + Ctrl + R</strong> : Replace all</li>
-       	<li><strong>Alt + G</strong> : Jump to line</li>        
-      </ul> 
+       	<li><strong>Alt + G</strong> : Jump to line</li>
+      </ul>
 
-    </div> <!-- #about-dlg -->            
-    
+    </div> <!-- #about-dlg -->
+
     <div id="about-dlg" title="About" style="display:none;">
-    
+
       <img src="img/tb_rubyeditor_128.png" style="width:100px;height:100px;float:right;margin-left:10px;">
       <h1>SketchUp Ruby Code Editor</h1>
       <p><b>By: Alexander C. Schreyer (www.alexschreyer.net)</b></p>
       <p><b>Version: <span id="version"></span></b></p>
-      <p>This code editor allows writing and modifying Ruby scripts directly within SketchUp. 
-      These scripts can be used to create geometry, add functionality or 
-      add data within the SketchUp 3D modeling environment.</p>  
+      <p>This code editor allows writing and modifying Ruby scripts directly within SketchUp.
+      These scripts can be used to create geometry, add functionality or
+      add data within the SketchUp 3D modeling environment.</p>
       <p>THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
       INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-      FITNESS FOR A PARTICULAR PURPOSE.</p>  
+      FITNESS FOR A PARTICULAR PURPOSE.</p>
 
     </div> <!-- #about-dlg -->
 
   </div>  <!-- #wrap -->
-    
+
   </body>
 </html>
