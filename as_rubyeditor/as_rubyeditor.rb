@@ -143,12 +143,12 @@ module AS_Extensions
             case params
               when 'undefined'  # No parameter supplied
                 file = UI.openpanel("Open File", @snip_dir, "Ruby Files|*.rb|All Files|*.*||")
-                file.tr!("\\","/")  # Fix slashes for Windows
               when 'default'  # Parameter "default" opens default file
                 file = File.join( AS_RubyEditor::EXTDIR , 'as_rubyeditor' , 'templates' , 'default.rb' )
               else  # File and path has been supplied by parameter
                 file = params
             end
+
             if not File.exist?(file)
               UI.messagebox "Cannot load #{File.basename(file).to_s}. This file doesn't exist (here)."
               return
@@ -159,8 +159,12 @@ module AS_Extensions
 
             begin
 
+              # Fix slashes for Windows
+              file.tr!("\\","/")
+
               # Set file directory as current and get file details
               @snip_dir = File.dirname(file)
+              Dir.chdir( @snip_dir )
               name = File.basename(file)
               extension = File.extname(file)
 
@@ -243,6 +247,7 @@ module AS_Extensions
 
             # Set file directory as current and get file details
             @snip_dir = File.dirname(file)
+            Dir.chdir( @snip_dir )
             extension = File.extname(file)
             # Add RB extension if nothing is there
             file = file+".rb" if extension == ""
@@ -496,6 +501,17 @@ module AS_Extensions
             Sketchup.send_action "showRubyPanel:"
 
           end  # add_action_callback("show_console")
+
+
+          ## =====================
+
+          ## Callback to show PLUGIN FOLDER
+
+          add_action_callback("plugin_folder") do |dlg, params|
+
+            UI.openURL("file:///#{Sketchup.find_support_file('Plugins')}")
+
+          end  # add_action_callback("plugin_folder")          
 
 
           ## =====================

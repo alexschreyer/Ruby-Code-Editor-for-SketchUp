@@ -139,6 +139,10 @@ History:        1.0 (2/3/2010):
                     - Error handling for invalid filetypes
                     - Fixes $LOAD_PATH inclusion, now at execution
                     - Adds proper filetype selectors to open dialog
+                  4.3 (TBD)
+                    - Ruby working dir changes on load/save know
+                    - Menu item to open plugin folder
+
 
 
 To-Do List:       - Add line wrapping as option
