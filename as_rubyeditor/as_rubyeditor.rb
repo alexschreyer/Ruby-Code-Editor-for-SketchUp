@@ -114,6 +114,7 @@ module AS_Extensions
             # Update new file names in editor
             dlg.execute_script("$('#save_name').val('untitled.rb')")
             dlg.execute_script("$('#file_name').text('untitled.rb')")
+            dlg.execute_script("$('#file_name').attr('title','')")
             dlg.execute_script("$('#save_filepath').val('')")
 
             # Reset the editor after loading
@@ -195,6 +196,7 @@ module AS_Extensions
               # Update new file names in editor
               dlg.execute_script("$('#save_name').val('#{name}')")
               dlg.execute_script("$('#file_name').text('#{name}')")
+              dlg.execute_script("$('#file_name').attr('title','#{file}')")
               dlg.execute_script("$('#save_filepath').val('#{file}')")
 
               # Update the MRU list (from SU prefs)
@@ -270,6 +272,7 @@ module AS_Extensions
             # Update new file names in editor
             dlg.execute_script("$('#save_name').text('#{name}')")
             dlg.execute_script("$('#file_name').text('#{name}')")
+            dlg.execute_script("$('#file_name').attr('title','#{file}')")
             dlg.execute_script("$('#save_filepath').val('#{file}')")
 
             # Reset the editor
@@ -326,13 +329,16 @@ module AS_Extensions
 
             # Execute the code with eval and rescue if error
             r = nil
+            rline = nil
             begin
               # ... Wrap everything in single undo if desired
               Sketchup.active_model.start_operation "RCE Code Run" if params == 'true'
               begin  # ... Evaluation under the top level binding
                 r = eval( v , TOPLEVEL_BINDING )
               rescue => e
-                r = e  # ... could do: e.backtrace.join('\n')
+                r = e
+                # could use later: rfull = e.backtrace.join('\n')
+                rline = e.backtrace[0].split(":")[1].to_i + 1
                 raise  # ... Pass to outer rescue clause if error
               end
             rescue  # ... If error
@@ -341,7 +347,12 @@ module AS_Extensions
             else  # ... Commit process if no errors
               Sketchup.active_model.commit_operation if params == 'true'
             ensure  # ... Always do this
-              r === nil ? r='Nil result (no result returned or run failed)' : r = r.to_s
+              if r === nil
+                r = 'Nil result (no result returned)'
+              else
+                r = r.to_s
+                r = r + " (Line #{rline})" if rline != nil
+              end
               p r  # ... Also return result to console
               # ... Format for HTML box
               r.gsub!(/ /, "&nbsp;")
@@ -357,6 +368,57 @@ module AS_Extensions
             end
 
           end  # add_action_callback("exec")
+
+
+          ## =====================
+
+          ## Callback to EXECUTE (LOAD) external code (in Ruby file)
+
+          add_action_callback("exec_load") do |dlg, params|
+
+            # Pick an RB file
+            f = UI.openpanel( "Select a Ruby file to run (load) it from its location", @snip_dir, "Ruby Files|*.rb|All Files|*.*||" )
+
+            if f
+
+              begin
+
+                raise "Selected file is not a Ruby file." if File.extname(f) != ".rb"
+
+                r = nil
+
+                Sketchup.active_model.start_operation "External Code Run"
+
+                # Load this plugin and add path to search paths
+                d = File.dirname( f )
+                d = File.expand_path( d )
+                $: << d unless $:.include? d
+                load f
+
+                Sketchup.active_model.commit_operation
+
+                dlg.execute_script("addResults('Done running file: #{f.tr!("\\","/")}')")
+
+                # Set directory as last used and give feedback
+                # Don't do this for now - messes with editor file loading
+
+              rescue => e
+
+                r = e
+                r === nil ? r = 'Nil result (no result returned)' : r = r.to_s
+                # ... Format for HTML box
+                r.gsub!(/ /, "&nbsp;")
+                r.gsub!(/\n/, "<br>")
+                r.gsub!(/'/, "&rsquo;")
+                r.gsub!(/`/, "&lsquo;")
+                r.gsub!(/</, "&lt;")
+                dlg.execute_script("addResults('Done running file: #{f.tr!("\\","/")}. Ruby says: <span class=\\'hl\\'>#{r}</span>')")
+
+              end
+
+            end
+
+          end  # add_action_callback("exec_load")
 
 
           ## =====================
@@ -511,7 +573,7 @@ module AS_Extensions
 
             UI.openURL("file:///#{Sketchup.find_support_file('Plugins')}")
 
-          end  # add_action_callback("plugin_folder")          
+          end  # add_action_callback("plugin_folder")
 
 
           ## =====================
@@ -549,17 +611,17 @@ module AS_Extensions
     def self.browser( title , loc , isfile = false )
 
       if Sketchup.version.to_f < 17 then  # Use old WebDialog method
-        d = UI::WebDialog.new( title , true ,
+        @dlg = UI::WebDialog.new( title , true ,
           title.gsub(/\s+/, "_") , 1000 , 600 , 100 , 100 , true);
-        d.navigation_buttons_enabled = false
-        isfile ? d.set_file( loc ) : d.set_url( loc )
-        d.show
+        @dlg.navigation_buttons_enabled = false
+        isfile ? @dlg.set_file( loc ) : @dlg.set_url( loc )
+        @dlg.show
       else  # Use new HtmlDialog
-        d = UI::HtmlDialog.new( { :dialog_title => title, :width => 1000, :height => 600,
+        @dlg = UI::HtmlDialog.new( { :dialog_title => title, :width => 1000, :height => 600,
           :style => UI::HtmlDialog::STYLE_DIALOG, :preferences_key => title.gsub(/\s+/, "_") } )
-        isfile ? d.set_file( loc ) : d.set_url( loc )
-        d.show
-        d.center
+        isfile ? @dlg.set_file( loc ) : @dlg.set_url( loc )
+        @dlg.show
+        @dlg.center
       end
 
     end  # def self.browser

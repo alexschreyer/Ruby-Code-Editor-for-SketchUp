@@ -136,6 +136,10 @@
             <li><a href="#" onClick="cb('undo');"
               title="Undo last action in SketchUp. (Ctrl/Cmd+U)">
               <span class="ui-icon ui-icon-arrowreturnthick-1-w"></span><u>U</u>ndo</a></li>
+            <li>-</li>
+            <li><a href="#" onClick="cb('exec_load');"
+              title="Run (Load) External File (ignores editor content). (Ctrl/Cmd+L)">
+              <span class="ui-icon ui-icon-play"></span>Run (<u>L</u>oad) File</a></li>
           </ul>
         </li>
         <li><a href="#">Selection</a>
@@ -391,6 +395,7 @@ mymenu.add_item('My Tool') {
       <ul>
        	<li><strong>Ctrl/Cmd + R</strong> : Run Code</li>
        	<li><strong>Ctrl/Cmd + U</strong> : Undo Run</li>
+        <li><strong>Ctrl/Cmd + L</strong> : Run (Load) File</li>
       </ul>
       <ul>
         <li><strong>Ctrl/Cmd + Space</strong> : Autocomplete</li>

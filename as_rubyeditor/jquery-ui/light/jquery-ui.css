@@ -430,14 +430,17 @@ background-image:none;}
 
 /* Alex' added color-based styles - LIGHT */
 
-body{background-color:#eee;}
-h1{color:#007fff;}
-#results{background-color:#eee;color:#000;}
-#results .hl{color:#007fff;}
-fieldset{border:1px solid #999;}
+body{background-color:#f3f2f7;}
+.ui-widget-header {background-color:#f3f2f7;}
+.ui-widget-content {background-color:#fff;}
+.ui-state-active {background-color:#005f9e!important;border-color:#005f9e!important;}
+h1{color:#363545;}
+#results{background-color:#f9f9fb;color:#363545;}
+#results .hl{color:#005f9e;}
+fieldset{border:1px solid #363545;background-color:#fff;}
 legend{color:#333;}
-select,input{background-color:#eee;color:#000;}
-option{background-color:#fff;}
+select,input{background-color:#f3f2f7;color:#363545;}
+option{background-color:#f3f2f7;}
 
 .cm-rb-su-class {color:#c0c;}
 .cm-rb-su-method {color:#ff8c00;}

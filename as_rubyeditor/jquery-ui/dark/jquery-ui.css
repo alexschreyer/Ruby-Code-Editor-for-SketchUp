@@ -431,7 +431,10 @@ background-image:none;}
 
 /* Alex' added color-based styles - DARK */
 
-body{background-color:#000;}
+body{background-color:#222;}
+.ui-widget-header {background-color:#222;}
+.ui-widget-content {background-color:#222;}
+.ui-state-active {background-color:#005f9e!important;border-color:#005f9e!important;}
 h1{color:#F6982A;}
 #results{background-color:#333;color:#fff;}
 #results .hl{color:rgb(255,255,0)}

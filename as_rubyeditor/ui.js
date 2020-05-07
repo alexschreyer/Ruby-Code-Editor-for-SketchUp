@@ -24,7 +24,7 @@ var tmp = '';
 function cb(name, args) {
 
   window.location='skp:'+name+'@'+args;
-  
+
 }
 
 
@@ -32,7 +32,7 @@ function cb(name, args) {
 function cb_initialize() {
 
   window.location = "skp:new";
-  
+
 }
 
 
@@ -45,7 +45,7 @@ function cb_new() {
     a = confirm("Changes will be lost. Clear editor?");
   }
   if (a) window.location = "skp:new";
-  
+
 }
 
 
@@ -58,7 +58,7 @@ function cb_open( loc ) {
     a = confirm('Changes have not been saved. Load a file?')
   }
   if (a) window.location = 'skp:load@'+loc;
-  
+
 }
 
 
@@ -69,7 +69,7 @@ function cb_save_as() {
   editor.save();
   // Set to true if backup option is checked
   window.location = "skp:save@"+$('#savebackup').is(':checked')+','+'true';
-  
+
 }
 
 
@@ -80,7 +80,7 @@ function cb_save() {
   editor.save();
   // Set to true if backup option is checked
   window.location = "skp:save@"+$('#savebackup').is(':checked')+','+'false';
-  
+
 }
 
 
@@ -89,7 +89,7 @@ function cb_exec() {
 
   // First save to textbox
   editor.save();
-  
+
   // Need to add timeouts so that everything show up and hides properly
   window.setTimeout ( function() {
     $('.controlgroup').controlgroup( "disable" );
@@ -101,7 +101,7 @@ function cb_exec() {
     $('#running').hide();
     $('.controlgroup').controlgroup( "enable" );
   } , 20 );
-  
+
 }
 
 
@@ -110,7 +110,7 @@ function cb_quit() {
 
   // Closing handled by Ruby side now
   window.location = "skp:quit@"+editor.isClean();
-  
+
 }
 
 
@@ -120,7 +120,7 @@ function addResults(txt) {
   $('#results').append('<p>' + txt + '</p>');
   // Scroll to some very large number to move bottom upward
   $('#results').scrollTop(9999);
-  
+
 }
 
 
@@ -129,10 +129,10 @@ function updateMRU() {
 
   $("#mru").empty();
   for (i = 0; i < 5; i++) {
-    $("#mru").append("<li><a href='#' title='" + arguments[i] + "' onClick=\"cb_open('" + arguments[i] + "');\">" + arguments[i].replace(/^.*[\\\/]/, '') + "</a></li>"); 
+    $("#mru").append("<li><a href='#' title='" + arguments[i] + "' onClick=\"cb_open('" + arguments[i] + "');\">" + arguments[i].replace(/^.*[\\\/]/, '') + "</a></li>");
   };
   $( "#menu" ).menu( "refresh" );
-  
+
 }
 
 
@@ -144,47 +144,47 @@ $(document).ready(function(){
 
 
   //========== INITIALIZE ELEMENTS ON STARTUP ========================
-  
-  
+
+
   // Set the menu up at the top of the page
-  $( "#menu" ).menu({position: {at: "left bottom"}}); 
-  
-  
-  // Set up jQuery UI About dialog        
-  $( "#about-dlg" ).dialog({ 
+  $( "#menu" ).menu({position: {at: "left bottom"}});
+
+
+  // Set up jQuery UI About dialog
+  $( "#about-dlg" ).dialog({
     autoOpen: false,
-    modal: true, 
+    modal: true,
     buttons: { Ok: function() { $( this ).dialog( "close" ); }
     }
   });
 
 
-  // Set up jQuery UI About dialog        
-  $( "#shorts-dlg" ).dialog({ 
+  // Set up jQuery UI About dialog
+  $( "#shorts-dlg" ).dialog({
     autoOpen: false,
-    modal: true, 
+    modal: true,
     buttons: { Ok: function() { $( this ).dialog( "close" ); }
     }
   });
-    
-  
+
+
   // Set up jQuery UI Preferences dialog
-  $( "#option-dlg" ).dialog({ 
+  $( "#option-dlg" ).dialog({
     width: 500,
     height: 500,
     autoOpen: false,
-    modal: true, 
+    modal: true,
     buttons: { Ok: function() { $( this ).dialog( "close" ); }
     }
-  });  
-  
-  
+  });
+
+
   // Create page tabs using jQuery UI
-  $('#tabs').tabs(); 
- 
-  
+  $('#tabs').tabs();
+
+
   // Style the button row as a control group
-  $(".controlgroup").controlgroup();     
+  $(".controlgroup").controlgroup();
 
 
   // Start the CodeMirror editor and attach it to text area
@@ -200,7 +200,7 @@ $(document).ready(function(){
     highlightSelectionMatches: true,
     matchBrackets: true,
     styleActiveLine: true,
-    scrollbarStyle: "simple",   
+    scrollbarStyle: "simple",
     extraKeys: {
       'Ctrl-Space' : 'autocomplete',
       'Tab' : 'indentMore',
@@ -212,19 +212,20 @@ $(document).ready(function(){
       'Ctrl-P' : function(cm) { printEditor() },
       'Ctrl-R' : function(cm) { cb_exec() },
       'Ctrl-U' : function(cm) { cb('undo') },
+      'Ctrl-L' : function(cm) { cb('exec_load') },
       'Ctrl-F4' : function(cm) { cb_quit() },
       'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()) }
     },
     foldGutter: true,
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-    foldGutter: { rangeFinder: new CodeMirror.fold.combine( CodeMirror.fold.brace, CodeMirror.fold.indent ) }    
+    foldGutter: { rangeFinder: new CodeMirror.fold.combine( CodeMirror.fold.brace, CodeMirror.fold.indent ) }
   });
-  
+
 
   // Initialize code autocompletion
   CodeMirror.commands.autocomplete = function(cm) {
     CodeMirror.showHint(cm, CodeMirror.surubyHint);
-  }  
+  }
 
 
   // What to do when the editor's content changes
@@ -292,7 +293,7 @@ $(document).ready(function(){
   $("#stylesheet").change(function() {
     var newcss = $("#stylesheet").val();
     changeTheme( newcss );
-    $.cookie('stylesheet', newcss , { path: '/' , expires: 365 });   
+    $.cookie('stylesheet', newcss , { path: '/' , expires: 365 });
   });
 
 
@@ -308,7 +309,7 @@ $(document).ready(function(){
     var size = $('#fontsize').val();
     $('.CodeMirror').css('font-size',size+'pt');
     $.cookie('fontsize', size, { path: '/', expires: 365 });
-  });  
+  });
 
 
   // TABS:
@@ -326,8 +327,8 @@ $(document).ready(function(){
   $('#indentWithTabs').click(function() {
     $.cookie('indentWithTabs', $('#indentWithTabs').is(':checked'), { path: '/', expires: 365 });
     editor.setOption('indentWithTabs', $('#indentWithTabs').is(':checked'));
-  });  
-  
+  });
+
 
   // TAB SIZE:
   // Initialize indent unit
@@ -342,8 +343,8 @@ $(document).ready(function(){
     $.cookie('tabsize', $('#tabsize').val(), { path: '/', expires: 365 });
     editor.setOption('indentUnit',parseInt($('#tabsize').val()));
     editor.setOption('tabSize',parseInt($('#tabsize').val()));
-  }); 
-  
+  });
+
 
   // SMART INDENT:
   // SmartIndent option
@@ -360,8 +361,8 @@ $(document).ready(function(){
   $('#smartIndent').click(function() {
     $.cookie('smartIndent', $('#smartIndent').is(':checked'), { path: '/', expires: 365 });
     editor.setOption('smartIndent', $('#smartIndent').is(':checked'));
-  });  
-  
+  });
+
 
   // LINENUMBERS:
   // Initialize line numbers
@@ -384,7 +385,7 @@ $(document).ready(function(){
       editor.setOption("lineNumbers", false);
       sizeWin();
     };
-  });  
+  });
 
 
   // BACKUP:
@@ -401,7 +402,7 @@ $(document).ready(function(){
     $.cookie('savebackup', $('#savebackup').is(':checked'), { path: '/', expires: 365 });
     $('#savebackup').val($('#savebackup').is(':checked'));
   });
-  
+
 
   // SINGLE UNDO:
   // Initialize single undo option
@@ -417,7 +418,7 @@ $(document).ready(function(){
     $.cookie('doundo', $('#doundo').is(':checked'), { path: '/', expires: 365 });
     $('#doundo').val($('#doundo').is(':checked'));
   });
-  
+
 
   // LOAD PATHS:
   // Initialize load paths
@@ -433,7 +434,7 @@ $(document).ready(function(){
   });
   $('#loadpath2').change(function() {
     $.cookie('loadpath2', $('#loadpath2').val(), { path: '/', expires: 365 });
-  });  
+  });
 
 
   //========== INTERACTIVE ELEMENTS ========================
@@ -441,7 +442,7 @@ $(document).ready(function(){
 
   // Insert snippets from dropdown at cursor
   $('#snippets').change(function(){
-  
+
     field = $('#snippets');
     pos = editor.getCursor();
     editor.replaceSelection(field.val());
@@ -450,13 +451,13 @@ $(document).ready(function(){
     // Reset dropdown to first option
     field.val($('option:first', field).val());
     editor.focus();
-    
+
   });
 
 
   // Change editor code languages dropdown
   $("#lang").change(function() {
-  
+
     editor.setOption('mode', $("#lang").val());
     // Disable run buttons if it's not Ruby
     if ($("#lang").val() == "ruby") {
@@ -465,9 +466,9 @@ $(document).ready(function(){
       $( "#exec_area a" ).button( "option", "disabled", true );
     };
     // Refresh the editor so that the color changes take effect immediately
-    editor.refresh(); 
-    
-  });  
+    editor.refresh();
+
+  });
 
 
 }); // END jQuery.ready
@@ -485,12 +486,12 @@ function printEditor() {
   editor.setOption( 'viewportMargin' , Infinity );
   editor.setOption( 'lineWrapping' , true );
   editor.refresh();
-  
+
   window.print();
-  
+
   // Reset temporary options
   editor.setOption( 'viewportMargin' , currMargin );
   editor.setOption( 'lineWrapping' , currWrap );
   editor.refresh();
-  
+
 };

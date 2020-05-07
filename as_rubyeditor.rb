@@ -1,6 +1,6 @@
 =begin
 
-Copyright 2010-2019, Alexander C. Schreyer
+Copyright 2010-2020, Alexander C. Schreyer
 All rights reserved
 
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -13,8 +13,8 @@ Author :        Alexander Schreyer, www.alexschreyer.net, mail@alexschreyer.net
 Website:        http://www.alexschreyer.net/projects/sketchup-ruby-code-editor
 
 Name :          Ruby Code Editor
-Version:        4.2
-Date :          9/5/2019
+Version:        4.3
+Date :          5/7/2020
 
 Description :   Adds a Ruby code editor to the SketchUp WINDOWS menu. This code editor allows
                 writing and modifying Ruby (and other) scripts within SketchUp.
@@ -139,9 +139,15 @@ History:        1.0 (2/3/2010):
                     - Error handling for invalid filetypes
                     - Fixes $LOAD_PATH inclusion, now at execution
                     - Adds proper filetype selectors to open dialog
-                  4.3 (TBD)
-                    - Ruby working dir changes on load/save know
-                    - Menu item to open plugin folder
+                  4.3 (5/7/2020)
+                    - Ruby working dir changes to file dir on load/save now
+                    - File path shows in tab title attribute
+                    - Added menu item to open plugin folder
+                    - Added function and menu item to run (load) external file instead of editor
+                    - Now prints error line numbers in feedback
+                    - Fixed 2020 GC issue (class var for browser)
+                    - Updated links in reference browser
+                    - Updated UI colors to be more consistent with SU
 
 
 
@@ -276,7 +282,7 @@ module AS_Extensions
 
   module AS_RubyEditor
 
-    EXTVERSION            = "4.2"
+    EXTVERSION            = "4.3"
     EXTTITLE              = "Ruby Code Editor"
     EXTNAME               = "as_rubyeditor"
     EXTDESCRIPTION        = "This code editor simplifies writing and modifying Ruby (and other) scripts within SketchUp. These scripts can be used to create geometry, add functionality or add data within the SketchUp 3D modeling environment."
